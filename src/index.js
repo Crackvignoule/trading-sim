@@ -1,13 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './components/App';
 import reportWebVitals from './reportWebVitals';
+
+import App from './components/App';
+import chart from './components/Chart';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <App />
+    <chart />
   </React.StrictMode>
 );
 
