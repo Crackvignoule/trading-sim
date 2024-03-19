@@ -1,4 +1,4 @@
-function Home() {
+function Leaderboard() {
     return (
       <div>
         <h1>Welcome to the Leaderboard</h1>
@@ -6,4 +6,4 @@ function Home() {
     );
   }
   
-  export default Home;
+  export default Leaderboard;

@@ -1,7 +1,7 @@
-import Home from './Home'
-import Login from './Login'
-import Portfolio from './Portfolio'
-import Leaderboard from './Leaderboard'
+import Home from './Home/Home'
+import Login from './Login/Login'
+import Portfolio from './Portfolio/Portfolio'
+import Leaderboard from './Leaderboard/Leaderboard'
 
 export {
   Home,
