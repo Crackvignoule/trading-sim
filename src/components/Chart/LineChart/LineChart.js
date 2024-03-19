@@ -2,6 +2,8 @@ import { createChart, CrosshairMode, LineStyle } from 'lightweight-charts';
 
 var darkTheme = {
 	chart: {
+        width: 600,
+        height: 400,
 		layout: {
 			background: {
 				type: 'solid',
@@ -29,43 +31,28 @@ var darkTheme = {
 			topColor: 'rgba(32, 226, 47, 0.56)',
 			bottomColor: 'rgba(32, 226, 47, 0.04)',
 			lineColor: 'rgba(32, 226, 47, 1)',
+            lineWidth: 2,
 	},
 };
 
-function createLineChart(container, data) {
-    const chart = createChart(container, {
-        layout: {
-			background: {
-				type: darkTheme.chart.layout.background.type,
-				color: darkTheme.chart.layout.background.color,
-			},
-			lineColor: darkTheme.chart.layout.lineColor,
-			textColor: darkTheme.chart.layout.textColor,
-		},
-		watermark: {
-			color: darkTheme.chart.watermark.color,
-		},
-		crosshair: {
-			color: darkTheme.chart.crosshair.color,
-		},
-		grid: {
-			vertLines: {
-				color: darkTheme.chart.grid.vertLines.color,
-			},
-			horzLines: {
-				color: darkTheme.chart.grid.horzLines.color,
-			},
-		},
-    });
+function generateOptions(theme) {
+    let options = {};
+    for (let key in theme) {
+        if (typeof theme[key] === 'object') {
+            options[key] = generateOptions(theme[key]);
+        } else {
+            options[key] = theme[key];
+        }
+    }
+    return options;
+}
 
-    const areaSeries = chart.addAreaSeries({
-        topColor: darkTheme.series.topColor,
-        bottomColor: darkTheme.series.bottomColor,
-        lineColor: darkTheme.series.lineColor,
-        lineWidth: 2,
-    });
+function createLineChart(container, data) {
+    const chart = createChart(container, generateOptions(darkTheme.chart));
+    const areaSeries = chart.addAreaSeries(generateOptions(darkTheme.series));
 
     areaSeries.setData(data);
+    chart.timeScale().fitContent();
 
     return chart;
 }
