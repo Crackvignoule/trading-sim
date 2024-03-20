@@ -2,7 +2,7 @@ const db = require('../database');
 
 const selectDataBTCUSDT = () => {
   return new Promise((resolve, reject) => {
-    const query = 'SELECT datePrice as time, price as value FROM PricesHistory WHERE pair = ? ORDER BY datePrice';
+    const query = 'SELECT datePrice as time, price as value FROM PricesHistory ph INNER JOIN Pairs p ON p.idPair = ph.idPair WHERE p.namePair = ? ORDER BY datePrice';
     db.execute(query, ["BTC/USDT"], (error, results) => {
       if (error) {
         reject(error);
