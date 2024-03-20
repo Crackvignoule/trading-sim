@@ -9,7 +9,7 @@ CREATE TABLE Users (
   idUser INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   pseudo VARCHAR(50) NOT NULL,
   passwordUser VARCHAR(50) NOT NULL,
-  dateCrea DATE
+  dateCrea DATETIME
 );
   
 CREATE TABLE Pairs (
@@ -19,16 +19,18 @@ CREATE TABLE Pairs (
   
 CREATE TABLE PricesHistory (
   idPair INT,
-  price FLOAT,
+  currentPrice FLOAT,
+  lowestPrice FLOAT,
+  highestPrice FLOAT,
   volume FLOAT,
-  datePrice DATE,
+  datePrice DATETIME,
   FOREIGN KEY (idPair) REFERENCES Pairs(idPair) ON DELETE CASCADE
 );
   
 CREATE TABLE WalletsHistory (
   idUser INT NOT NULL,
   total FLOAT,
-  dateWallet DATE,
+  dateWallet DATETIME,
   FOREIGN KEY (idUser) REFERENCES Users(idUser) ON DELETE CASCADE
 );
   
@@ -45,7 +47,7 @@ CREATE TABLE Transactions (
   price FLOAT,
   amount FLOAT,
   total FLOAT,
-  dateTrans DATE,
+  dateTrans DATETIME,
   type VARCHAR(6),
   direction VARCHAR(4),
   FOREIGN KEY (idUser) REFERENCES Users(idUser) ON DELETE CASCADE
