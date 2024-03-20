@@ -11,7 +11,7 @@ function ChartComponent() {
         // Fonction pour récupérer les données du serveur
         const fetchData = async () => {
             try {
-                const response = await fetch('/api/chart');
+                const response = await fetch('http://localhost:5000/api/chart');
                 const data = await response.json();
                 setData(data); // Mise à jour de l'état avec les données récupérées
             } catch (error) {
