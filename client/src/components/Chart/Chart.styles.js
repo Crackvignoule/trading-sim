@@ -4,7 +4,6 @@ export const ChartContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f5f5f5;
   border-radius: 10px;
   box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
 `;

@@ -1,12 +1,12 @@
-import { Nav, NavBarContainer, Link, Title } from "./NavBar.styles";
+import { Nav, NavBarContainer, Title, Link } from "./NavBar.styles";
 
 function NavBar() {
     return (
         <NavBarContainer>
             <Nav>
-                <Title href="/">Trading Sim</Title>
-                <Link href="/portfolio">Portfolio</Link>
-                <Link href="/leaderboard">Leaderboard</Link>
+                <Title to="/" activeClassName="active">Trading Sim</Title>
+                <Link to="/portfolio" activeClassName="active">Portfolio</Link>
+                <Link to="/leaderboard" activeClassName="active">Leaderboard</Link>
             </Nav>
         </NavBarContainer>
     );
