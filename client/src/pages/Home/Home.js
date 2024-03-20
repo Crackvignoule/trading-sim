@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import Chart from '../../components/Chart/Chart';
+import NavBar from '../../components/NavBar/NavBar';
 
 function Home() {
 
     return (
         <div>
-          <h1>Welcome to the Home Page</h1>
-          <p>This is the home page of our application.</p>
+          <NavBar />
           <Chart />
         </div>
       );

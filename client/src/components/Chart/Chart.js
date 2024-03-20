@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import createLineChart from './LineChart/LineChart';
 import { ChartContainer } from './Chart.styles';
 
-function ChartComponent() {
+function Chart() {
     const chartContainerRef = useRef();
     const chartRef = useRef();
 	const [data, setData] = useState([]);
@@ -32,4 +32,4 @@ function ChartComponent() {
     return <ChartContainer ref={chartContainerRef} />;
 }
 
-export default ChartComponent;
+export default Chart;
