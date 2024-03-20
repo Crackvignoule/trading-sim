@@ -1,14 +1,12 @@
-version: '3.8'
-
 services:
-  mysql:
+  trading-db:
     image: mysql:latest
     restart: always
     environment:
+      MYSQL_DATABASE: TradingSimBdd
       MYSQL_ROOT_PASSWORD: password
       MYSQL_USER: server
       MYSQL_PASSWORD: password
-      MYSQL_DATABASE: TradingSimBdd
     ports:
       - "3306:3306"
     volumes:

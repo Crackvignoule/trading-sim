@@ -1,15 +1,12 @@
 {
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.1.0"
   },
   "scripts": {
     "start": "node ./server/server.js",
     "server": "nodemon ./server/server.js",
     "client": "npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\""
-  },
-  "dependencies": {
-    "mysql2": "^3.9.2",
-    "ws": "^8.16.0"
   }
 }
