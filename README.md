@@ -1,8 +1,10 @@
+# Dev
+First, install dependencies with `npm i;cd client;npm i;cd ../server;npm i`.
+Run both the server and the client with `npm run dev` from the root directory.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-First, install dependencies with `npm install .`.
 
 ## Available Scripts
 
