@@ -52,3 +52,5 @@ CREATE TABLE Transactions (
   direction VARCHAR(4),
   FOREIGN KEY (idUser) REFERENCES Users(idUser) ON DELETE CASCADE
 );
+
+INSERT INTO Pairs (namePair) VALUES ('BTC/USDT');
