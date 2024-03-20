@@ -4,9 +4,9 @@ function NavBar() {
     return (
         <NavBarContainer>
             <Nav>
-                <Title to="/" activeClassName="active">Trading Sim</Title>
-                <Link to="/portfolio" activeClassName="active">Portfolio</Link>
-                <Link to="/leaderboard" activeClassName="active">Leaderboard</Link>
+                <Title to="/" activeclassname="active">Trading Sim</Title>
+                <Link to="/portfolio" activeclassname="active">Portfolio</Link>
+                <Link to="/leaderboard" activeclassname="active">Leaderboard</Link>
             </Nav>
         </NavBarContainer>
     );

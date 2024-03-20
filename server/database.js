@@ -5,7 +5,8 @@ const connection = mysql.createConnection({
   host: 'localhost',
   user: 'server',
   password: 'password',
-  database: 'TradingSimBdd'
+  database: 'TradingSimBdd',
+  port : 3307
 });
 
 // Connexion à MySQL
