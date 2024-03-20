@@ -7,7 +7,7 @@ function Home() {
     return (
         <div>
           <NavBar />
-          <Chart />
+          <Chart key="unique-chart-key" />
         </div>
       );
 }

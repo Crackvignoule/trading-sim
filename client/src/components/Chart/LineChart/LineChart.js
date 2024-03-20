@@ -54,7 +54,8 @@ function createLineChart(container, data) {
     areaSeries.setData(data);
     chart.timeScale().fitContent();
 
-    return chart;
+    return { chart, series: areaSeries };
 }
+
 
 export default createLineChart;

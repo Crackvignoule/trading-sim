@@ -4,6 +4,7 @@ const app = express();
 const cors = require('cors');
 const apiRouter = require('./routes/api');
 const { initializeBinanceWebSocket } = require('./services/binanceWebSocket');
+require('./services/serverWebSocket');
 
 app.use(express.json());
 

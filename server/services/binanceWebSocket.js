@@ -1,5 +1,6 @@
 const WebSocket = require('ws');
-const { updatePricesBDTUSDT } = require('../models/updateBddPrices');
+const { postDataBTCUSDT } = require('../controllers/updatePrices');
+
 
 const initializeBinanceWebSocket = () => {
   const binanceWsUrl = 'wss://stream.binance.com:9443/ws/btcusdt@ticker';
@@ -11,11 +12,11 @@ const initializeBinanceWebSocket = () => {
 
   ws.on('message', function incoming(data) {
     const ticker = JSON.parse(data);
-    
-    updatePricesBDTUSDT(ticker).then(() => {
+    postDataBTCUSDT(ticker).then(() => {
     }).catch(err => {
       console.error('Erreur lors de la mise à jour:', err);
     });
+
   });
 
   ws.on('close', function close() {
@@ -25,7 +26,7 @@ const initializeBinanceWebSocket = () => {
 
   ws.on('error', function error(err) {
     console.error('WebSocket error:', err);
-    ws.close(); // Assurez-vous de fermer la connexion en cas d'erreur
+    ws.close();
   });
 };
 
