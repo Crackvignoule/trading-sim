@@ -1,4 +1,4 @@
-import { createChart, CrosshairMode, LineStyle } from 'lightweight-charts';
+import { createChart } from 'lightweight-charts';
 
 var darkTheme = {
 	chart: {
