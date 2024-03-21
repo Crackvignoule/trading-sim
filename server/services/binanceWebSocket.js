@@ -3,7 +3,7 @@ const { postDataBTCUSDT } = require('../controllers/updatePrices');
 
 
 const initializeBinanceWebSocket = () => {
-  const binanceWsUrl = 'wss://stream.binance.com:9443/ws/btcusdt@ticker';
+  const binanceWsUrl = 'wss://stream.binance.com/ws/btcusdt@ticker';
   const ws = new WebSocket(binanceWsUrl);
 
   ws.on('open', function open() {
