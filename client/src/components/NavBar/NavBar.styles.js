@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 
-const specialColor = `#f5c631;`;
+const specialColor = `#f5c631`;
 
 export const Nav = styled.nav`
     display: flex;
