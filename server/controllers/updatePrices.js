@@ -1,4 +1,4 @@
-const { updatePricesBDTUSDT } = require('../models/updateBddPrices');
+const { updatePricesBDTUSDT } = require('../models/updatePrices');
 const { wss,broadcastDataBTCUSDT } = require('../services/serverWebSocket');
 
 const postDataBTCUSDT = async (ticker) => {
