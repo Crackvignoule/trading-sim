@@ -12,12 +12,20 @@ const updatePricesBDTUSDT = (ticker) => {
     let datePrice = new Date(datePriceTimeStamp);
     let formattedDatePrice = datePrice.toISOString().slice(0, 19).replace('T', ' ');
 
-    const query = 'INSERT INTO PricesHistory (idPair, currentPrice, lowestPrice, highestPrice, volume, datePrice) \
-    SELECT idPair, ?, ?, ?, ?, ? \
-    FROM Pairs \
-    WHERE namePair = ?';
+    const query = `
+      INSERT INTO PricesHistory (idPair, currentPrice, lowestPrice, highestPrice, volume, datePrice)
+      SELECT p.idPair, ?, ?, ?, ?, ?
+      FROM Pairs p
+      WHERE p.namePair = ?
+      AND NOT EXISTS (
+          SELECT 1
+          FROM PricesHistory ph
+          WHERE ph.datePrice = ? AND ph.idPair = p.idPair
+      );
+      `;
 
-    db.execute(query, [currentPrice,lowestPrice,highestPrice,volume,formattedDatePrice,"BTC/USDT"], (error, results) => {
+
+    db.execute(query, [currentPrice,lowestPrice,highestPrice,volume,formattedDatePrice,"BTC/USDT",formattedDatePrice], (error, results) => {
       if (error) {
         reject(error);
       } else {
