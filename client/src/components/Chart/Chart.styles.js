@@ -6,6 +6,7 @@ export const ChartContainer = styled.div`
   align-items: center;
   border-radius: 10px;
   box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+  margin: 20px;
 `;
 
 export const ChartTitle = styled.h2`

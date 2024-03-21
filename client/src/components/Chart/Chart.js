@@ -32,7 +32,9 @@ function TradingViewWidget() {
         chartContainerRef.current.appendChild(script);
     }, []);
 
-    return <div id='tradingview-widget-container' ref={chartContainerRef} />;
+    return (
+        <ChartContainer id='tradingview-widget-container' ref={chartContainerRef} />
+    );
 }
 
 export default TradingViewWidget;
