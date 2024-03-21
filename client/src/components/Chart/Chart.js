@@ -15,6 +15,7 @@ function Chart() {
         fetch('http://localhost:5000/api/chartBTCUSDT')
             .then(response => response.json())
             .then(data => {
+                console.log(data);
                 const { chart, series } = createLineChart(chartContainerRef.current, data);
                 setSeries(series);
             })
