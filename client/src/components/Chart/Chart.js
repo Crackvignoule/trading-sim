@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, memo } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { ChartContainer } from './Chart.styles';
 
 function TradingViewWidget() {
