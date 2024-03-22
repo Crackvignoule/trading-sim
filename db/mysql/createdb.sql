@@ -18,6 +18,7 @@ CREATE TABLE Pairs (
   );
   
 CREATE TABLE PricesHistory (
+  idPrice INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   idPair INT,
   currentPrice FLOAT,
   lowestPrice FLOAT,

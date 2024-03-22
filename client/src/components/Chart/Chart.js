@@ -30,6 +30,7 @@ function TradingViewWidget() {
             });
         };
         chartContainerRef.current.appendChild(script);
+
     }, []);
 
     return (
