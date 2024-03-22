@@ -1,12 +1,14 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from "styled-components";
 
 export const COLORS = {
-  text: 'white',
-  background: 'radial-gradient(circle, #102E52, #141728);',
-  navbar: '#202333',
-  special: '#f5c631',
-  red: '#f23645',  // DA274D
-  green: '#44998f',  // 31C75A
+  text: "white",
+  background: "radial-gradient(circle, #102E52, #141728);",
+  glassBkg: "rgba(255, 255, 255, 0.1)",
+  glassBorder: "0.1em solid rgba(255, 255, 255, 0.3)",
+  navbar: "#202333",
+  special: "#f5c631",
+  red: "#f23645", // DA274D
+  green: "#44998f", // 31C75A
 };
 
 const GlobalStyles = createGlobalStyle`
@@ -18,19 +20,8 @@ const GlobalStyles = createGlobalStyle`
   }
 
   h1, h2, h3, h4, h5, h6 {
-    color: #333;
+    color: ${COLORS.text};
   }
-
-  a {
-    color: #1a0dab;
-    text-decoration: none;
-  }
-
-  a:hover {
-    text-decoration: underline;
-  }
-
-  /* Add more global styles as needed */
 `;
 
 export default GlobalStyles;

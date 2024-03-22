@@ -15,7 +15,7 @@ export const Link = styled(NavLink)`
   font-family: EuclidCircularSemiBold, sans-serif;
   font-size: 1em;
   margin-left: 20px;
-  color: #fff;
+  color: ${COLORS.text};
   text-decoration: none;
   width: 7em;
   display: inline-block;
@@ -73,7 +73,7 @@ export const NavBarContainer = styled.div`
 export const Label = styled.label`
   margin-right: 10px;
   font-size: 0.9em;
-  color: #ffffff;
+  color: ${COLORS.text};
 `;
 
 export const LabelBalance = styled(Label)`
