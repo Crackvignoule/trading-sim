@@ -1,18 +1,27 @@
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 
-// Créez une connexion à la base de données
-const connection = mysql.createConnection({
+// Création d'un pool de connexions
+const db = mysql.createPool({
   host: 'localhost',
   user: 'server',
-  password: 'password',
   database: 'TradingSimBdd',
-  port : 3307
+  password: 'password',
+  port: 3307,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
-// Connexion à MySQL
-connection.connect(error => {
-  if (error) throw error;
-  console.log("Connexion réussie à la base de données MySQL!");
-});
+// Tester la connexion
+async function testConnection() {
+  try {
+    const [rows] = await db.query('SELECT 1');
+    console.log("Connexion réussie à la base de données MySQL!");
+  } catch (error) {
+    console.error("Erreur lors de la connexion à la base de données MySQL:", error);
+  }
+}
 
-module.exports = connection;
+testConnection();
+
+module.exports = db;
