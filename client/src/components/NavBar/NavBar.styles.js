@@ -60,8 +60,9 @@ export const LabelBalance = styled(Label)`
 export const Underline = styled.div`
   position: absolute;
   height: 2px;
-  width: ${props => props.width}px;
-  left: ${props => props.left}px;
+  top: 4em;
+  width: ${props => props.$width}px;
+  left: ${props => props.$left}px;
   background: ${COLORS.special}; // Change color as needed
   transition: left 0.3s ease, width 0.3s ease;
 `;
