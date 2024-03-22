@@ -10,7 +10,7 @@ export const Nav = styled.nav`
     padding: 0px;
     margin-bottom: 0px;
     height: 4em;
-    `;
+`;
 
   export const Link = styled(NavLink)`
     font-family: EuclidCircularSemiBold, sans-serif;
@@ -53,15 +53,15 @@ export const Nav = styled.nav`
     &.active::before {
       width: 100%;
     }
-    `;
+`;
 
 export const List = styled.ul`
-margin: 0px;
-padding: 0px;
-text-align: center;
+    margin: 0px;
+    padding: 0px;
+    text-align: center;
 `;
 export const Line = styled.li`
-display: inline-block;
+    display: inline-block;
 `;
 
 export const NavBarContainer = styled.div`
@@ -69,20 +69,19 @@ export const NavBarContainer = styled.div`
     background: #202333;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
     margin: 0px;
-
 `;
 
 export const Label = styled.label`
     margin-right:10px;
     font-size: 0.9em;
-    color:#FFFFFF;
-
+    color: #FFFFFF;
 `;
+
 export const LabelBalance = styled(Label)`
-    font-size:1em;
-    margin-right:15em;
-
+    font-size: 1em;
+    margin-right: 15vw;
 `;
+
 export const Button = styled.button`
     Background-color:${specialColor};
     font-weight: Bold;
@@ -92,6 +91,7 @@ export const Button = styled.button`
     height:2em;
     border:0px;
 `;
+
 export const RightSideDiv = styled.div`
     margin-right:10px;
     display:flex;
