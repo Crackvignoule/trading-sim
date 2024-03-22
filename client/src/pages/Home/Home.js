@@ -1,7 +1,7 @@
 import React from 'react';
 import Chart from '../../components/Chart/Chart';
 import NavBar from '../../components/NavBar/NavBar';
-import { MainDiv } from './Home.styles';
+import { MainDiv, TopDiv, BottomDiv} from './Home.styles';
 
 function Home() {
 
@@ -9,7 +9,12 @@ function Home() {
         <>
         <NavBar />
         <MainDiv>
-          <Chart />
+            <TopDiv>
+              <Chart />
+            </TopDiv>
+            <BottomDiv>
+            </BottomDiv>
+
         </MainDiv>
         </>
       );
