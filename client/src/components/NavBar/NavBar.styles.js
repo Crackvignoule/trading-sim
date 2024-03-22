@@ -27,34 +27,10 @@ export const Link = styled(NavLink)`
   &.title {
     font-size: 1.3em;
   }
-
-  &:hover {
-    text-decoration: none;
-    color: ${COLORS.special};
-  }
-
-  &.active {
-    color: ${COLORS.special};
-  }
-  &::before {
-    background: ${COLORS.special} none repeat scroll 0 0;
-    bottom: -2px;
-    content: "";
-    height: 2px;
-    left: 0;
-    position: absolute;
-    width: 0%;
-    transition: 0.5s;
-  }
-  &:hover::before {
-    width: 100%;
-  }
-  &.active::before {
-    width: 100%;
-  }
 `;
 
 export const List = styled.ul`
+  position: relative;
   margin: 0px;
   padding: 0px;
   text-align: center;
@@ -79,6 +55,15 @@ export const Label = styled.label`
 export const LabelBalance = styled(Label)`
   font-size: 1em;
   margin-right: 15vw;
+`;
+
+export const Underline = styled.div`
+  position: absolute;
+  height: 2px;
+  width: ${props => props.width}px;
+  left: ${props => props.left}px;
+  background: ${COLORS.special}; // Change color as needed
+  transition: left 0.3s ease, width 0.3s ease;
 `;
 
 export const Button = styled.button`
