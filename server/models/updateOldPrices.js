@@ -1,5 +1,5 @@
-const db = require('../database');
-const axios = require('axios');
+const db = require("../database");
+const axios = require("axios");
 
 const selectLastDate = (namePair) => {
   return new Promise((resolve, reject) => {
@@ -32,7 +32,7 @@ const selectAllPair = () => {
 };
 
 function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 const updateOldPrices = async () => {
@@ -44,7 +44,7 @@ const updateOldPrices = async () => {
     let lastDate = await selectLastDate(namePair);
     let startTime = lastDate ? new Date(lastDate).getTime() : 0;
     let endTime = Date.now();
-    let symbol = namePair.replace('/', '');
+    let symbol = namePair.replace("/", "");
     let interval = "1h";
 
     while (startTime < endTime) {
@@ -69,7 +69,14 @@ const updateOldPrices = async () => {
             ON DUPLICATE KEY UPDATE currentPrice = VALUES(currentPrice), lowestPrice = VALUES(lowestPrice), highestPrice = VALUES(highestPrice), volume = VALUES(volume);
           `;
 
-          await db.execute(insertQuery, [parseFloat(close), parseFloat(low), parseFloat(high), parseFloat(volume), datePrice, namePair]);
+          await db.execute(insertQuery, [
+            parseFloat(close),
+            parseFloat(low),
+            parseFloat(high),
+            parseFloat(volume),
+            datePrice,
+            namePair,
+          ]);
         }
 
         // Mise à jour startTime pour la prochaine itération
@@ -78,11 +85,13 @@ const updateOldPrices = async () => {
 
         await delay(1000); // Si besoin rajoute un délai pour éviter le spam
       } catch (error) {
-        console.error("Erreur lors de la récupération des données de l'API Binance:", error);
+        console.error(
+          "Erreur lors de la récupération des données de l'API Binance:",
+          error
+        );
         break;
       }
     }
-    
   }
   await deleteDuplicateEntries();
 };
@@ -106,10 +115,10 @@ const deleteDuplicateEntries = async () => {
     if (result.affectedRows > 0) {
       console.log(`${result.affectedRows} doublons supprimés avec succès.`);
     } else {
-      console.log('Aucun doublon à supprimer.');
+      console.log("Aucun doublon à supprimer.");
     }
   } catch (error) {
-    console.error('Erreur lors de la suppression des doublons:', error);
+    console.error("Erreur lors de la suppression des doublons:", error);
   }
 };
 
