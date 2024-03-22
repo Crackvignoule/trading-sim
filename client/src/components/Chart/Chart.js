@@ -12,8 +12,8 @@ function TradingViewWidget() {
             new window.TradingView.widget({
                 container_id: chartContainerRef.current.id,
                 autosize: false,
-                symbol: 'CRYPTOCAP:BTC',
-                interval: '1S',
+                symbol: 'BTCUSDT',
+                interval: '1D',
                 timezone: 'Etc/UTC',
                 theme: 'dark',
                 style: '1',
