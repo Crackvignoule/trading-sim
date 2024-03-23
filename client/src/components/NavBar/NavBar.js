@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Nav, NavBarContainer, Link, List, Line, RightSideDiv, Label, Button, LabelBalance, Underline } from "./NavBar.styles";
 
 function NavBar() {
@@ -8,6 +8,14 @@ function NavBar() {
         const { offsetWidth, offsetLeft } = event.target;
         setUnderlineStyle({ width: offsetWidth, left: offsetLeft });
     };
+
+    useEffect(() => {
+        const activeLink = document.querySelector(".active");
+        if (activeLink) {
+            const { offsetWidth, offsetLeft } = activeLink;
+            setUnderlineStyle({ width: offsetWidth, left: offsetLeft });
+        }
+    } , []);
 
     return (
         <NavBarContainer>
