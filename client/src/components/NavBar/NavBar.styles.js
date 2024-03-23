@@ -27,6 +27,10 @@ export const Link = styled(NavLink)`
   &.title {
     font-size: 1.3em;
   }
+
+  &.active {
+    color: ${COLORS.special};
+  }
 `;
 
 export const List = styled.ul`
