@@ -1,6 +1,7 @@
 import GlobalStyles from './styles/GlobalStyles';
 import { BrowserRouter as Router, Routes, Route, Navigate  } from 'react-router-dom';
 import { Home, Login, Portfolio, Leaderboard } from './pages';
+import NavBar from './components/NavBar/NavBar';
 import ProtectedRoute from './components/ProtectedRoute';
 
 
@@ -12,7 +13,7 @@ function App() {
     <>
       <GlobalStyles />
       <Router>
-        <div>
+          <NavBar />
           <Routes>
           <Route path="/dashboard" element={
               <ProtectedRoute>
@@ -37,7 +38,6 @@ function App() {
             <Route path="/login" element={<Login />}/>
             <Route path="/" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />
           </Routes>
-        </div>
       </Router>
     </>
   );
