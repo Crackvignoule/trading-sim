@@ -1,20 +1,20 @@
 import React from 'react';
 import Chart from '../../components/Chart/Chart';
-import { MainDiv, TopDiv, BottomDiv} from './Home.styles';
+import { MainDiv, TopDiv, BottomDiv, HomeDiv} from './Home.styles';
 
 function Home() {
 
     return (
-        <>
-        <MainDiv>
-            <TopDiv>
-              <Chart />
-            </TopDiv>
-            <BottomDiv>
-            </BottomDiv>
+        <HomeDiv>
+          <MainDiv>
+              <TopDiv>
+                <Chart />
+              </TopDiv>
+              <BottomDiv>
+              </BottomDiv>
 
-        </MainDiv>
-        </>
+          </MainDiv>
+        </HomeDiv>
       );
 }
 
