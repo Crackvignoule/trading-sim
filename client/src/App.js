@@ -1,8 +1,7 @@
 import GlobalStyles from './styles/GlobalStyles';
 import { BrowserRouter as Router, Routes, Route, Navigate  } from 'react-router-dom';
 import { Home, Login, Portfolio, Leaderboard } from './pages';
-import NavBar from './components/NavBar/NavBar';
-import ProtectedRoute from './components/ProtectedRoute';
+import { NavBar, ProtectedRoute } from './components';
 
 
 function App() {

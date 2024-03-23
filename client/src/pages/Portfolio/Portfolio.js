@@ -1,5 +1,3 @@
-import NavBar from "../../components/NavBar/NavBar";
-
 function Portfolio() {
     return (
       <div>

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { ChartContainer } from "./Chart.styles";
 
-function TradingViewWidget() {
+function Chart() {
   const chartContainerRef = useRef();
 
   useEffect(() => {
@@ -37,7 +37,7 @@ function TradingViewWidget() {
   );
 }
 
-export default TradingViewWidget;
+export default Chart;
 
 // OLD CODE
 // import React, { useEffect, useRef, useState } from 'react';

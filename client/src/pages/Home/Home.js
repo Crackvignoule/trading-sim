@@ -1,5 +1,5 @@
 import React from 'react';
-import Chart from '../../components/Chart/Chart';
+import { Chart } from '../../components';
 import { MainDiv, TopDiv, BottomDiv, HomeDiv} from './Home.styles';
 
 function Home() {
