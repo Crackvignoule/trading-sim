@@ -26,14 +26,15 @@ function generateToken(user) {
 }
 
 router.get('/chartBTCUSDT', async (req, res) => {
-    try {
-      const data = await getDataBTCUSDT();
-      res.json(data);
-    } catch (error) {
-      console.error("Erreur lors de la récupération des données :", error);
-      res.status(500).send("Erreur interne du serveur");
-    }
-  });
+  try {
+    const data = await getDataBTCUSDT();
+    const result = data.result;
+    res.json(result);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des données :", error);
+    res.status(500).send("Erreur interne du serveur");
+  }
+});
 
 
   router.post('/register', async (req, res) => {
