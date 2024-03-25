@@ -52,7 +52,7 @@ function SmallChart() {
     <ChartContainer>
       <Header>
         <ThemeProvider theme={theme}>
-        <Button id="oneHour">1D</Button>
+        <Button id="oneHour">1H</Button>
         <Button id="oneDay">1D</Button>
         <Button id="oneWeek">1W</Button>
         <Button id="oneMonth">1M</Button>

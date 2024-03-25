@@ -48,45 +48,26 @@ function generateOptions(theme) {
 }
 
 function timeScalingButtons(chart) {
-  const oneHour = document.getElementById("oneHour");
-  const oneDay = document.getElementById("oneDay");
-  const oneWeek = document.getElementById("oneWeek");
-  const oneMonth = document.getElementById("oneMonth");
-  const oneYear = document.getElementById("oneYear");
-  const all = document.getElementById("all");
+  const buttons = {
+    "oneHour": (date) => date.setHours(date.getHours() - 1),
+    "oneDay": (date) => date.setDate(date.getDate() - 1),
+    "oneWeek": (date) => date.setDate(date.getDate() - 7),
+    "oneMonth": (date) => date.setMonth(date.getMonth() - 1),
+    "oneYear": (date) => date.setFullYear(date.getFullYear() - 1),
+    "all": null,
+  };
 
-  oneHour.addEventListener('click', () => {
-    const date = new Date();
-    date.setHours(date.getHours() - 1);
-    chart.timeScale().setVisibleRange({ from: date.getTime() / 1000, to: Date.now() / 1000 });
-  });
-
-  oneDay.addEventListener('click', () => {
-    const date = new Date();
-    date.setDate(date.getDate() - 1);
-    chart.timeScale().setVisibleRange({ from: date.getTime() / 1000, to: Date.now() / 1000 });
-  });
-
-  oneWeek.addEventListener('click', () => {
-    const date = new Date();
-    date.setDate(date.getDate() - 7);
-    chart.timeScale().setVisibleRange({ from: date.getTime() / 1000, to: Date.now() / 1000 });
-  });
-
-  oneMonth.addEventListener('click', () => {
-    const date = new Date();
-    date.setMonth(date.getMonth() - 1);
-    chart.timeScale().setVisibleRange({ from: date.getTime() / 1000, to: Date.now() / 1000 });
-  });
-
-  oneYear.addEventListener('click', () => {
-    const date = new Date();
-    date.setFullYear(date.getFullYear() - 1);
-    chart.timeScale().setVisibleRange({ from: date.getTime() / 1000, to: Date.now() / 1000 });
-  });
-
-  all.addEventListener('click', () => {
-    chart.timeScale().fitContent();
+  Object.entries(buttons).forEach(([id, setDate]) => {
+    const button = document.getElementById(id);
+    button.addEventListener('click', () => {
+      if (setDate) {
+        const date = new Date();
+        setDate(date);
+        chart.timeScale().setVisibleRange({ from: date.getTime() / 1000, to: Date.now() / 1000 });
+      } else {
+        chart.timeScale().fitContent();
+      }
+    });
   });
 }
 
