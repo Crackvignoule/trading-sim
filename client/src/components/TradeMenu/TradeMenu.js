@@ -191,6 +191,38 @@ function TradeMenu() {
     const setSlideBarValue = (value) => {
         setGaugeBarValue(value);
     }
+
+    const buy = async () => {
+        if(totalValue <= availableAmountValue){ //Si le solde est suffisant pour achat
+            try{
+                const userPseudo = localStorage.getItem('pseudo');
+                const response = await fetch('http://localhost:5000/api/buy', {
+                    method: 'POST',
+                    headers: {
+                    'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        amountToken: amountToken, 
+                        totalValue: totalValue,
+                        tradedPair: tradedPair,  
+                        userPseudo: userPseudo,
+                        action:"buy",
+                        mode: activeMode
+
+                    }),
+    
+                });
+                const data = await response.json();
+                if (response.status === 200) {
+                    console.log("Achat Réussi");
+                } else{
+                    console.log("Échec de l'achat");
+                }
+            } catch (error) {
+                    console.error('Erreur lors de la connexion', error);
+            }
+        }
+    }
     
 
     return (
@@ -257,7 +289,7 @@ function TradeMenu() {
                 </InputDiv2>
             </MidDiv>
             <ButtonDiv>
-                <Button id="btn-buy" active={activeAction === "buy"}>Buy</Button>
+                <Button id="btn-buy" active={activeAction === "buy"} onClick={ ()=> buy()}>Buy</Button>
                 <Button id="btn-sell" active={activeAction === "sell"}>Sell</Button>
             </ButtonDiv>
         </TradeMenuDiv>

@@ -12,10 +12,10 @@ const initializeBinanceWebSocket = () => {
 
   ws.on('message', function incoming(data) {
     const ticker = JSON.parse(data);
-    // postDataBTCUSDT(ticker).then(() => {
-    // }).catch(err => {
-    //   console.error('Erreur lors de la mise à jour:', err);
-    // });
+    postDataBTCUSDT(ticker).then(() => {
+    }).catch(err => {
+      console.error('Erreur lors de la mise à jour:', err);
+    });
 
   });
 

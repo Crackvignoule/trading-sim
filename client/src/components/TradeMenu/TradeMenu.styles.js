@@ -188,6 +188,7 @@ border-radius: 10px;
 color: ${COLORS.text};
 font-size:1.1em;
 border: 0;
+cursor: pointer;
 
 margin-bottom:1em;
 &#btn-buy{

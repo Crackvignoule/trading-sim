@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const router = express.Router();
 const { getDataBTCUSDT } = require('../controllers/charts');
 const { loginUser, registerUser } = require('../models/login');
-const { getTokenAmountByUser } = require('../models/userWallets');
+const { getTokenAmountByUser, setUserWallet } = require('../models/userWallets');
 
 
 function generateToken(user) {
@@ -75,6 +75,28 @@ router.get('/chartBTCUSDT', async (req, res) => {
     } else {
       res.status(404).json({ message: result.message });
     }
+});
+
+
+router.post('/buy', async (req, res) => {
+
+  console.log("rentre /buy");
+  const { amountToken, totalValue, tradedPair, userPseudo, action , mode} = req.body;
+  
+  let result = {};
+  if (mode == "market"){
+    const data = await getLastPriceByPair(tradedPair);
+    result = await setUserWallet(amountToken, data.currentPrice, tradedPair, userPseudo, action, mode);
+  }
+  else{
+    result = await setUserWallet(amountToken, totalValue, tradedPair, userPseudo, action, mode);
+  }
+  
+  if (result.success) {
+    res.status(200).json({ message: result.message });
+  } else {
+    res.status(404).json({ message: result.message });
+  }
 });
 
 
