@@ -1,20 +1,25 @@
-import React from 'react';
-import { Chart } from '../../components';
-import { MainDiv, TopDiv, BottomDiv, HomeDiv} from './Home.styles';
+import React, {useState } from 'react';
+import { Chart, TradeMenu } from '../../components';
+import { MainDiv, TopDiv, BottomDiv, HomeDiv } from './Home.styles';
+import { TradedPairProvider } from '../../context/Context';
 
 function Home() {
 
     return (
-        <HomeDiv>
-          <MainDiv>
-              <TopDiv>
-                <Chart />
-              </TopDiv>
-              <BottomDiv>
-              </BottomDiv>
+      // Seul les composants à l'intérieur de TradedPairProvider on accès au context de TradedPairProvider
+      <TradedPairProvider>
+          <HomeDiv>
+            <MainDiv>
+                <TopDiv>
+                  <Chart/>
+                  <TradeMenu/>
+                </TopDiv>
+                <BottomDiv>
+                </BottomDiv>
 
-          </MainDiv>
-        </HomeDiv>
+            </MainDiv>
+          </HomeDiv>
+        </TradedPairProvider>
       );
 }
 

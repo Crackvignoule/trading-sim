@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken');
 const router = express.Router();
 const { getDataBTCUSDT } = require('../controllers/charts');
 const { loginUser, registerUser } = require('../models/login');
+const { getTokenAmountByUser } = require('../models/userWallets');
+
 
 function generateToken(user) {
   // Charge utile (payload) du token
@@ -61,6 +63,21 @@ router.get('/chartBTCUSDT', async (req, res) => {
       res.status(401).json({ message: result.message });
     }
   });
+
+
+  router.post('/get-token-amount', async (req, res) => {
+    const { pseudo, tokenName } = req.body;
+    
+    const result = await getTokenAmountByUser(pseudo, tokenName);
+    
+    if (result.success) {
+      res.status(200).json({ amount: result.data.amount });
+    } else {
+      res.status(404).json({ message: result.message });
+    }
+});
+
+
   
 
   module.exports = router;

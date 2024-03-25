@@ -1,8 +1,15 @@
 import React, { useEffect, useRef } from "react";
 import { ChartContainer } from "./Chart.styles";
+import { useTradedPair } from '../../context/Context';
 
 function Chart() {
   const chartContainerRef = useRef();
+
+  const { tradedPair, setTradedPair } = useTradedPair(); // Récupéré de TradedPairContext
+
+  const handlePairChange = (newPair) => {
+      setTradedPair(newPair); // Mettre à jour la paire actuelle
+  };
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -33,7 +40,11 @@ function Chart() {
   }, []);
 
   return (
+    <>
+    <button onClick={ () => setTradedPair("ETH/USDT")}>ETH/USDT</button>
+    <button onClick={ () => setTradedPair("BTC/USDT")}>BTC/USDT</button>
     <ChartContainer id="tradingview-widget-container" ref={chartContainerRef} />
+    </>
   );
 }
 
