@@ -1,6 +1,25 @@
 import React, { useEffect, useRef, useState } from "react";
 import createAreaChart from "./AreaChart/AreaChart";
-import { Header, ChartContainer } from "./SmallChart.styles";
+import { Header, ChartContainer, Button } from "./SmallChart.styles";
+
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#FFFFFF',
+    },
+    secondary: {
+      main: '#F5C326',
+    },
+    error: {
+      main: '#f44336',
+    },
+    background: {
+      default: '#F5C326',
+    },
+  },
+});
 
 function SmallChart() {
   const chartContainerRef = useRef();
@@ -32,11 +51,14 @@ function SmallChart() {
   return (
     <ChartContainer>
       <Header>
-        <button>1D</button>
-        <button>1W</button>
-        <button>1M</button>
-        <button>1Y</button>
-        <button>ALL</button>
+        <ThemeProvider theme={theme}>
+        <Button id="oneHour">1D</Button>
+        <Button id="oneDay">1D</Button>
+        <Button id="oneWeek">1W</Button>
+        <Button id="oneMonth">1M</Button>
+        <Button id="oneYear">1Y</Button>
+        <Button id="all">ALL</Button>
+        </ThemeProvider>
       </Header>
       <div ref={chartContainerRef} />
     </ChartContainer>

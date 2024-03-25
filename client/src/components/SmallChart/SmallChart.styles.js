@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import MuiButton from '@mui/material/Button';
 import { COLORS } from "../../styles/GlobalStyles";
 
 export const Header = styled.div`
@@ -23,4 +24,13 @@ export const ChartContainer = styled.div`
 
   background-color: ${COLORS.glassBkg};
   border: ${COLORS.glassBorder};
+`;
+
+export const Button = styled(MuiButton)`
+&:hover {
+  background-color: ${COLORS.special};
+}
+&:focus {
+  color: ${COLORS.special};
+}
 `;
