@@ -1,11 +1,11 @@
 import { SmallChart } from "../../components";
+import { Div } from "./Portfolio.styles";
 
 function Portfolio() {
     return (
-      <div>
-        <h1>Welcome to your Portfolio</h1>
+      <Div>
         <SmallChart />
-      </div>
+      </Div>
     );
   }
   

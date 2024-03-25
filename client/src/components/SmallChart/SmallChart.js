@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import createAreaChart from "./AreaChart/AreaChart";
-import { Header, ChartContainer, Button } from "./SmallChart.styles";
-
+import { Header, ChartContainer, Button, Div } from "./SmallChart.styles";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const theme = createTheme({
@@ -60,7 +59,7 @@ function SmallChart() {
         <Button id="all">ALL</Button>
         </ThemeProvider>
       </Header>
-      <div ref={chartContainerRef} />
+      <Div ref={chartContainerRef} />
     </ChartContainer>
   );
 }

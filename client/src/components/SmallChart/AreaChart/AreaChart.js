@@ -2,8 +2,6 @@ import { createChart } from "lightweight-charts";
 
 var darkTheme = {
   chart: {
-    width: 600,
-    height: 400,
     layout: {
       background: {
         type: "solid",
@@ -72,8 +70,6 @@ function timeScalingButtons(chart) {
 }
 
 function createAreaChart(container, data) {
-  console.log(darkTheme.chart.width);
-
   const chart = createChart(container, generateOptions(darkTheme.chart));
   const areaSeries = chart.addAreaSeries(generateOptions(darkTheme.series));
 
@@ -81,6 +77,11 @@ function createAreaChart(container, data) {
 
   areaSeries.setData(data);
   chart.timeScale().fitContent();
+
+  console.log(container.clientWidth, container.clientHeight)
+
+  // Set the chart's initial size to match its container's size
+  chart.resize(container.clientWidth, container.clientHeight);
 
   // Make the chart responsive
   window.addEventListener("resize", () => {
