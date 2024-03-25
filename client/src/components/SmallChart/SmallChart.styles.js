@@ -1,8 +1,20 @@
 import styled from "styled-components";
 import { COLORS } from "../../styles/GlobalStyles";
 
-export const ChartContainer = styled.div`
+export const Header = styled.div`
   display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px 10px 0 0;
+  background-color: ${COLORS.glassBkg};
+  border: ${COLORS.glassBorder};
+  position: sticky;
+  top: 0;
+`;
+
+export const ChartContainer = styled.div`
+  display: flex column;
+  width: 40%;
   justify-content: center;
   align-items: center;
   border-radius: 10px;
@@ -11,5 +23,4 @@ export const ChartContainer = styled.div`
 
   background-color: ${COLORS.glassBkg};
   border: ${COLORS.glassBorder};
-  padding: 1em;
 `;

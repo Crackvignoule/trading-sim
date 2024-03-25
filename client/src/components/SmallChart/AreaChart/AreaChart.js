@@ -54,6 +54,14 @@ function createAreaChart(container, data) {
     areaSeries.setData(data);
     chart.timeScale().fitContent();
 
+	// Make the chart responsive
+    window.addEventListener('resize', () => {
+        chart.resize(
+            container.clientWidth,
+            container.clientHeight
+        );
+    });
+
     return { chart, series: areaSeries };
 }
 
