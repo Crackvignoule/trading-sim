@@ -22,8 +22,6 @@ const theme = createTheme({
 
 function SmallChart() {
   const chartContainerRef = useRef();
-  const chartRef = useRef();
-
   const [series, setSeries] = useState(null);
 
   useEffect(() => {

@@ -78,8 +78,6 @@ function createAreaChart(container, data) {
   areaSeries.setData(data);
   chart.timeScale().fitContent();
 
-  console.log(container.clientWidth, container.clientHeight)
-
   // Set the chart's initial size to match its container's size
   chart.resize(container.clientWidth, container.clientHeight);
 
