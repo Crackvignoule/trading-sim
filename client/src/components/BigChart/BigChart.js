@@ -19,9 +19,10 @@ function BigChart() {
         style: "1",
         locale: "en",
         enable_publishing: false,
-        allow_symbol_change: true,
+        allow_symbol_change: false,
         calendar: false,
         hide_side_toolbar: false,
+        watchlist: ["BTC", "ETH", "SOL"],
         overrides: {
           "mainSeriesProperties.areaStyle.linecolor": "rgba(32, 226, 47, 1)",
           "mainSeriesProperties.areaStyle.color1": "rgba(32, 226, 47, 0.56)",
