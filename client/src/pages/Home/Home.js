@@ -1,5 +1,5 @@
 import React from 'react';
-import { Chart } from '../../components';
+import { BigChart } from '../../components';
 import { MainDiv, TopDiv, BottomDiv, HomeDiv} from './Home.styles';
 
 function Home() {
@@ -8,7 +8,7 @@ function Home() {
         <HomeDiv>
           <MainDiv>
               <TopDiv>
-                <Chart />
+                <BigChart />
               </TopDiv>
               <BottomDiv>
               </BottomDiv>
