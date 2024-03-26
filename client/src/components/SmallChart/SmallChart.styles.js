@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import MuiButton from "@mui/material/Button";
+import { ChartContainer } from "../ChartContainer/ChartContainer";
 import { COLORS } from "../../styles/GlobalStyles";
 
 export const Header = styled.div`
@@ -13,17 +14,12 @@ export const Header = styled.div`
   top: 0;
 `;
 
-export const ChartContainer = styled.div`
-  display: flex column;
+export const SmallChartContainer = styled(ChartContainer)`
+  display: block;
   width: 40%;
-  justify-content: center;
-  align-items: center;
   border-radius: 10px 10px 0 0;
-  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
-  margin: 20px;
-
-  background-color: ${COLORS.glassBkg};
-  border: ${COLORS.glassBorder};
+  margin: 5vh 0 0 10vw;
+  padding: 0;
 `;
 
 export const Button = styled(MuiButton)`
