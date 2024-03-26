@@ -1,13 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import { Header, PieChartContainer } from "./DistributionInfo.styles";
-
+import PieChart from "./PieChart/PieChart";
 
 function DistributionInfo() {
   return (
     <PieChartContainer>
       <Header>
-        <h3>Asset Distribution</h3>
+        Asset Distribution
       </Header>
+      <PieChart />
     </PieChartContainer>
   );
 }

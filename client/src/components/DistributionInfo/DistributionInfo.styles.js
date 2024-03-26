@@ -3,7 +3,8 @@ import { COLORS } from "../../styles/GlobalStyles";
 
 export const Header = styled.div`
   align-items: center;
-  padding: 0 0 0 1vw;
+  padding: 1vh 0 1vh 1vw;
+  margin: 0 0 2vh 0;
   border-radius: 10px 10px 0 0;
   background-color: ${COLORS.glassBkg};
   border: ${COLORS.glassBorder};
@@ -21,5 +22,4 @@ export const PieChartContainer = styled.div`
 
   background-color: ${COLORS.glassBkg};
   border: ${COLORS.glassBorder};
-
 `;
