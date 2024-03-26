@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { ChartContainer } from "../ChartContainer/ChartContainer";
+import { ChartContainer } from "./BigChart.styles";
 
 function BigChart() {
   const chartContainerRef = useRef();

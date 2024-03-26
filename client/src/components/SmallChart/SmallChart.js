@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import createAreaChart from "./AreaChart/AreaChart";
+import AreaChart from "./AreaChart/AreaChart";
 import { Header, SmallChartContainer, Button, Div } from "./SmallChart.styles";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
@@ -77,7 +77,7 @@ function SmallChart() {
           { time: Date.parse('2018-10-23 22:00')/1000, value: 35.77 },
           { time: Date.parse('2018-10-23 23:00')/1000, value: 35.82 },
         ];
-        chartRef.current = createAreaChart(chartContainerRef.current, data);
+        chartRef.current = AreaChart(chartContainerRef.current, data);
     }
 }, []);
   // useEffect(() => {
@@ -87,7 +87,7 @@ function SmallChart() {
   //   fetch("http://localhost:5000/api/chartBTCUSDT")
   //     .then((response) => response.json())
   //     .then((data) => {
-  //       const { chart, series } = createAreaChart(
+  //       const { chart, series } = AreaChart(
   //         chartContainerRef.current,
   //         data
   //       );
