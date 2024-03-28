@@ -26,46 +26,47 @@ async function getTokenAmountByUser(pseudo, tokenName) {
   }
 
 
-  async function setUserWallet(amountToken, tokenValue, tradedPair, userPseudo, action, mode) {
-    try {
+  async function setUserWallet(amountBuyToken, amountSellToken, priceBuyToken, tradedPair, userPseudo, action, mode) {
+    let connection; // Déclare une variable pour stocker la connexion spécifique
 
+    try {
+      connection = await db.getConnection(); // Obtient une connexion spécifique du pool
+      await connection.beginTransaction(); // Commence une transaction
+  
       const token1 = tradedPair.split("/")[0];
       const token2 = tradedPair.split("/")[1];
-      let buyToken ='';
-      let sellToken = '';
-      if(action == "buy"){
-        buyToken = token1;
-        sellToken = token2;
-      }else if (action == "sell"){
-        buyToken = token2;
-        sellToken = token1;
+      let buyTokenName = action === "buy" ? token1 : token2;
+      let sellTokenName = action === "buy" ? token2 : token1;
+      if (mode == "market") {
+        await connection.query(
+          "UPDATE Wallets SET amount = amount + ? WHERE idUser IN (SELECT idUser FROM Users WHERE pseudo = ?) AND tokenName = ?;",
+          [amountBuyToken, userPseudo, buyTokenName]
+        );
+  
+        await connection.query(
+          "UPDATE Wallets SET amount = amount - ? WHERE idUser IN (SELECT idUser FROM Users WHERE pseudo = ?) AND tokenName = ?;",
+          [amountSellToken, userPseudo, sellTokenName]
+        );
+  
+        await connection.commit(); // Commit la transaction
+        return { success: true, message: "Mise à jour réussie." };
+      } else {
+        // Gestion des autres modes...
+        return { success: false, message: "Mode non pris en charge." };
       }
-
-      if(mode == "market"){
-        const query = `
-        UPDATE Wallets W SET amount = amount + ?
-        WHERE idUser IN (SELECT idUser FROM Users WHERE pseudo = ?) 
-        AND tokenName = ?;
-
-        UPDATE Wallets W SET amount = amount - ?
-        WHERE idUser IN (SELECT idUser FROM Users WHERE pseudo = ?) 
-        AND tokenName = ?;
-        `;
-        const [results, fields]  = await db.query(query, [amountToken,userPseudo,buyToken,tokenValue,userPseudo,sellToken]);
-
-        if (results && results.affectedRows > 0) {
-          return { success: true, message: "Mise à jour réussie." };
-        } else {
-          return { success: false, message: "Aucune mise à jour effectuée." };
-        }
-
-      }
-
     } catch (error) {
-      console.error("Erreur lors de la récupération des données :", error);
-      return { success: false, message: "Erreur lors de la récupération des données." };
+      if (connection) {
+        await connection.rollback(); // Rollback en cas d'erreur
+      }
+      console.error("Erreur lors de la transaction :", error);
+      return { success: false, message: "Erreur lors de la mise à jour des données." };
+    } finally {
+      if (connection) {
+        await connection.release(); // Important : libère la connexion
+      }
     }
   }
+  
   
 
 module.exports = { getTokenAmountByUser, setUserWallet };

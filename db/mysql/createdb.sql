@@ -55,3 +55,5 @@ CREATE TABLE Transactions (
 );
 
 INSERT INTO Pairs (namePair) VALUES ('BTC/USDT');
+INSERT INTO Pairs (namePair) VALUES ('ETH/USDT');
+INSERT INTO Pairs (namePair) VALUES ('SOL/USDT');

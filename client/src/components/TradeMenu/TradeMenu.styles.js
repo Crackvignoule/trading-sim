@@ -142,6 +142,7 @@ color: ${COLORS.text};
 
 &#label-max{
     color: ${COLORS.special};
+    cursor: Pointer;
 }
 
 &#label-available{
@@ -149,7 +150,7 @@ color: ${COLORS.text};
 }
 `;
 
-export const InputText = styled(({ readOnly, ...props }) => <TextField {...props} InputProps={{ readOnly }} />)`
+export const InputText = styled(({ readOnly, disabledMode, inputProps, ...props }) => <TextField {...props} InputProps={{ ...inputProps, readOnly, endAdornment: inputProps?.endAdornment }} />)`
 
 & .MuiOutlinedInput-root {
     fieldset {

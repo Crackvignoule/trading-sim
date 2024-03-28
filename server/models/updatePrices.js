@@ -1,6 +1,6 @@
 const db = require("../database");
 
-const updatePricesBDTUSDT = (ticker) => {
+const updateTokenPrices = (ticker,pairName) => {
   return new Promise((resolve, reject) => {
     let datePriceTimeStamp = ticker.E !== undefined ? ticker.E : null;
     let currentPrice = ticker.c !== undefined ? parseFloat(ticker.c) : null;
@@ -34,7 +34,7 @@ const updatePricesBDTUSDT = (ticker) => {
         highestPrice,
         volume,
         formattedDatePrice,
-        "BTC/USDT",
+        pairName,
         formattedDatePrice,
       ],
       (error, results) => {
@@ -48,4 +48,4 @@ const updatePricesBDTUSDT = (ticker) => {
   });
 };
 
-module.exports = { updatePricesBDTUSDT };
+module.exports = { updateTokenPrices };

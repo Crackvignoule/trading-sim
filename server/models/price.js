@@ -1,7 +1,7 @@
 const db = require("../database");
 
 
-async function getTokenAmountByUser(tradedPair) {
+async function getLastPriceByPair(tradedPair) {
     try {
       // Construisez votre requête SQL pour joindre les tables Users et Wallets
       const query = `
@@ -27,4 +27,4 @@ async function getTokenAmountByUser(tradedPair) {
     }
   }
 
-module.exports = { getTokenAmountByUser };
+module.exports = { getLastPriceByPair };

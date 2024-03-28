@@ -4,6 +4,7 @@ const router = express.Router();
 const { getDataBTCUSDT } = require('../controllers/charts');
 const { loginUser, registerUser } = require('../models/login');
 const { getTokenAmountByUser, setUserWallet } = require('../models/userWallets');
+const { getLastPriceByPair } = require('../models/price');
 
 
 function generateToken(user) {
@@ -79,17 +80,16 @@ router.get('/chartBTCUSDT', async (req, res) => {
 
 
 router.post('/buy', async (req, res) => {
-
-  console.log("rentre /buy");
-  const { amountToken, totalValue, tradedPair, userPseudo, action , mode} = req.body;
+  const { amountBuyToken, amountSellToken, priceBuyToken, tradedPair, userPseudo, action , mode} = req.body;
   
   let result = {};
   if (mode == "market"){
     const data = await getLastPriceByPair(tradedPair);
-    result = await setUserWallet(amountToken, data.currentPrice, tradedPair, userPseudo, action, mode);
+    newpriceBuyToken = data.data.currentPrice;
+    result = await setUserWallet(amountBuyToken, amountSellToken, newpriceBuyToken, tradedPair, userPseudo, action, mode);
   }
   else{
-    result = await setUserWallet(amountToken, totalValue, tradedPair, userPseudo, action, mode);
+    result = await setUserWallet(amountBuyToken, amountSellToken, priceBuyToken, tradedPair, userPseudo, action, mode);
   }
   
   if (result.success) {
