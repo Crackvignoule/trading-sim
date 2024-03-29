@@ -51,7 +51,10 @@ CREATE TABLE Transactions (
   dateTrans DATETIME,
   type VARCHAR(6),
   direction VARCHAR(4),
+  statut VARCHAR(15),
   FOREIGN KEY (idUser) REFERENCES Users(idUser) ON DELETE CASCADE
 );
 
 INSERT INTO Pairs (namePair) VALUES ('BTC/USDT');
+INSERT INTO Pairs (namePair) VALUES ('ETH/USDT');
+INSERT INTO Pairs (namePair) VALUES ('SOL/USDT');

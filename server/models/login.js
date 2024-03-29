@@ -34,27 +34,37 @@ async function loginUser(pseudo, password) {
 }
 
   
-  async function registerUser(pseudo, password) {
-    try {
-      const hashedPassword = await bcrypt.hash(password, 10); // Hache le mot de passe
-      const query = 'INSERT INTO Users (pseudo, passwordUser, dateCrea) VALUES (?, ?, NOW())';
-      const [result] = await db.query(query, [pseudo, hashedPassword]);
+async function registerUser(pseudo, password) {
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10); // Hache le mot de passe
+    // Insérer dans la table Users
+    const userInsertQuery = 'INSERT INTO Users (pseudo, passwordUser, dateCrea) VALUES (?, ?, NOW())';
+    const [userResult] = await db.query(userInsertQuery, [pseudo, hashedPassword]);
   
-      if (result.affectedRows > 0) {
-        return { success: true, message: "Inscription réussie." };
-      } else {
-        return { success: false, message: "Échec de l'inscription." };
-      }
-    } catch (error) {
-      if (error.code === 'ER_DUP_ENTRY') {
-        // Gestion d'un pseudo déjà utilisé
-        return { success: false, message: "Pseudo déjà utilisé." };
-      } else {
-        console.error("Erreur lors de l'inscription :", error);
-        return { success: false, message: "Erreur lors de l'inscription." };
-      }
+    if (userResult.affectedRows > 0) {
+      // Insérer dans la table Wallets
+      const walletInsertQuery = `
+      INSERT INTO Wallets (idUser, tokenName, amount) 
+      VALUES (?, "USDT", 10000),
+      (?,"BTC",0),
+      (?,"ETH",0),
+      (?,"SOL",0)`;
+      const [walletResult] = await db.query(walletInsertQuery, [userResult.insertId,userResult.insertId,userResult.insertId,userResult.insertId]); // Utilise userResult.insertId pour obtenir l'ID de l'utilisateur inséré
+      
+      return { success: true, message: "Inscription réussie avec solde initial." };
+    } else {
+      return { success: false, message: "Échec de l'inscription." };
+    }
+  } catch (error) {
+    if (error.code === 'ER_DUP_ENTRY') {
+      // Gestion d'un pseudo déjà utilisé
+      return { success: false, message: "Pseudo déjà utilisé." };
+    } else {
+      console.error("Erreur lors de l'inscription :", error);
+      return { success: false, message: "Erreur lors de l'inscription." };
     }
   }
+}
   
   module.exports = { loginUser, registerUser };
   

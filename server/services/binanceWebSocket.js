@@ -1,9 +1,8 @@
 const WebSocket = require('ws');
-const { postDataBTCUSDT } = require('../controllers/updatePrices');
-
+const { postDataBTCUSDT, postDataETHUSDT, postDataSOLUSDT } = require('../controllers/updatePrices');
 
 const initializeBinanceWebSocket = () => {
-  const binanceWsUrl = 'wss://stream.binance.com/ws/btcusdt@ticker';
+  const binanceWsUrl = 'wss://stream.binance.com/stream?streams=btcusdt@ticker/ethusdt@ticker/solusdt@ticker';
   const ws = new WebSocket(binanceWsUrl);
 
   ws.on('open', function open() {
@@ -11,12 +10,30 @@ const initializeBinanceWebSocket = () => {
   });
 
   ws.on('message', function incoming(data) {
-    const ticker = JSON.parse(data);
-    // postDataBTCUSDT(ticker).then(() => {
-    // }).catch(err => {
-    //   console.error('Erreur lors de la mise à jour:', err);
-    // });
+    const response = JSON.parse(data);
+    const { stream, data: ticker } = response; // Extraction du stream et des données du ticker
 
+    // Dispatch en fonction du stream
+    switch (stream) {
+      case 'btcusdt@ticker':
+        postDataBTCUSDT(ticker).catch(err => {
+          console.error('Erreur lors de la mise à jour BTC:', err);
+        });
+        break;
+      case 'ethusdt@ticker':
+        
+        postDataETHUSDT(ticker).catch(err => {
+          console.error('Erreur lors de la mise à jour ETH:', err);
+        });
+        break;
+      case 'solusdt@ticker':
+        postDataSOLUSDT(ticker).catch(err => {
+          console.error('Erreur lors de la mise à jour SOL:', err);
+        });
+        break;
+      default:
+        console.log('Stream non reconnu:', stream);
+    }
   });
 
   ws.on('close', function close() {

@@ -1,20 +1,26 @@
-import React from 'react';
-import { BigChart } from '../../components';
+
+import React, {useState } from 'react';
+import { BigChart, TradeMenu } from '../../components';
 import { MainDiv, TopDiv, BottomDiv, HomeDiv} from './Home.styles';
+import { TradedPairProvider } from '../../context/Context';
 
 function Home() {
 
     return (
-        <HomeDiv>
-          <MainDiv>
-              <TopDiv>
-                <BigChart />
-              </TopDiv>
-              <BottomDiv>
-              </BottomDiv>
+      // Seul les composants à l'intérieur de TradedPairProvider on accès au context de TradedPairProvider
+      <TradedPairProvider>
+          <HomeDiv>
+            <MainDiv>
+                <TopDiv>
+                  <Chart/>
+                  <TradeMenu/>
+                </TopDiv>
+                <BottomDiv>
+                </BottomDiv>
 
-          </MainDiv>
-        </HomeDiv>
+            </MainDiv>
+          </HomeDiv>
+        </TradedPairProvider>
       );
 }
 

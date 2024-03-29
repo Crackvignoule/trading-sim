@@ -6,7 +6,7 @@ import { NavBar, ProtectedRoute } from './components';
 
 function App() {
 
-  const isAuthenticated = localStorage.getItem('token'); // Vérifiez si le token existe
+  const isAuthenticated = localStorage.getItem('token'); // Vérifie si le token existe
 
   return (
     <>

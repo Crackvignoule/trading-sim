@@ -18,6 +18,7 @@ export const TopDiv = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
 `;
 
 export const BottomDiv = styled.div`
