@@ -23,7 +23,6 @@ async function addNewTransaction(userPseudo, tradedPair, tokenPrice, amountToken
         statut,
         userPseudo,
       ]);
-      console.log("Résultats de la requête :", results);
       return { success: true, message: "Transaction ajoutée avec succès." };
     } catch (error) {
       console.error("Erreur lors de l'ajout de la transaction :", error);

@@ -1,8 +1,15 @@
 import React, { useEffect, useRef } from "react";
 import { ChartContainer } from "./BigChart.styles";
+import { useTradedPair } from '../../context/Context';
 
 function BigChart() {
   const chartContainerRef = useRef();
+
+  const { tradedPair, setTradedPair } = useTradedPair(); // Récupéré de TradedPairContext
+
+  const handlePairChange = (newPair) => {
+      setTradedPair(newPair); // Mettre à jour la paire actuelle
+  };
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -31,6 +38,7 @@ function BigChart() {
       });
     };
     chartContainerRef.current.appendChild(script);
+    setTradedPair("BTC/USDT"); //Pair par défault
   }, []);
 
   return (

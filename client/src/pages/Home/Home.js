@@ -12,7 +12,7 @@ function Home() {
           <HomeDiv>
             <MainDiv>
                 <TopDiv>
-                  <Chart/>
+                  <BigChart/>
                   <TradeMenu/>
                 </TopDiv>
                 <BottomDiv>
