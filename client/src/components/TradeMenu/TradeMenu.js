@@ -342,44 +342,11 @@ function TradeMenu() {
         return `${value}%`;
     }
 
-
-
-    const buy = async () => {
-        if(amountSellToken <= availableAmountValue){ //Si le solde est suffisant pour achat
-            try{
-                const userPseudo = localStorage.getItem('pseudo');
-                const response = await fetch('http://localhost:5000/api/buy', {
-                    method: 'POST',
-                    headers: {
-                    'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ 
-                        amountBuyToken: amountBuyToken, 
-                        amountSellToken: amountSellToken,
-                        priceBuyToken: tokenPrice,
-                        tradedPair: tradedPair,  
-                        userPseudo: userPseudo,
-                        action:activeAction,
-                        mode: activeMode
-                    }),
-                });
-                const data = await response.json();
-                if (response.status === 200) {
-                    console.log("Transaction Réussi");
-                } else{
-                    console.log("Échec de l'achat");
-                }
-            } catch (error) {
-                    console.error('Erreur lors de la connexion', error);
-            }
-        }
-    }
-
-    const sell = async () => {
+    const transaction = async () => {
         if(amountSellToken <= availableAmountValue){
             try{
                 const userPseudo = localStorage.getItem('pseudo');
-                const response = await fetch('http://localhost:5000/api/buy', {
+                const response = await fetch('http://localhost:5000/api/buyAndSell', {
                     method: 'POST',
                     headers: {
                     'Content-Type': 'application/json',
@@ -398,7 +365,7 @@ function TradeMenu() {
                 });
                 const data = await response.json();
                 if (response.status === 200) {
-                    console.log("Achat Réussi");
+                    console.log("Transaction Réussi");
                 } else{
                     console.log("Échec de l'achat");
                 }
@@ -483,8 +450,8 @@ function TradeMenu() {
                 </InputDiv2>
             </MidDiv>
             <ButtonDiv>
-                <Button id="btn-buy" active={activeAction === "buy"} onClick={ ()=> buy()}>Buy</Button>
-                <Button id="btn-sell" active={activeAction === "sell"} onClick={ ()=> sell()}>Sell</Button>
+                <Button id="btn-buy" active={activeAction === "buy"} onClick={ ()=> transaction()}>Buy</Button>
+                <Button id="btn-sell" active={activeAction === "sell"} onClick={ ()=> transaction()}>Sell</Button>
             </ButtonDiv>
         </TradeMenuDiv>
     );

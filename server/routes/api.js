@@ -79,7 +79,7 @@ router.get('/chartBTCUSDT', async (req, res) => {
 });
 
 
-router.post('/buy', async (req, res) => {
+router.post('/buyAndSell', async (req, res) => {
   const { amountBuyToken, amountSellToken, priceBuyToken, tradedPair, userPseudo, action , mode} = req.body;
   
   let result = {};
