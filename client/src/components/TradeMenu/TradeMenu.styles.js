@@ -127,7 +127,7 @@ export const SubTitleLabel = styled.label`
 font-size: 1.1em;
 color: ${COLORS.text};
 
-&#label-limite {
+&#label-limit {
     color: ${props => props.active ? COLORS.special : COLORS.text};
 }
 

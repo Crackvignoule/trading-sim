@@ -6,7 +6,7 @@ import { useTradedPair } from '../../context/Context';
 function TradeMenu() {
 
     const [activeAction, setActiveAction] = useState("buy");
-    const [activeMode, setActiveMode] = useState("limite");
+    const [activeMode, setActiveMode] = useState("limit");
     const [gaugeBarValue, setGaugeBarValue] = useState(0);
     const [availableAmountValue, setAvailableAmountValue] = useState(0);
     const [tradedToken, setTradedToken] = useState("USDT");
@@ -36,7 +36,7 @@ function TradeMenu() {
                 if (data.result){
                     const userSolde = data.value;
                     setAvailableAmountValue(userSolde);
-                    if(userSolde >= amountSellToken || amountSellToken == ''){
+                    if(userSolde >= amountSellToken || amountSellToken===''){
                         const newBalancePreviewValue = userSolde - amountSellToken;
                         setBalancePreviewValue(formatNumber(8,newBalancePreviewValue));
                     }else{
@@ -50,7 +50,7 @@ function TradeMenu() {
                 if (data.result){
                     const userSolde = data.value;
                     setAvailableAmountValue(userSolde);
-                    if(userSolde >= amountSellToken || amountSellToken == ''){
+                    if(userSolde >= amountSellToken || amountSellToken===''){
                         const newBalancePreviewValue = userSolde - amountSellToken;
                         setBalancePreviewValue(formatNumber(8,newBalancePreviewValue));
                     }else{
@@ -133,18 +133,18 @@ function TradeMenu() {
         return formatted;
       }
 
-    //Changement du prix du token (pour le mode limite)
+    //Changement du prix du token (pour le mode limit)
     const handleInputPriceChange = (event) => {
         const newTokenPrice = event.target.value;
         setTokenPrice(newTokenPrice); // changement du prix affiché
         //Si action d'achat
-        if(activeAction == "buy"){
+        if(activeAction==="buy"){
             const newAmountSellToken = newTokenPrice * amountBuyToken; //Recalcule du montant en token
             setAmountSellToken(formatNumber(8,newAmountSellToken)); // changement du montant en token affiché
 
         }
         //Si action de vente
-        else if(activeAction == "sell"){
+        else if(activeAction==="sell"){
             const newAmountBuyToken = amountSellToken * newTokenPrice;
             setAmountBuyToken(formatNumber(8,newAmountBuyToken));
         }
@@ -155,7 +155,7 @@ function TradeMenu() {
         let newBuyTokenAmount = "";
         //Si action d'achat
         if(event.target.value != ""){
-            if(activeAction == "buy"){
+            if(activeAction==="buy"){
                 newBuyTokenAmount = event.target.value;
                 const newSellTokenAmount = newBuyTokenAmount * tokenPrice ;
                 
@@ -178,7 +178,7 @@ function TradeMenu() {
                 }
             }
             //Si action de vente
-            else if (activeAction == "sell"){
+            else if (activeAction==="sell"){
                 newBuyTokenAmount = event.target.value;
                 const newSellTokenAmount = newBuyTokenAmount / tokenPrice ;
                 if(newSellTokenAmount <= availableAmountValue){
@@ -210,7 +210,7 @@ function TradeMenu() {
 
         if (event.target.value != ""){
             let newSellTokenAmount = "";
-            if (activeAction == "buy"){
+            if (activeAction==="buy"){
                 newSellTokenAmount = event.target.value;
                 const newBuyTokenAmount = newSellTokenAmount / tokenPrice ;
                 if(newSellTokenAmount <= availableAmountValue){
@@ -230,7 +230,7 @@ function TradeMenu() {
                     setBalancePreviewValue(0);
                 }
             }
-            else if(activeAction == "sell"){
+            else if(activeAction==="sell"){
                 newSellTokenAmount = event.target.value;
                 let newBuyTokenAmount = newSellTokenAmount * tokenPrice ;
                 if(newSellTokenAmount <= availableAmountValue){
@@ -266,7 +266,7 @@ function TradeMenu() {
             setBalancePreviewValue(formatNumber(8,availableAmountValue));
         }
         else{
-            if (activeAction == "buy"){
+            if (activeAction==="buy"){
 
                 const newAmountBuyToken = ((availableAmountValue / tokenPrice) * newBarValue) / 100;
                 setAmountBuyToken(formatNumber(8,newAmountBuyToken));
@@ -281,7 +281,7 @@ function TradeMenu() {
     
                 
             }
-            else if (activeAction == "sell"){
+            else if (activeAction==="sell"){
                 const newAmountBuyToken = availableAmountValue * tokenPrice * newBarValue / 100;
                 setAmountBuyToken(formatNumber(8,newAmountBuyToken));
     
@@ -299,14 +299,14 @@ function TradeMenu() {
     
     const handleInputMax = () => {
         setGaugeBarValue(100);
-        if (activeAction == "buy"){
+        if (activeAction==="buy"){
             const newAmountBuyToken = availableAmountValue / tokenPrice ;
             setAmountBuyToken(formatNumber(8,newAmountBuyToken));
 
             const newAmountSellToken = availableAmountValue;
             setAmountSellToken(formatNumber(8,newAmountSellToken));
         }
-        else if (activeAction == "sell"){
+        else if (activeAction==="sell"){
             const newAmountBuyToken = availableAmountValue * tokenPrice ;
             setAmountBuyToken(formatNumber(8,newAmountBuyToken));
 
@@ -398,7 +398,7 @@ function TradeMenu() {
             <MidDiv>
                 <HeaderMidDiv>
                     <Label id="label-available">Available {availableAmountValue} {tradedToken}</Label>
-                    <SubTitleLabel active={activeMode === "limite"} id="label-limite" onClick={ () => setActiveMode("limite")}>Limit</SubTitleLabel>
+                    <SubTitleLabel active={activeMode === "limit"} id="label-limit" onClick={ () => setActiveMode("limit")}>Limit</SubTitleLabel>
                     <SubTitleLabel active={activeMode === "market"} id="label-market" onClick={ () => setActiveMode("market")}>Market</SubTitleLabel>
                 </HeaderMidDiv>
                 <InputDiv1>

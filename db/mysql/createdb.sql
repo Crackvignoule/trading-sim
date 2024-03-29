@@ -51,6 +51,7 @@ CREATE TABLE Transactions (
   dateTrans DATETIME,
   type VARCHAR(6),
   direction VARCHAR(4),
+  statut VARCHAR(15),
   FOREIGN KEY (idUser) REFERENCES Users(idUser) ON DELETE CASCADE
 );
 
