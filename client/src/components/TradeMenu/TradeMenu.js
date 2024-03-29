@@ -137,14 +137,14 @@ function TradeMenu() {
     const handleInputPriceChange = (event) => {
         const newTokenPrice = event.target.value;
         setTokenPrice(newTokenPrice); // changement du prix affiché
-        //Si action d'achat & limite
-        if(activeAction == "buy" && activeMode == "limite"){
+        //Si action d'achat
+        if(activeAction == "buy"){
             const newAmountSellToken = newTokenPrice * amountBuyToken; //Recalcule du montant en token
             setAmountSellToken(formatNumber(8,newAmountSellToken)); // changement du montant en token affiché
 
         }
-        //Si action de vente & limite
-        else if(activeAction == "sell" && activeMode == "limite"){
+        //Si action de vente
+        else if(activeAction == "sell"){
             const newAmountBuyToken = amountSellToken * newTokenPrice;
             setAmountBuyToken(formatNumber(8,newAmountBuyToken));
         }
@@ -153,9 +153,9 @@ function TradeMenu() {
 
     const handleInputBuyTokenAmountChange = (event) => {
         let newBuyTokenAmount = "";
-        //Si action d'achat & limite
+        //Si action d'achat
         if(event.target.value != ""){
-            if(activeAction == "buy" && activeMode == "limite"){
+            if(activeAction == "buy"){
                 newBuyTokenAmount = event.target.value;
                 const newSellTokenAmount = newBuyTokenAmount * tokenPrice ;
                 
@@ -177,8 +177,8 @@ function TradeMenu() {
                     setBalancePreviewValue(0); //Changement de l'estimation à 0 car 100% des fonds utiliser
                 }
             }
-            //Si action de vente & limite
-            else if (activeAction == "sell" && activeMode == "limite"){
+            //Si action de vente
+            else if (activeAction == "sell"){
                 newBuyTokenAmount = event.target.value;
                 const newSellTokenAmount = newBuyTokenAmount / tokenPrice ;
                 if(newSellTokenAmount <= availableAmountValue){
@@ -210,7 +210,7 @@ function TradeMenu() {
 
         if (event.target.value != ""){
             let newSellTokenAmount = "";
-            if (activeAction == "buy" && activeMode == "limite"){
+            if (activeAction == "buy"){
                 newSellTokenAmount = event.target.value;
                 const newBuyTokenAmount = newSellTokenAmount / tokenPrice ;
                 if(newSellTokenAmount <= availableAmountValue){
@@ -230,7 +230,7 @@ function TradeMenu() {
                     setBalancePreviewValue(0);
                 }
             }
-            else if(activeAction == "sell" && activeMode == "limite"){
+            else if(activeAction == "sell"){
                 newSellTokenAmount = event.target.value;
                 let newBuyTokenAmount = newSellTokenAmount * tokenPrice ;
                 if(newSellTokenAmount <= availableAmountValue){
@@ -266,7 +266,7 @@ function TradeMenu() {
             setBalancePreviewValue(formatNumber(8,availableAmountValue));
         }
         else{
-            if (activeAction == "buy" && activeMode == "limite"){
+            if (activeAction == "buy"){
 
                 const newAmountBuyToken = ((availableAmountValue / tokenPrice) * newBarValue) / 100;
                 setAmountBuyToken(formatNumber(8,newAmountBuyToken));
@@ -281,7 +281,7 @@ function TradeMenu() {
     
                 
             }
-            else if (activeAction == "sell" && activeMode == "limite"){
+            else if (activeAction == "sell"){
                 const newAmountBuyToken = availableAmountValue * tokenPrice * newBarValue / 100;
                 setAmountBuyToken(formatNumber(8,newAmountBuyToken));
     
@@ -299,14 +299,14 @@ function TradeMenu() {
     
     const handleInputMax = () => {
         setGaugeBarValue(100);
-        if (activeAction == "buy" && activeMode == "limite"){
+        if (activeAction == "buy"){
             const newAmountBuyToken = availableAmountValue / tokenPrice ;
             setAmountBuyToken(formatNumber(8,newAmountBuyToken));
 
             const newAmountSellToken = availableAmountValue;
             setAmountSellToken(formatNumber(8,newAmountSellToken));
         }
-        else if (activeAction == "sell" && activeMode == "limite"){
+        else if (activeAction == "sell"){
             const newAmountBuyToken = availableAmountValue * tokenPrice ;
             setAmountBuyToken(formatNumber(8,newAmountBuyToken));
 
@@ -361,13 +361,11 @@ function TradeMenu() {
                         userPseudo: userPseudo,
                         action:activeAction,
                         mode: activeMode
-
                     }),
-    
                 });
                 const data = await response.json();
                 if (response.status === 200) {
-                    console.log("Achat Réussi");
+                    console.log("Transaction Réussi");
                 } else{
                     console.log("Échec de l'achat");
                 }
