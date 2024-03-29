@@ -15,10 +15,12 @@ export default function PieActiveArc() {
           data,
           highlightScope: { faded: "global", highlighted: "item" },
           faded: { innerRadius: 30, additionalRadius: -30, color: "gray" },
-          innerRadius: 70,
-          outerRadius: 110,
+          innerRadius: 120,
+          outerRadius: 160,
           cornerRadius: 10,
           paddingAngle: 1,
+          cx: 230,
+          cy: 160,
         },
       ]}
       slotProps={{
@@ -28,7 +30,7 @@ export default function PieActiveArc() {
           },
         },
       }}
-      height={200}
+      height={'100%'}
     />
   );
 }
