@@ -12,12 +12,19 @@ function TradeMenu() {
     const [tradedToken, setTradedToken] = useState("USDT");
     const [balancePreviewValue, setBalancePreviewValue] = useState(availableAmountValue);
     const [amountSellToken, setAmountSellToken] = useState('');
-    const [tokenPrice, setTokenPrice] = useState(65423.45); //faire la requête qui récu^ère le prix
+    const [tokenPrice, setTokenPrice] = useState(0); //faire la requête qui récupère le prix
     const [amountBuyToken, setAmountBuyToken] = useState('');
     const [isTotalFocused, setIsTotalFocused] = useState(false);
 
 
     const { tradedPair } = useTradedPair(); // Récupéré de TradedPairContext
+
+    useEffect(() => {
+        const getPriceData = async () => {
+            await getLastTokenPrice();
+        };
+        getPriceData();
+    }, []);
 
 
     useEffect(() => {
@@ -31,13 +38,12 @@ function TradeMenu() {
                     setAvailableAmountValue(userSolde);
                     if(userSolde >= amountSellToken || amountSellToken == ''){
                         const newBalancePreviewValue = userSolde - amountSellToken;
-                        setBalancePreviewValue(newBalancePreviewValue.toFixed(8));
+                        setBalancePreviewValue(formatNumber(8,newBalancePreviewValue));
                     }else{
                         setBalancePreviewValue(0);
                     }
                 }
             }else if (activeAction === "sell"){ // Si on passe en mode Sell
-                console.log("activeAction : ", activeAction);
                 const newTradedToken = tradedPair.split("/")[0];
                 setTradedToken(newTradedToken);
                 const data = await getUserSolde(newTradedToken);
@@ -46,31 +52,35 @@ function TradeMenu() {
                     setAvailableAmountValue(userSolde);
                     if(userSolde >= amountSellToken || amountSellToken == ''){
                         const newBalancePreviewValue = userSolde - amountSellToken;
-                        setBalancePreviewValue(newBalancePreviewValue.toFixed(8));
+                        setBalancePreviewValue(formatNumber(8,newBalancePreviewValue));
                     }else{
                         setBalancePreviewValue(0);
                     }
                 }
-                
             }
         };
-    
         fetchData();
     }, [activeAction,tradedPair]);
 
     useEffect(() => {
+        const majData = async () =>{
+            await resetData();
+            //fonction qui récupère la valeur du token
+            const data  = await getLastTokenPrice();
+            setTokenPrice(data.value);
+        }
+        
+        majData();
+    }, [activeAction]);
+
+    const resetData = async () =>{
         setAmountBuyToken(0);
         setAmountSellToken(0);
         setGaugeBarValue(0);
-        setBalancePreviewValue(availableAmountValue.toFixed(8));
-        //fonction qui récupère la valeur du token
-        setTokenPrice(65423.45);
-        
-    }, [activeAction]);
-
+        setBalancePreviewValue(formatNumber(8,availableAmountValue));
+    }
     const getUserSolde = async (tradedToken) => {
         const userPseudo = localStorage.getItem('pseudo');
-        console.log("tradedToken : ", tradedToken);
         try{
             const response = await fetch('http://localhost:5000/api/get-token-amount', {
                 method: 'POST',
@@ -93,7 +103,35 @@ function TradeMenu() {
         }
     }
 
+    const getLastTokenPrice = async () => {
+        try{
+            const response = await fetch('http://localhost:5000/api/get-last-price', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ tradedPair: tradedPair}),
+            });
+            const data = await response.json();
+            if (response.status === 200) {
+                return {result:true, value:data.amount};
+            } else{
+                console.log('Échec de la connexion');
+                return {result:false, value:''};
+            }
+        } catch (error) {
+                console.error('Erreur lors de la connexion', error);
+                return {result:false, value:''};
+        }
+    }
 
+    const formatNumber = (x,n) =>{
+        // Convertit le nombre avec jusqu'à 8 décimales
+        let formatted = parseFloat(n).toFixed(x);
+        // Supprime les zéros inutiles à la fin et le point décimal si nécessaire
+        formatted = formatted.replace(/(\.\d*?[1-9])0+$|\.0*$/, '$1');
+        return formatted;
+      }
 
     //Changement du prix du token (pour le mode limite)
     const handleInputPriceChange = (event) => {
@@ -102,13 +140,13 @@ function TradeMenu() {
         //Si action d'achat & limite
         if(activeAction == "buy" && activeMode == "limite"){
             const newAmountSellToken = newTokenPrice * amountBuyToken; //Recalcule du montant en token
-            setAmountSellToken(parseFloat(newAmountSellToken).toFixed(8)) // changement du montant en token affiché
+            setAmountSellToken(formatNumber(8,newAmountSellToken)); // changement du montant en token affiché
 
         }
         //Si action de vente & limite
         else if(activeAction == "sell" && activeMode == "limite"){
             const newAmountBuyToken = amountSellToken * newTokenPrice;
-            setAmountBuyToken(parseFloat(newAmountBuyToken).toFixed(8));
+            setAmountBuyToken(formatNumber(8,newAmountBuyToken));
         }
     };
     
@@ -116,93 +154,106 @@ function TradeMenu() {
     const handleInputBuyTokenAmountChange = (event) => {
         let newBuyTokenAmount = "";
         //Si action d'achat & limite
-        if(activeAction == "buy" && activeMode == "limite"){
-            newBuyTokenAmount = event.target.value;
-            const newSellTokenAmount = newBuyTokenAmount * tokenPrice ;
-            
-            //Si assez d'argent à dépenser
-            if(newSellTokenAmount <= availableAmountValue){
-                const newBalancePreviewValue = availableAmountValue - newSellTokenAmount;
-                setAmountBuyToken(parseFloat(newBuyTokenAmount).toFixed(8)); //Changement montant token à l'achat
-                setAmountSellToken(parseFloat(newSellTokenAmount).toFixed(8)); //Changement montant token à la vente
-                const gaugeBarValue = newSellTokenAmount * 100 / availableAmountValue; // Recalcule de la valeur de la gauge
-                setGaugeBarValue(parseFloat(gaugeBarValue).toFixed(2));
-                setBalancePreviewValue(newBalancePreviewValue.toFixed(8)); //Changement de l'estimation de la balance
+        if(event.target.value != ""){
+            if(activeAction == "buy" && activeMode == "limite"){
+                newBuyTokenAmount = event.target.value;
+                const newSellTokenAmount = newBuyTokenAmount * tokenPrice ;
+                
+                //Si assez d'argent à dépenser
+                if(newSellTokenAmount <= availableAmountValue){
+                    const newBalancePreviewValue = availableAmountValue - newSellTokenAmount;
+                    setAmountBuyToken(formatNumber(8,newBuyTokenAmount)); //Changement montant token à l'achat
+                    setAmountSellToken(formatNumber(8,newSellTokenAmount)); //Changement montant token à la vente
+                    const gaugeBarValue = newSellTokenAmount * 100 / availableAmountValue; // Recalcule de la valeur de la gauge
+                    setGaugeBarValue(formatNumber(2,gaugeBarValue));
+                    setBalancePreviewValue(formatNumber(8,newBalancePreviewValue)); //Changement de l'estimation de la balance
+                }
+                //Si pas assez de fond dispo on change la valeur de vente à l'argent disponnible de l'utilisateur
+                else{
+                    newBuyTokenAmount = availableAmountValue / tokenPrice;
+                    setAmountBuyToken(formatNumber(8,newBuyTokenAmount)); //Changement montant token à l'achat (avec valeur max possible en fonction des fonds dispo)
+                    setAmountSellToken(formatNumber(8,availableAmountValue)); //Changement montant token à la vente (Avec l'ensemble des fonds dispo)
+                    setGaugeBarValue(100); //Changement de la valeur de la gauge avec la valeur max
+                    setBalancePreviewValue(0); //Changement de l'estimation à 0 car 100% des fonds utiliser
+                }
             }
-            //Si pas assez de fond dispo on change la valeur de vente à l'argent disponnible de l'utilisateur
-            else{
-                newBuyTokenAmount = availableAmountValue / tokenPrice;
-                setAmountBuyToken(parseFloat(newBuyTokenAmount).toFixed(8)); //Changement montant token à l'achat (avec valeur max possible en fonction des fonds dispo)
-                setAmountSellToken(availableAmountValue.toFixed(8)); //Changement montant token à la vente (Avec l'ensemble des fonds dispo)
-                setGaugeBarValue(100); //Changement de la valeur de la gauge avec la valeur max
-                setBalancePreviewValue(0); //Changement de l'estimation à 0 car 100% des fonds utiliser
+            //Si action de vente & limite
+            else if (activeAction == "sell" && activeMode == "limite"){
+                newBuyTokenAmount = event.target.value;
+                const newSellTokenAmount = newBuyTokenAmount / tokenPrice ;
+                if(newSellTokenAmount <= availableAmountValue){
+                    const newBalancePreviewValue = availableAmountValue - newSellTokenAmount;
+                    setAmountBuyToken(formatNumber(8,newBuyTokenAmount));
+                    setAmountSellToken(formatNumber(8,newSellTokenAmount));
+                    const gaugeBarValue = newSellTokenAmount * 100 / availableAmountValue;
+                    setGaugeBarValue(formatNumber(2,gaugeBarValue));
+                    setBalancePreviewValue(formatNumber(8,newBalancePreviewValue));
+                }
+                //Si pas assez de fond dispo on change la valeur de vente à l'argent disponnible de l'utilisateur
+                else{
+                    newBuyTokenAmount = availableAmountValue * tokenPrice;
+                    setAmountBuyToken(formatNumber(8,newBuyTokenAmount));
+                    setAmountSellToken(formatNumber(8,availableAmountValue));
+                    setGaugeBarValue(100);
+                    setBalancePreviewValue(0);
+                }
+                
             }
         }
-        //Si action de vente & limite
-        else if (activeAction == "sell" && activeMode == "limite"){
-            newBuyTokenAmount = event.target.value;
-            const newSellTokenAmount = newBuyTokenAmount / tokenPrice ;
-            if(newSellTokenAmount <= availableAmountValue){
-                const newBalancePreviewValue = availableAmountValue - newSellTokenAmount;
-                setAmountBuyToken(parseFloat(newBuyTokenAmount).toFixed(8));
-                setAmountSellToken(parseFloat(newSellTokenAmount).toFixed(8));
-                const gaugeBarValue = newSellTokenAmount * 100 / availableAmountValue;
-                setGaugeBarValue(parseFloat(gaugeBarValue).toFixed(2));
-                setBalancePreviewValue(newBalancePreviewValue.toFixed(8));
-            }
-            //Si pas assez de fond dispo on change la valeur de vente à l'argent disponnible de l'utilisateur
-            else{
-                newBuyTokenAmount = availableAmountValue * tokenPrice;
-                setAmountBuyToken(parseFloat(newBuyTokenAmount).toFixed(8));
-                setAmountSellToken(availableAmountValue.toFixed(8));
-                setGaugeBarValue(100);
-                setBalancePreviewValue(0);
-            }
-            
+        else{
+            resetData();
         }
+        
     };
 
     const handleInputSellTokenAmountChange = (event) => {
-        let newSellTokenAmount = "";
-        if (activeAction == "buy" && activeMode == "limite"){
-            newSellTokenAmount = event.target.value;
-            const newBuyTokenAmount = newSellTokenAmount / tokenPrice ;
-            if(newSellTokenAmount <= availableAmountValue){
-                const newBalancePreviewValue = availableAmountValue - newSellTokenAmount;
-                setAmountBuyToken(parseFloat(newBuyTokenAmount).toFixed(8));
-                setAmountSellToken(parseFloat(newSellTokenAmount).toFixed(8));
-                const gaugeBarValue = newSellTokenAmount * 100 / availableAmountValue;
-                setGaugeBarValue(parseFloat(gaugeBarValue).toFixed(2));
-                setBalancePreviewValue(newBalancePreviewValue.toFixed(8));
+
+        if (event.target.value != ""){
+            let newSellTokenAmount = "";
+            if (activeAction == "buy" && activeMode == "limite"){
+                newSellTokenAmount = event.target.value;
+                const newBuyTokenAmount = newSellTokenAmount / tokenPrice ;
+                if(newSellTokenAmount <= availableAmountValue){
+                    const newBalancePreviewValue = availableAmountValue - newSellTokenAmount;
+                    setAmountBuyToken(formatNumber(8,newBuyTokenAmount));
+                    setAmountSellToken(formatNumber(8,newSellTokenAmount));
+                    const gaugeBarValue = newSellTokenAmount * 100 / availableAmountValue;
+                    setGaugeBarValue(formatNumber(2,gaugeBarValue));
+                    setBalancePreviewValue(formatNumber(8,newBalancePreviewValue));
+                }
+                //Si pas assez de fond dispo on change la valeur de vente à l'argent disponnible de l'utilisateur
+                else{
+                    newSellTokenAmount = availableAmountValue;
+                    setAmountBuyToken(formatNumber(8,newBuyTokenAmount));
+                    setAmountSellToken(formatNumber(8,newSellTokenAmount));
+                    setGaugeBarValue(100);
+                    setBalancePreviewValue(0);
+                }
             }
-            //Si pas assez de fond dispo on change la valeur de vente à l'argent disponnible de l'utilisateur
-            else{
-                newSellTokenAmount = availableAmountValue;
-                setAmountBuyToken(parseFloat(newBuyTokenAmount).toFixed(8));
-                setAmountSellToken(parseFloat(newSellTokenAmount).toFixed(8));
-                setGaugeBarValue(100);
-                setBalancePreviewValue(0);
+            else if(activeAction == "sell" && activeMode == "limite"){
+                newSellTokenAmount = event.target.value;
+                let newBuyTokenAmount = newSellTokenAmount * tokenPrice ;
+                if(newSellTokenAmount <= availableAmountValue){
+                    const newBalancePreviewValue = availableAmountValue - newSellTokenAmount;
+                    setAmountBuyToken(formatNumber(8,newBuyTokenAmount));
+                    setAmountSellToken(formatNumber(8,newSellTokenAmount));
+                    const gaugeBarValue = newSellTokenAmount * 100 / availableAmountValue;
+                    setGaugeBarValue(formatNumber(2,gaugeBarValue));
+                    setBalancePreviewValue(formatNumber(8,newBalancePreviewValue));
+                }else{
+                    newSellTokenAmount = availableAmountValue;
+                    newBuyTokenAmount = availableAmountValue * tokenPrice;
+                    setAmountBuyToken(formatNumber(8,newBuyTokenAmount));
+                    setAmountSellToken(formatNumber(8,newSellTokenAmount));
+                    setGaugeBarValue(100);
+                    setBalancePreviewValue(0);
+                }
             }
         }
-        else if(activeAction == "sell" && activeMode == "limite"){
-            newSellTokenAmount = event.target.value;
-            let newBuyTokenAmount = newSellTokenAmount * tokenPrice ;
-            if(newSellTokenAmount <= availableAmountValue){
-                const newBalancePreviewValue = availableAmountValue - newSellTokenAmount;
-                setAmountBuyToken(parseFloat(newBuyTokenAmount).toFixed(8));
-                setAmountSellToken(parseFloat(newSellTokenAmount).toFixed(8));
-                const gaugeBarValue = newSellTokenAmount * 100 / availableAmountValue;
-                setGaugeBarValue(parseFloat(gaugeBarValue).toFixed(2));
-                setBalancePreviewValue(newBalancePreviewValue.toFixed(8));
-            }else{
-                newSellTokenAmount = availableAmountValue;
-                newBuyTokenAmount = availableAmountValue * tokenPrice;
-                setAmountBuyToken(parseFloat(newBuyTokenAmount).toFixed(8));
-                setAmountSellToken(parseFloat(newSellTokenAmount).toFixed(8));
-                setGaugeBarValue(100);
-                setBalancePreviewValue(0);
-            }
+        else{
+            resetData();
         }
+        
     };
 
     const handleChangeBar = (event, newBarValue) => {
@@ -212,35 +263,35 @@ function TradeMenu() {
             setAmountBuyToken(0);
             setAmountSellToken(0);
             setGaugeBarValue(0);
-            setBalancePreviewValue(availableAmountValue.toFixed(8));
+            setBalancePreviewValue(formatNumber(8,availableAmountValue));
         }
         else{
             if (activeAction == "buy" && activeMode == "limite"){
 
                 const newAmountBuyToken = ((availableAmountValue / tokenPrice) * newBarValue) / 100;
-                setAmountBuyToken(parseFloat(newAmountBuyToken).toFixed(8));
+                setAmountBuyToken(formatNumber(8,newAmountBuyToken));
     
                 const newAmountSellToken = availableAmountValue * newBarValue / 100;
-                setAmountSellToken(parseFloat(newAmountSellToken).toFixed(8));
+                setAmountSellToken(formatNumber(8,newAmountSellToken));
     
-                setGaugeBarValue(newBarValue.toFixed(2));
+                setGaugeBarValue(formatNumber(2,newBarValue));
     
                 const newBalancePreviewValue = availableAmountValue - amountSellToken;
-                setBalancePreviewValue(newBalancePreviewValue.toFixed(8));
+                setBalancePreviewValue(formatNumber(8,newBalancePreviewValue));
     
                 
             }
             else if (activeAction == "sell" && activeMode == "limite"){
                 const newAmountBuyToken = availableAmountValue * tokenPrice * newBarValue / 100;
-                setAmountBuyToken(parseFloat(newAmountBuyToken).toFixed(8));
+                setAmountBuyToken(formatNumber(8,newAmountBuyToken));
     
                 const newAmountSellToken = availableAmountValue * newBarValue / 100;
-                setAmountSellToken(parseFloat(newAmountSellToken).toFixed(8));
+                setAmountSellToken(formatNumber(8,newAmountSellToken));
     
-                setGaugeBarValue(newBarValue.toFixed(2));
+                setGaugeBarValue(formatNumber(2,newBarValue));
     
                 const newBalancePreviewValue = availableAmountValue - amountSellToken;
-                setBalancePreviewValue(newBalancePreviewValue.toFixed(8));
+                setBalancePreviewValue(formatNumber(8,newBalancePreviewValue));
             }
         }
         
@@ -250,17 +301,17 @@ function TradeMenu() {
         setGaugeBarValue(100);
         if (activeAction == "buy" && activeMode == "limite"){
             const newAmountBuyToken = availableAmountValue / tokenPrice ;
-            setAmountBuyToken(parseFloat(newAmountBuyToken).toFixed(8));
+            setAmountBuyToken(formatNumber(8,newAmountBuyToken));
 
             const newAmountSellToken = availableAmountValue;
-            setAmountSellToken(parseFloat(newAmountSellToken).toFixed(8));
+            setAmountSellToken(formatNumber(8,newAmountSellToken));
         }
         else if (activeAction == "sell" && activeMode == "limite"){
             const newAmountBuyToken = availableAmountValue * tokenPrice ;
-            setAmountBuyToken(parseFloat(newAmountBuyToken).toFixed(8));
+            setAmountBuyToken(formatNumber(8,newAmountBuyToken));
 
             const newAmountSellToken = availableAmountValue;
-            setAmountSellToken(parseFloat(newAmountSellToken).toFixed(8));
+            setAmountSellToken(formatNumber(8,newAmountSellToken));
         }
 
     }
@@ -403,7 +454,7 @@ function TradeMenu() {
                 </InputDiv1>
                 <GaugeBarDiv>
                     <GaugeBarLabelDiv>
-                        <Label>{parseFloat(gaugeBarValue).toFixed(2)} %</Label> <Label onClick={ () => handleInputMax()} id="label-max">Max</Label>
+                        <Label>{formatNumber(2,gaugeBarValue)} %</Label> <Label onClick={ () => handleInputMax()} id="label-max">Max</Label>
                     </GaugeBarLabelDiv>
                     <SliderDiv>
                         <SliderBar

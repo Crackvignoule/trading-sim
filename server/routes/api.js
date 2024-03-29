@@ -100,6 +100,15 @@ router.post('/buy', async (req, res) => {
 });
 
 
+router.post('/get-last-price', async (req, res) => {
+  const { tradedPair } = req.body;
+  const result = await getLastPriceByPair(tradedPair);
   
+  if (result.success) {
+    res.status(200).json({ amount: result.data.currentPrice });
+  } else {
+    res.status(404).json({ message: result.message });
+  }
+});
 
   module.exports = router;

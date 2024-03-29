@@ -37,6 +37,8 @@ function Chart() {
       });
     };
     chartContainerRef.current.appendChild(script);
+
+    setTradedPair("BTC/USDT"); //Pair par défault
   }, []);
 
   return (
