@@ -1,6 +1,6 @@
 
 import React, {useState } from 'react';
-import { BigChart, TradeMenu } from '../../components';
+import { BigChart, TradeMenu, UserOrders } from '../../components';
 import { MainDiv, TopDiv, BottomDiv, HomeDiv} from './Home.styles';
 import { TradedPairProvider } from '../../context/Context';
 
@@ -16,8 +16,8 @@ function Home() {
                   <TradeMenu/>
                 </TopDiv>
                 <BottomDiv>
+                  <UserOrders/>
                 </BottomDiv>
-
             </MainDiv>
           </HomeDiv>
         </TradedPairProvider>
