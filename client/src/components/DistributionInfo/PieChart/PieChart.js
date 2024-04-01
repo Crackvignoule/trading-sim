@@ -19,8 +19,6 @@ export default function PieActiveArc() {
           outerRadius: 160,
           cornerRadius: 10,
           paddingAngle: 1,
-          cx: 230,
-          cy: 160,
         },
       ]}
       slotProps={{
@@ -30,7 +28,7 @@ export default function PieActiveArc() {
           },
         },
       }}
-      height={'100%'}
+      height={310}
     />
   );
 }

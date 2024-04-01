@@ -16,7 +16,6 @@ export const Header = styled.div`
 export const PieChartContainer = styled.div`
   justify-content: center;
   width: 40%;
-  padding-bottom: 2vh;
   align-items: center;
   border-radius: 10px;
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
