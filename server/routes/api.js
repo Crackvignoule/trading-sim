@@ -142,7 +142,6 @@ router.post('/get-user-open-orders', async (req, res) => {
 router.post('/get-user-orders-history', async (req, res) => {
   const { pseudo } = req.body;
   const results = await getUserOrderHistory(pseudo);
-  console.log(results);
   if (results.success) {
     res.status(200).json({ data: results.data, message: results.message });
   } else {
