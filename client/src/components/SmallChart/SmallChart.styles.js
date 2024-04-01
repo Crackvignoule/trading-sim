@@ -11,13 +11,15 @@ export const Header = styled.div`
   border: ${COLORS.glassBorder};
   position: sticky;
   top: 0;
+  
 `;
 
 export const SmallChartContainer = styled.div`
   width: 40%;
+  overflow: hidden;
   justify-content: center;
   align-items: center;
-  border-radius: 10px 10px 0 0;
+  border-radius: 10px;
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
   margin: 5vh 0 0 10vw;
 
@@ -36,4 +38,5 @@ export const Button = styled(MuiButton)`
 
 export const Div = styled.div`
   height: 40vh;
+  min-height: 338px;
 `;
