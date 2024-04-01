@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { TradeMenuDiv, Header, TitleLabel, ButtonDiv, Button, MidDiv, SubTitleLabel, Label, HeaderMidDiv, InputText, InputDiv1, InputDiv2, GaugeBarDiv, InputBox, SliderBar, GaugeBarLabelDiv, SliderDiv, AnimatedDiv } from "./TradeMenu.styles";
 import InputAdornment from '@mui/material/InputAdornment';
-import { useTradedPair } from '../../context/Context';
+import { useTradedPair, useOrders, useOrdersHistory } from '../../context/Context';
 
 function TradeMenu() {
 
@@ -15,8 +15,8 @@ function TradeMenu() {
     const [tokenPrice, setTokenPrice] = useState(0); //faire la requête qui récupère le prix
     const [amountBuyToken, setAmountBuyToken] = useState('');
     const [isTotalFocused, setIsTotalFocused] = useState(false);
-
-
+    const { orders, setOrders } = useOrders();
+    const { ordersHistory, setOrdersHistory } = useOrdersHistory();
     const { tradedPair } = useTradedPair(); // Récupéré de TradedPairContext
 
     useEffect(() => {
@@ -363,8 +363,35 @@ function TradeMenu() {
                     }),
     
                 });
-                const data = await response.json();
+                const result = await response.json();
                 if (response.status === 200) {
+                    
+                    if(result.data.statut === "Open"){
+                        const newOpenOrder = {
+                            dateTrans: result.data.date, 
+                            pair: result.data.pair, 
+                            type: result.data.type, 
+                            direction: result.data.direction, 
+                            price: result.data.price, 
+                            amount: result.data.amount, 
+                            total: result.data.total,
+                            idTrans: result.data.idTrans};
+                            
+                        addOrder(newOpenOrder);
+                    }else if (result.data.statut === "Executed"){
+
+                        const newOrderHistory = {
+                            dateTrans: result.data.date, 
+                            pair: result.data.pair, 
+                            type: result.data.type, 
+                            direction: result.data.direction, 
+                            price: result.data.price, 
+                            amount: result.data.amount, 
+                            total: result.data.total,
+                            statut: result.data.statut};
+                            
+                        addOrderHistory(newOrderHistory);
+                    }
                     console.log("Transaction Réussi");
                 } else{
                     console.log("Échec de l'achat");
@@ -387,6 +414,15 @@ function TradeMenu() {
             return amountBuyToken;
         }
     }
+
+    const addOrder = (newOrder) => {
+        setOrders([newOrder, ...orders]);
+      };
+
+    const addOrderHistory = (newOrder) => {
+    setOrdersHistory([newOrder, ...ordersHistory]);
+    };
+
     return (
         <TradeMenuDiv>
             <Header>

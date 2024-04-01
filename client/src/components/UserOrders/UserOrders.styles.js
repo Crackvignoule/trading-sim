@@ -45,6 +45,7 @@ export const OrderContainer = styled.div`
     width: 100%;
 `;
 export const HeaderDiv = styled.div`
+  position: relative;
   width: 100%;
   height: 3em;
   background-color: ${COLORS.glassHeaderBkg};
@@ -69,6 +70,17 @@ export const HeaderDiv = styled.div`
   
 
 `;
+
+export const AnimatedDiv = styled.div`
+position: absolute;
+top : 2.9em;
+left: ${props => props.active ? 'calc(100% - 95.3em - 2em)' : '1.4em'};
+width : 5em;
+height : 0.01em;
+Background: ${COLORS.special};
+transition: left 0.5s ease-in-out;
+`;
+
 export const MyTable = styled(Table)`
 `;
 export const MyTableBody = styled(TableBody)`
@@ -104,7 +116,7 @@ export const MyTablePagination = styled(TablePagination)`
 
 `;
 export const MyTableRow = styled(TableRow)`
-height:1em;
+height: 4em;
 `;
 
 export const Label = styled.label`

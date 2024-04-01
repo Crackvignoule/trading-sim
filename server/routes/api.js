@@ -5,7 +5,7 @@ const { getDataBTCUSDT } = require('../controllers/charts');
 const { loginUser, registerUser } = require('../models/login');
 const { getTokenAmountByUser, setUserWallet } = require('../models/userWallets');
 const { getLastPriceByPair } = require('../models/price');
-const { addNewTransaction } = require('../models/transaction');
+const { addNewTransaction, getUserOpenOrder, getUserOrderHistory, deleteTransation, deleteAllUserTransation } = require('../models/transaction');
 
 
 function generateToken(user) {
@@ -101,13 +101,13 @@ router.post('/buyAndSell', async (req, res) => {
       let total = action === "buy" ? amountSellToken : amountBuyToken;
 
       const transactionResult = await addNewTransaction(userPseudo, tradedPair, newpriceBuyToken, amountToken, total, mode, action, walletUpdateResult.success ? "Executed" : "Cancel");
-      
-      return res.status(transactionResult.success ? 200 : 404).json({ message: transactionResult.message });
+      console.log(transactionResult);
+      return res.status(transactionResult.success ? 200 : 404).json({ data:transactionResult.data, message: transactionResult.message });
     } else if (mode == "limit"){
       let amountToken = action === "buy" ? amountBuyToken : amountSellToken;
       let total = action === "buy" ? amountSellToken : amountBuyToken;
       const result = await addNewTransaction(userPseudo, tradedPair, priceBuyToken, amountToken, total, mode, action, "Open");
-      res.status(result.success ? 200 : 404).json({ message: result.message });
+      res.status(result.success ? 200 : 404).json({ data:result.data, message: result.message });
     }
   } catch (error) {
     console.error("Erreur lors de l'exécution de la route :", error);
@@ -128,5 +128,48 @@ router.post('/get-last-price', async (req, res) => {
   }
 });
 
+router.post('/get-user-open-orders', async (req, res) => {
+  const { pseudo } = req.body;
+  const results = await getUserOpenOrder(pseudo);
+  
+  if (results.success) {
+    res.status(200).json({ data: results.data, message: results.message });
+  } else {
+    res.status(404).json({ message: results.message });
+  }
+});
+
+router.post('/get-user-orders-history', async (req, res) => {
+  const { pseudo } = req.body;
+  const results = await getUserOrderHistory(pseudo);
+  console.log(results);
+  if (results.success) {
+    res.status(200).json({ data: results.data, message: results.message });
+  } else {
+    res.status(404).json({ message: results.message });
+  }
+});
+
+
+router.post('/del-transaction', async (req, res) => {
+  const { idTrans } = req.body;
+  const results = await deleteTransation(idTrans);
+  if (results.success) {
+    res.status(200).json({ data: results.data, message: results.message });
+  } else {
+    res.status(404).json({ message: results.message });
+  }
+});
+
+router.post('/del-all-user-transaction', async (req, res) => {
+  const { userPseudo } = req.body;
+  const results = await deleteAllUserTransation(userPseudo);
+
+  if (results.success) {
+    res.status(200).json({ message: results.message });
+  } else {
+    res.status(404).json({ message: results.message });
+  }
+});
 
   module.exports = router;

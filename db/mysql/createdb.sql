@@ -43,6 +43,7 @@ CREATE TABLE Wallets (
 );
   
 CREATE TABLE Transactions (
+  idTrans INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   idUser INT NOT NULL,
   pair VARCHAR(25),
   price FLOAT,
