@@ -109,7 +109,7 @@ function UserOrders() {
                 // Trouver l'ordre à déplacer
                 const orderToMove = orders.find(order => order.idTrans === idTrans);
                 if (orderToMove) {
-                    const updatedOrder = { ...orderToMove, statut: "Cancel" };
+                    const updatedOrder = { ...orderToMove, statut: "Cancelled" };
     
                     // Ajouter l'ordre dans "Orders History"
                     const updatedOrdersHistory = [...ordersHistory, updatedOrder];
@@ -145,8 +145,8 @@ function UserOrders() {
             const results = await response.json();
             if (response.status === 200) {
 
-                // Préparer les ordres actuels pour l'historique avec un statut "Cancel"
-                const newOrdersForHistory = orders.map(order => ({ ...order, statut: "Cancel" }));
+                // Préparer les ordres actuels pour l'historique avec un statut "Cancelled"
+                const newOrdersForHistory = orders.map(order => ({ ...order, statut: "Cancelled" }));
 
                 // Créer une nouvelle liste pour l'historique qui combine les ordres existants et les nouveaux
                 const updatedOrdersHistory = [...ordersHistory, ...newOrdersForHistory];

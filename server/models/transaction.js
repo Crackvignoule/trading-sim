@@ -64,7 +64,7 @@ async function getUserOrderHistory(userSpeudo) {
   const query = `
     SELECT dateTrans, pair, type, direction, price, amount, total, statut FROM Transactions T
     INNER JOIN Users U ON U.idUser = T.idUser
-    WHERE U.pseudo = ? AND T.statut = 'Executed' OR T.statut = 'Cancel'
+    WHERE U.pseudo = ? AND T.statut = 'Executed' OR T.statut = 'Cancelled'
     ORDER BY dateTrans DESC;
   `;
 
@@ -92,11 +92,11 @@ async function deleteTransation(idTrans) {
 
   try {
     const [results] = await db.query(query, [
-      "Cancel",
+      "Cancelled",
       idTrans
     ]);
 
-    const data = {idTrans: idTrans, statut : "Cancel"};
+    const data = {idTrans: idTrans, statut : "Cancelled"};
     return { success: true, data: data, message: "Ordre supprimé avec succès." };
   } catch (error) {
     console.error("Erreur lors de suppresion de l'ordre :", error);
@@ -117,7 +117,7 @@ async function deleteAllUserTransation(userSpeudo) {
 
   try {
     const [results] = await db.query(query, [
-      "Cancel",
+      "Cancelled",
       userSpeudo
     ]);
 
