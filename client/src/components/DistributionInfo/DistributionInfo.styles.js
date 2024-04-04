@@ -1,42 +1,26 @@
 import styled from "styled-components";
-import MuiButton from "@mui/material/Button";
 import { COLORS } from "../../styles/GlobalStyles";
 
 export const Header = styled.div`
-  display: flex;
-  justify-content: flex-end;
   align-items: center;
+  color: ${COLORS.text};
+  padding: 1vh 0 1vh 1vw;
+  margin: 0 0 2vh 0;
   border-radius: 10px 10px 0 0;
   background-color: ${COLORS.glassBkg};
   border: ${COLORS.glassBorder};
   position: sticky;
   top: 0;
-  
 `;
 
-export const SmallChartContainer = styled.div`
-  width: 40%;
-  overflow: hidden;
+export const PieChartContainer = styled.div`
   justify-content: center;
+  width: 40%;
   align-items: center;
   border-radius: 10px;
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
-  margin: 5vh 0 0 10vw;
+  margin: 5vh 10vw 0 1vw;
 
   background-color: ${COLORS.glassBkg};
   border: ${COLORS.glassBorder};
-`;
-
-export const Button = styled(MuiButton)`
-  &:hover {
-    background-color: ${COLORS.special};
-  }
-  &:focus {
-    color: ${COLORS.special};
-  }
-`;
-
-export const Div = styled.div`
-  height: 40vh;
-  min-height: 338px;
 `;

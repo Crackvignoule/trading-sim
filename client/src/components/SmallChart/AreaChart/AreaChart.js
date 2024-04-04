@@ -47,21 +47,26 @@ function generateOptions(theme) {
 
 function timeScalingButtons(chart) {
   const buttons = {
-    "oneHour": (date) => date.setHours(date.getHours() - 1),
-    "oneDay": (date) => date.setDate(date.getDate() - 1),
-    "oneWeek": (date) => date.setDate(date.getDate() - 7),
-    "oneMonth": (date) => date.setMonth(date.getMonth() - 1),
-    "oneYear": (date) => date.setFullYear(date.getFullYear() - 1),
-    "all": null,
+    oneHour: (date) => date.setHours(date.getHours() - 1),
+    oneDay: (date) => date.setDate(date.getDate() - 1),
+    oneWeek: (date) => date.setDate(date.getDate() - 7),
+    oneMonth: (date) => date.setMonth(date.getMonth() - 1),
+    oneYear: (date) => date.setFullYear(date.getFullYear() - 1),
+    all: null,
   };
 
   Object.entries(buttons).forEach(([id, setDate]) => {
     const button = document.getElementById(id);
-    button.addEventListener('click', () => {
+    button.addEventListener("click", () => {
       if (setDate) {
         const date = new Date();
         setDate(date);
-        chart.timeScale().setVisibleRange({ from: date.getTime() / 1000, to: Date.now() / 1000 });
+        chart
+          .timeScale()
+          .setVisibleRange({
+            from: date.getTime() / 1000,
+            to: Date.now() / 1000,
+          });
       } else {
         chart.timeScale().fitContent();
       }
@@ -69,7 +74,7 @@ function timeScalingButtons(chart) {
   });
 }
 
-function createAreaChart(container, data) {
+function AreaChart(container, data) {
   const chart = createChart(container, generateOptions(darkTheme.chart));
   const areaSeries = chart.addAreaSeries(generateOptions(darkTheme.series));
 
@@ -89,4 +94,4 @@ function createAreaChart(container, data) {
   return { chart, series: areaSeries };
 }
 
-export default createAreaChart;
+export default AreaChart;

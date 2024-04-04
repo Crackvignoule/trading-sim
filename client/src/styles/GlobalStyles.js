@@ -25,6 +25,10 @@ const GlobalStyles = createGlobalStyle`
   h1, h2, h3, h4, h5, h6 {
     color: ${COLORS.text};
   }
+  
+  path {
+    stroke: none !important;
+  }
 `;
 
 export default GlobalStyles;
