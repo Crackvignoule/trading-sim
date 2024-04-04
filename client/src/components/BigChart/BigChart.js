@@ -6,6 +6,7 @@ import { useTradedPair } from "../../context/Context";
 function BigChart() {
   const chartContainerRef = useRef();
   const { tradedPair, setTradedPair } = useTradedPair();
+  setTradedPair("BTC/USDT");
 
   useEffect(() => {
     const widgetOptions = {
@@ -18,9 +19,13 @@ function BigChart() {
       container: chartContainerRef.current,
       library_path: "/charting_library/",
       theme: "dark",
-      disabled_features: ["use_localstorage_for_settings"],
-      enabled_features: ["study_templates"],
+      disabled_features: ["use_localstorage_for_settings", "timeframes_toolbar"],
+      enabled_features: ["study_templates", "items_favoriting"],
       autosize: false,
+      favorites: {
+        intervals: ["1", "60", "1D", "1W", "1M"],
+        chartTypes: ["Area", "Candles"],
+      },
       overrides: {
         "mainSeriesProperties.areaStyle.linecolor": "rgba(32, 226, 47, 1)",
         "mainSeriesProperties.areaStyle.color1": "rgba(32, 226, 47, 0.56)",
@@ -39,7 +44,7 @@ function BigChart() {
           const currentSymbol = tvWidget.activeChart().symbolExt();
           const token1 = currentSymbol.description.split("/")[0];
           const token2 = currentSymbol.description.split("/")[1];
-          const pair = token1.trim() + "/" + token2.trim(); 
+          const pair = token1.trim() + "/" + token2.trim();
           setTradedPair(pair);
           // console.log("pair: ", pair);
           // console.log("tradedPair: ", tradedPair);
