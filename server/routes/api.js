@@ -5,7 +5,8 @@ const { getDataBTCUSDT } = require('../controllers/charts');
 const { loginUser, registerUser } = require('../models/login');
 const { getTokenAmountByUser, setUserWallet } = require('../models/userWallets');
 const { getLastPriceByPair } = require('../models/price');
-const { addNewTransaction, getUserOpenOrder, getUserOrderHistory, deleteTransation, deleteAllUserTransation } = require('../models/transaction');
+const { addNewTransaction, getUserOpenOrder, getUserOrderHistory, deleteTransation, deleteAllUserTransation, getAllOrdersBuy, getAllOrdersSell  } = require('../models/transaction');
+const { postOrders } = require('../controllers/updateOrders');
 
 
 function generateToken(user) {
@@ -101,7 +102,10 @@ router.post('/buyAndSell', async (req, res) => {
       let total = action === "buy" ? amountSellToken : amountBuyToken;
 
       const transactionResult = await addNewTransaction(userPseudo, tradedPair, newpriceBuyToken, amountToken, total, mode, action, walletUpdateResult.success ? "Executed" : "Cancel");
-      console.log(transactionResult);
+      
+      //Pour distribuer l'ordre à tout les users
+      postOrders({direction: transactionResult.data.direction ,tradedPair: transactionResult.data.pair, price: transactionResult.data.price, amount: transactionResult.data.amount, total: transactionResult.data.total});
+
       return res.status(transactionResult.success ? 200 : 404).json({ data:transactionResult.data, message: transactionResult.message });
     } else if (mode == "limit"){
       let amountToken = action === "buy" ? amountBuyToken : amountSellToken;
@@ -170,5 +174,26 @@ router.post('/del-all-user-transaction', async (req, res) => {
     res.status(404).json({ message: results.message });
   }
 });
+
+
+router.get('/get-all-buy-orders', async (req, res) => {
+  const results = await getAllOrdersBuy();
+  if (results.success) {
+    res.status(200).json({ data: results, message: results.message });
+  } else {
+    res.status(404).json({ message: results.message });
+  }
+});
+
+router.get('/get-all-sell-orders', async (req, res) => {
+  const results = await getAllOrdersSell();
+  
+  if (results.success) {
+    res.status(200).json({ data: results, message: results.message });
+  } else {
+    res.status(404).json({ message: results.message });
+  }
+});
+
 
   module.exports = router;

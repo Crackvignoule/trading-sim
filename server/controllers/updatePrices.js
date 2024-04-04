@@ -2,31 +2,30 @@ const { updateTokenPrices } = require('../models/updatePrices');
 const { wss, broadcastDataPair } = require('../services/serverWebSocket');
 
 const postDataBTCUSDT = async (ticker) => {
-    await updateTokenPrices(ticker,"BTC/USDT");
-
-    data = [{
+    data = {
         time : Math.floor(new Date(ticker.E).getTime() / 1000),
         value : parseFloat(ticker.c)
-    }]
-    broadcastDataPair("BTC/USDT",data,wss)
+    };
+    broadcastDataPair("BTC/USDT",data,wss);
+    await updateTokenPrices(ticker,"BTC/USDT");
 };
 const postDataETHUSDT = async (ticker) => {
-    await updateTokenPrices(ticker,"ETH/USDT");
 
-    data = [{
+    data = {
         time : Math.floor(new Date(ticker.E).getTime() / 1000),
         value : parseFloat(ticker.c)
-    }]
-    broadcastDataPair("ETH/USDT",data,wss)
+    };
+    broadcastDataPair("ETH/USDT",data,wss);
+    await updateTokenPrices(ticker,"ETH/USDT");
 };
 const postDataSOLUSDT = async (ticker) => {
-    await updateTokenPrices(ticker,"SOL/USDT");
 
-    data = [{
+    data = {
         time : Math.floor(new Date(ticker.E).getTime() / 1000),
         value : parseFloat(ticker.c)
-    }]
-    broadcastDataPair("SOL/USDT",data,wss)
+    };
+    broadcastDataPair("SOL/USDT",data,wss);
+    await updateTokenPrices(ticker,"SOL/USDT");
 };
 
 module.exports = { postDataBTCUSDT, postDataETHUSDT, postDataSOLUSDT };

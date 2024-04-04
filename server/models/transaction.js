@@ -128,4 +128,41 @@ async function deleteAllUserTransation(userSpeudo) {
   }
 }
 
-module.exports = { addNewTransaction, getUserOpenOrder, getUserOrderHistory, deleteTransation, deleteAllUserTransation };
+
+async function getAllOrdersBuy() {
+
+  const query = `
+    SELECT dateTrans, pair, direction, price, amount, total FROM Transactions T
+    WHERE T.statut = 'Executed' AND T.direction = 'buy'
+    ORDER BY dateTrans DESC LIMIT 8;
+  `;
+
+  try {
+    const [results] = await db.query(query);
+
+    return { success: true, data:results, message: "Ordres exécuté 'buy' récupéré avec succès." };
+  } catch (error) {
+    console.error("Erreur de la récupération des ordres :", error);
+    return { success: false, message: "Erreur lors de l'exécution de la requête." };
+  }
+}
+
+async function getAllOrdersSell() {
+
+  const query = `
+    SELECT dateTrans, pair, direction, price, amount, total FROM Transactions T
+    WHERE T.statut = 'Executed' AND T.direction = 'sell'
+    ORDER BY dateTrans DESC LIMIT 8;
+  `;
+
+  try {
+    const [results] = await db.query(query);
+
+    return { success: true, data:results, message: "Ordres exécuté 'sell' récupéré avec succès." };
+  } catch (error) {
+    console.error("Erreur de la récupération des ordres :", error);
+    return { success: false, message: "Erreur lors de l'exécution de la requête." };
+  }
+}
+
+module.exports = { addNewTransaction, getUserOpenOrder, getUserOrderHistory, deleteTransation, deleteAllUserTransation, getAllOrdersBuy, getAllOrdersSell };

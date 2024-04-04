@@ -1,10 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import { widget } from "../../charting_library";
 import { ChartContainer } from "./BigChart.styles";
+import { useTradedPair} from '../../context/Context';
 
 function BigChart() {
   const chartContainerRef = useRef();
-
+  const { tradedPair, setTradedPair } = useTradedPair();
   useEffect(() => {
     const widgetOptions = {
       symbol: "AAPL",
@@ -46,8 +47,14 @@ function BigChart() {
     return () => {
       tvWidget.remove();
     };
+    
+
   });
 
+  useEffect(() => {
+    setTradedPair("BTC/USDT");
+}, []);
+  
   return (
     <ChartContainer ref={chartContainerRef} className={"TVChartContainer"} />
   );

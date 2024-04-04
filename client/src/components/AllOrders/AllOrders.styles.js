@@ -2,6 +2,17 @@ import styled from "styled-components";
 import { COLORS } from "../../styles/GlobalStyles";
 
 
+const determineColor = (props) =>{
+    if(props.active === "neutral"){
+        return COLORS.text;
+    }
+    else if(props.active === "increasing"){
+        return COLORS.green;
+    }
+    else if(props.active === "decreasing"){
+        return COLORS.red;
+    }
+}
 export const AllOrdersDiv = styled.div`
 width: 23em;
 height : 33em;
@@ -40,6 +51,10 @@ justify-content: center;
 
 export const SellDiv = styled.div`
 width: 100%;
+height: 14em;
+
+padding-top: 1em;
+padding-bottom: 1em;
 
 display: flex;
 flex-direction: column;
@@ -52,8 +67,7 @@ height: 2em;
 border-top: ${COLORS.glassBorder};
 border-bottom: ${COLORS.glassBorder};
 
-margin-top: 0.5em;
-margin-bottom: 0.5em;
+
 
 display: flex;
 align-items: center;
@@ -61,6 +75,10 @@ align-items: center;
 `;
 export const BuyDiv = styled.div`
 width: 100%;
+height: 14em;
+
+padding-top: 1em;
+padding-bottom: 1em;
 
 display: flex;
 flex-direction: column;
@@ -82,6 +100,18 @@ align-items: center;
 & .buy{
     color: ${COLORS.green};
 }
+
+& .total{
+    text-align: end;
+}
+
+& .price{
+    text-align: start;
+}
+
+& .amount{
+    text-align: center;
+}
 `;
 
 export const TitleLabel = styled.label`
@@ -89,11 +119,13 @@ color: ${COLORS.text};
 `;
 
 export const Label = styled.label`
+width: 7em;
 `;
 
 
 export const MidLabel = styled.label`
-
+font-size: 18px;
 margin-left: 1.5em;
+color: ${props => determineColor(props)};
 `;
 
