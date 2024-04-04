@@ -28,7 +28,7 @@ export default function PieActiveArc() {
           },
         },
       }}
-      height={310}
+      height={350}
     />
   );
 }
