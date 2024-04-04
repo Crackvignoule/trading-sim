@@ -1,4 +1,5 @@
 # Dev
+docker rm -f udf; docker image rm udf:latest; docker build . -t udf;  docker run --name udf -d -p 9090:80 udf
 First, install dependencies with `npm i;cd client;npm i;cd ../server;npm i`.
 Run both the server and the client with `npm run dev` from the root directory.
 

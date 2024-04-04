@@ -7,10 +7,10 @@ function BigChart() {
 
   useEffect(() => {
     const widgetOptions = {
-      symbol: "AAPL",
+      symbol: "BTCUSDT",
       // BEWARE: no trailing slash is expected in feed URL
       datafeed: new window.Datafeeds.UDFCompatibleDatafeed(
-        "https://demo_feed.tradingview.com"
+        "http://localhost:9090"
       ),
       interval: "D",
       container: chartContainerRef.current,
@@ -18,16 +18,12 @@ function BigChart() {
       theme: "dark",
       disabled_features: ["use_localstorage_for_settings"],
       enabled_features: ["study_templates"],
-      charts_storage_url: "https://saveload.tradingview.com",
-      charts_storage_api_version: "1.1",
-      client_id: "tradingview.com",
-      user_id: "public_user_id",
       autosize: false,
       overrides: {
-                  "mainSeriesProperties.areaStyle.linecolor": "rgba(32, 226, 47, 1)",
-                  "mainSeriesProperties.areaStyle.color1": "rgba(32, 226, 47, 0.56)",
-                  "mainSeriesProperties.areaStyle.color2": "rgba(32, 226, 47, 0.04)",
-                },
+        "mainSeriesProperties.areaStyle.linecolor": "rgba(32, 226, 47, 1)",
+        "mainSeriesProperties.areaStyle.color1": "rgba(32, 226, 47, 0.56)",
+        "mainSeriesProperties.areaStyle.color2": "rgba(32, 226, 47, 0.04)",
+      },
     };
 
     const tvWidget = new widget(widgetOptions);
@@ -38,8 +34,11 @@ function BigChart() {
         .activeChart()
         .onSymbolChanged()
         .subscribe(null, () => {
-          const currentSymbol = tvWidget.activeChart().symbol();
-          console.log("The symbol is changed to:", currentSymbol);
+          const currentSymbol = tvWidget.activeChart().symbolExt();
+          const token1 = currentSymbol.description.split("/")[0];
+          const token2 = currentSymbol.description.split("/")[1];
+          const pair = token1.trim() + "/" + token2.trim(); 
+          console.log("Pair is:", pair);
         });
     });
 

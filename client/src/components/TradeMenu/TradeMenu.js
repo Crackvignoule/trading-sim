@@ -154,7 +154,7 @@ function TradeMenu() {
     const handleInputBuyTokenAmountChange = (event) => {
         let newBuyTokenAmount = "";
         //Si action d'achat
-        if(event.target.value != ""){
+        if(event.target.value !== ""){
             if(activeAction==="buy"){
                 newBuyTokenAmount = event.target.value;
                 const newSellTokenAmount = newBuyTokenAmount * tokenPrice ;
@@ -208,7 +208,7 @@ function TradeMenu() {
 
     const handleInputSellTokenAmountChange = (event) => {
 
-        if (event.target.value != ""){
+        if (event.target.value !== ""){
             let newSellTokenAmount = "";
             if (activeAction==="buy"){
                 newSellTokenAmount = event.target.value;
@@ -405,12 +405,12 @@ function TradeMenu() {
     const isZeroAndBuyAction = () =>{
         if(activeAction === "buy" && amountSellToken === 0){
             return '';
-        }else if(activeAction === "buy" && amountSellToken != 0){
+        }else if(activeAction === "buy" && amountSellToken !== 0){
             return amountSellToken
         }else if(activeAction === "sell" && amountBuyToken === 0){
             return '';
         }
-        else if(activeAction === "sell" && amountBuyToken != 0){
+        else if(activeAction === "sell" && amountBuyToken !== 0){
             return amountBuyToken;
         }
     }
