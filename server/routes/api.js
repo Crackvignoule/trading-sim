@@ -5,7 +5,7 @@ const { getDataBTCUSDT } = require('../controllers/charts');
 const { loginUser, registerUser } = require('../models/login');
 const { getTokenAmountByUser, setUserWallet } = require('../models/userWallets');
 const { getLastPriceByPair } = require('../models/price');
-const { addNewTransaction, getUserOpenOrder, getUserOrderHistory, deleteTransation, deleteAllUserTransation, getAllOrdersBuy, getAllOrdersSell  } = require('../models/transaction');
+const { addNewTransaction, getUserOpenedOrder, getUserOrderHistory, deleteTransation, deleteAllUserTransation, getAllOrdersBuy, getAllOrdersSell  } = require('../models/transaction');
 const { postOrders } = require('../controllers/updateOrders');
 
 
@@ -110,7 +110,7 @@ router.post('/buyAndSell', async (req, res) => {
     } else if (mode == "limit"){
       let amountToken = action === "buy" ? amountBuyToken : amountSellToken;
       let total = action === "buy" ? amountSellToken : amountBuyToken;
-      const result = await addNewTransaction(userPseudo, tradedPair, priceBuyToken, amountToken, total, mode, action, "Open");
+      const result = await addNewTransaction(userPseudo, tradedPair, priceBuyToken, amountToken, total, mode, action, "Opened");
       res.status(result.success ? 200 : 404).json({ data:result.data, message: result.message });
     }
   } catch (error) {
@@ -132,9 +132,9 @@ router.post('/get-last-price', async (req, res) => {
   }
 });
 
-router.post('/get-user-open-orders', async (req, res) => {
+router.post('/get-user-opened-orders', async (req, res) => {
   const { pseudo } = req.body;
-  const results = await getUserOpenOrder(pseudo);
+  const results = await getUserOpenedOrder(pseudo);
   
   if (results.success) {
     res.status(200).json({ data: results.data, message: results.message });
@@ -176,8 +176,10 @@ router.post('/del-all-user-transaction', async (req, res) => {
 });
 
 
-router.get('/get-all-buy-orders', async (req, res) => {
-  const results = await getAllOrdersBuy();
+router.post('/get-all-buy-orders', async (req, res) => {
+  const { tradedPair } = req.body;
+  console.log("tradedPair api : ",tradedPair);
+  const results = await getAllOrdersBuy(tradedPair);
   if (results.success) {
     res.status(200).json({ data: results, message: results.message });
   } else {
@@ -185,8 +187,10 @@ router.get('/get-all-buy-orders', async (req, res) => {
   }
 });
 
-router.get('/get-all-sell-orders', async (req, res) => {
-  const results = await getAllOrdersSell();
+router.post('/get-all-sell-orders', async (req, res) => {
+  const { tradedPair } = req.body;
+
+  const results = await getAllOrdersSell(tradedPair);
   
   if (results.success) {
     res.status(200).json({ data: results, message: results.message });

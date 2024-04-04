@@ -44,20 +44,20 @@ function AllOrders() {
 
         // Écouter les messages entrants
         ws.onmessage = (event) => {
-            const message = JSON.parse(event.data);
-            if (tradedPair === message.pair) {
-                const newTokenPrice = parseFloat(message.data.value);
-        
-                // Utilisation de la mise à jour conditionnelle
-                setTokenPrice((prevTokenPrice) => {
-                    if (newTokenPrice < prevTokenPrice) {
-                        setActiveTokenAction("decreasing");
-                    } else if (newTokenPrice > prevTokenPrice) {
-                        setActiveTokenAction("increasing");
-                    }
-                    return newTokenPrice; // Mettre à jour le prix du token après la comparaison
-                });
-            }
+            const data = JSON.parse(event.data);
+                if (tradedPair === data.pair) {
+                    const newTokenPrice = parseFloat(data.data.value);
+            
+                    // Utilisation de la mise à jour conditionnelle
+                    setTokenPrice((prevTokenPrice) => {
+                        if (newTokenPrice < prevTokenPrice) {
+                            setActiveTokenAction("decreasing");
+                        } else if (newTokenPrice > prevTokenPrice) {
+                            setActiveTokenAction("increasing");
+                        }
+                        return newTokenPrice; // Mettre à jour le prix du token après la comparaison
+                    });
+                }
         };
 
 
@@ -69,72 +69,91 @@ function AllOrders() {
 
         // Écouter les messages entrants
         ws2.onmessage = (event) => {
-            const order = JSON.parse(event.data);
-            if(tradedPair === order.tradedPair){
-                if(order.direction === "buy"){
-                    addBuyOrdersRows(order);
-                }else if(order.direction === "sell"){
-                    addSellOrdersRows(order);
+            const data = JSON.parse(event.data);
+            if(!Array.isArray(data)){
+                console.log("data 1 : ",data);
+                if(tradedPair === data.tradedPair){
+                    if(data.direction === "buy"){
+                        addBuyOrdersRows(data);
+                    }else if(data.direction === "sell"){
+                        addSellOrdersRows(data);
+                    }
                 }
+            }else{
+                data.forEach(order => {
+                    if (tradedPair === order.pair) {
+                        if(order.direction === "buy"){
+                            addBuyOrdersRows(order);
+                        }else if(order.direction === "sell"){
+                            addSellOrdersRows(order);
+                        }
+                    }
+                        });
+                    }
+                };
+
+            // Nettoyer en fermant la connexion WebSocket quand le composant se démonte
+            return () => {
+                ws.close();
+                ws2.close();
+            };
+        }, []);
+        
+
+
+
+    const getAllSellOrders = async () => {
+        try{
+            const response = await fetch('http://localhost:5000/api/get-all-sell-orders', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    tradedPair: tradedPair
+                }),
+            });
+            const results = await response.json();
+            if (response.status === 200) {
+                const oldSellOrders = results.data.data.reverse();
+                setSellOrdersRows(oldSellOrders);
+            } else{
+                console.log("Échec récupération des ordres");
             }
-            console.log(buyOrdersRows);
-        };
-        // Nettoyer en fermant la connexion WebSocket quand le composant se démonte
-        return () => {
-            ws.close();
-            ws2.close();
-        };
+        } catch (error) {
+                console.error('Erreur lors de la requête /get-all-sell-orders', error);
+        }
+    };
 
-    }, []);
+    const getAllBuyOrders = async () => {
+        try{
+            const response = await fetch('http://localhost:5000/api/get-all-buy-orders', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    tradedPair: tradedPair
+                }),
 
-
-
+            });
+            const results = await response.json();
+            if (response.status === 200) {
+                
+                const oldBuyOrders = results.data.data.reverse();
+                setBuyOrdersRows(oldBuyOrders);
+            } else{
+                console.log("Échec récupération des ordres");
+            }
+        } catch (error) {
+                console.error('Erreur lors de la requête /get-all-buy-orders', error);
+        }
+    };
     useEffect(() => {
-        const getAllBuyOrders = async () => {
-            try{
-                const response = await fetch('http://localhost:5000/api/get-all-buy-orders', {
-                    method: 'GET',
-                    headers: {
-                    'Content-Type': 'application/json',
-                    }
-                });
-                const results = await response.json();
-                if (response.status === 200) {
-                    const oldBuyOrders = results.data.data.reverse();
-                    setBuyOrdersRows(oldBuyOrders);
-                } else{
-                    console.log("Échec récupération des ordres");
-                }
-            } catch (error) {
-                    console.error('Erreur lors de la requête /get-all-buy-orders', error);
-            }
-        };
         getAllBuyOrders();
-
-
-        const getAllSellOrders = async () => {
-            try{
-                const response = await fetch('http://localhost:5000/api/get-all-sell-orders', {
-                    method: 'GET',
-                    headers: {
-                    'Content-Type': 'application/json',
-                    }
-                });
-                const results = await response.json();
-                if (response.status === 200) {
-                    const oldSellOrders = results.data.data.reverse();
-                    setSellOrdersRows(oldSellOrders);
-                } else{
-                    console.log("Échec récupération des ordres");
-                }
-            } catch (error) {
-                    console.error('Erreur lors de la requête /get-all-sell-orders', error);
-            }
-        };
         getAllSellOrders();
 
-
-    }, []);
+    }, [tradedPair]);
 
 
     useEffect(() => {
@@ -144,6 +163,7 @@ function AllOrders() {
 
 return (
     <AllOrdersDiv>
+        <button onClick={()=>setTradedPair("SOL/USDT")}></button>
         <OrderHeader>
             <TitleLabel>Price</TitleLabel>
             <TitleLabel>Amount</TitleLabel>

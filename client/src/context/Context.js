@@ -5,7 +5,7 @@ const HomeContext = createContext();
 
 // Création d'un fournisseur de contexte
 export const HomeProvider = ({ children }) => {
-  const [tradedPair, setTradedPair] = useState('BTC/USDT');
+  const [tradedPair, setTradedPair] = useState('SOL/USDT');
   const [orders, setOrders] = useState([]);
   const [ordersHistory, setOrdersHistory] = useState([]);
 

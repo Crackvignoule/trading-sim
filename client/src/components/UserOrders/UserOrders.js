@@ -31,14 +31,14 @@ function UserOrders() {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const { orders, setOrders } = useOrders();
     const { ordersHistory, setOrdersHistory } = useOrdersHistory();
-    const [activeMenu, setActiveMenu] = useState('open-orders');
+    const [activeMenu, setActiveMenu] = useState('opened-orders');
 
 
     useEffect(() => {
-        const getUserOpenOrders = async () => {
+        const getUserOpenedOrders = async () => {
             try{
                 const userPseudo = localStorage.getItem('pseudo');
-                const response = await fetch('http://localhost:5000/api/get-user-open-orders', {
+                const response = await fetch('http://localhost:5000/api/get-user-opened-orders', {
                     method: 'POST',
                     headers: {
                     'Content-Type': 'application/json',
@@ -52,10 +52,10 @@ function UserOrders() {
                     console.log("Échec récupération des ordres de l'utilisateur");
                 }
             } catch (error) {
-                    console.error('Erreur lors de la requête /get-user-open-orders', error);
+                    console.error('Erreur lors de la requête /get-user-opened-orders', error);
             }
         };
-        getUserOpenOrders();
+        getUserOpenedOrders();
 
         const getUserOrdersHistory = async () => {
             try{
@@ -120,7 +120,7 @@ function UserOrders() {
                     // Mettre à jour l'état avec le tableau trié
                     setOrdersHistory(updatedOrdersHistory);
     
-                    // Supprimer l'ordre de "Open Orders"
+                    // Supprimer l'ordre de "Opened Orders"
                     const newOrders = orders.filter(order => order.idTrans !== idTrans);
                     setOrders(newOrders);
                 }
@@ -157,7 +157,7 @@ function UserOrders() {
                 // Mettre à jour l'état avec le tableau trié
                 setOrdersHistory(updatedOrdersHistory);
 
-                // Supprimer visuellement tous les ordres dans "Open Orders"
+                // Supprimer visuellement tous les ordres dans "Opened Orders"
                 setOrders([]);
 
             } else{
@@ -177,7 +177,7 @@ function UserOrders() {
     return (
         <UserOrdersDiv>
             <HeaderDiv>
-                <Label active={activeMenu === 'open-orders'} className='title' id='open-orders' onClick={() => setActiveMenu('open-orders')}>Open Orders</Label>
+                <Label active={activeMenu === 'opened-orders'} className='title' id='opened-orders' onClick={() => setActiveMenu('opened-orders')}>Opened Orders</Label>
                 <Label active={activeMenu === 'orders-history'} className='title' id='orders-history' onClick={() => setActiveMenu('orders-history')}>Orders History</Label>
                 <AnimatedDiv active={activeMenu === 'orders-history'}></AnimatedDiv>
             </HeaderDiv>
@@ -187,7 +187,7 @@ function UserOrders() {
                 <MyTable stickyHeader aria-label="sticky table">
                 <MyTableHead>
                     <MyTableRow>
-                    {activeMenu === 'open-orders' ? 
+                    {activeMenu === 'opened-orders' ? 
                     ordersColumns.map((column) => (
                         <MyTableCell
                         key={column.id}
@@ -213,7 +213,7 @@ function UserOrders() {
                     </MyTableRow>
                 </MyTableHead>
                 <MyTableBody>
-                    {activeMenu === 'open-orders' ? 
+                    {activeMenu === 'opened-orders' ? 
                     orders
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
@@ -266,7 +266,7 @@ function UserOrders() {
             <MyTablePagination
                 rowsPerPageOptions={[5, 10, 15]}
                 component="div"
-                count={activeMenu === 'open-orders' ? orders.length : ordersHistory.length}
+                count={activeMenu === 'opened-orders' ? orders.length : ordersHistory.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

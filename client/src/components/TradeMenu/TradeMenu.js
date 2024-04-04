@@ -366,8 +366,8 @@ function TradeMenu() {
                 const result = await response.json();
                 if (response.status === 200) {
                     
-                    if(result.data.statut === "Open"){
-                        const newOpenOrder = {
+                    if(result.data.statut === "Opened"){
+                        const newOpenedOrder = {
                             dateTrans: result.data.date, 
                             pair: result.data.pair, 
                             type: result.data.type, 
@@ -377,7 +377,7 @@ function TradeMenu() {
                             total: result.data.total,
                             idTrans: result.data.idTrans};
                             
-                        addOrder(newOpenOrder);
+                        addOrder(newOpenedOrder);
                     }else if (result.data.statut === "Executed"){
 
                         const newOrderHistory = {
@@ -450,7 +450,7 @@ function TradeMenu() {
                         value={activeAction === "buy" ? amountBuyToken : amountSellToken}
                         onChange={activeAction === "buy" ? handleInputBuyTokenAmountChange : handleInputSellTokenAmountChange}
                         inputProps={{
-                            endAdornment: <InputAdornment position="end"><Label>BTC</Label></InputAdornment>,
+                            endAdornment: <InputAdornment position="end"><Label>{tradedPair.split("/")[0]}</Label></InputAdornment>,
                           }}/></InputBox>
                 </InputDiv1>
                 <GaugeBarDiv>

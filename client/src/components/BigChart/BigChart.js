@@ -50,10 +50,6 @@ function BigChart() {
     
 
   });
-
-  useEffect(() => {
-    setTradedPair("BTC/USDT");
-}, []);
   
   return (
     <ChartContainer ref={chartContainerRef} className={"TVChartContainer"} />
