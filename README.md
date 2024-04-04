@@ -1,6 +1,10 @@
 # Dev
-docker rm -f udf; docker image rm udf:latest; docker build . -t udf;  docker run --name udf -d -p 9090:80 udf
-First, install dependencies with `npm i;cd client;npm i;cd ../server;npm i`.
+1. `git clone https://github.com/Crackvignoule/tradingview-udf-binance-node`
+2. `docker rm -f udf; docker image rm udf:latest; docker build . -t udf;  docker run --name udf -d -p 9090:80 udf`
+3. `git clone https://github.com/Crackvignoule/trading-sim`
+4. `npm i;cd client;npm i;cd ../server;npm i`
+5. `cd trading-sim/npm run dev`
+
 Run both the server and the client with `npm run dev` from the root directory.
 
 # Getting Started with Create React App
