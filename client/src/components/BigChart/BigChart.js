@@ -1,9 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import { widget } from "../../charting_library";
 import { ChartContainer } from "./BigChart.styles";
+import { useTradedPair } from "../../context/Context";
 
 function BigChart() {
   const chartContainerRef = useRef();
+  const { tradedPair, setTradedPair } = useTradedPair();
 
   useEffect(() => {
     const widgetOptions = {
@@ -38,7 +40,9 @@ function BigChart() {
           const token1 = currentSymbol.description.split("/")[0];
           const token2 = currentSymbol.description.split("/")[1];
           const pair = token1.trim() + "/" + token2.trim(); 
-          console.log("Pair is:", pair);
+          setTradedPair(pair);
+          // console.log("pair: ", pair);
+          // console.log("tradedPair: ", tradedPair);
         });
     });
 
