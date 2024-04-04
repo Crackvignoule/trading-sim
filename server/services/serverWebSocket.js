@@ -7,13 +7,19 @@ wss.on('connection', function connection(ws) {
 });
 
 // Fonction pour diffuser les données à tous les clients
-function broadcastDataBTCUSDT(data,wss) {
+function broadcastDataPair(pair, data, wss) {
   wss.clients.forEach(function each(client) {
     if (client.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify(data));
+      // Créer un nouvel objet contenant à la fois `data` et `pair`
+      const message = {
+        pair: pair,
+        data: data,
+      };
+      // Envoyer ce nouvel objet comme une chaîne JSON
+      client.send(JSON.stringify(message));
     }
   });
 }
 
-module.exports = { wss, broadcastDataBTCUSDT };
+module.exports = { wss, broadcastDataPair };
 

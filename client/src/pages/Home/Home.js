@@ -1,6 +1,6 @@
 
 import React, {useState } from 'react';
-import { BigChart, TradeMenu, UserOrders } from '../../components';
+import { BigChart, TradeMenu, UserOrders, AllOrders } from '../../components';
 import { MainDiv, TopDiv, BottomDiv, HomeDiv} from './Home.styles';
 import { HomeProvider } from '../../context/Context';
 
@@ -12,6 +12,7 @@ function Home() {
           <HomeDiv>
             <MainDiv>
                 <TopDiv>
+                  <AllOrders/>
                   <BigChart/>
                   <TradeMenu/>
                 </TopDiv>
