@@ -163,7 +163,6 @@ function AllOrders() {
 
 return (
     <AllOrdersDiv>
-        <button onClick={()=>setTradedPair("SOL/USDT")}></button>
         <OrderHeader>
             <TitleLabel>Price</TitleLabel>
             <TitleLabel>Amount</TitleLabel>

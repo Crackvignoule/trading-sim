@@ -74,7 +74,7 @@ export const HeaderDiv = styled.div`
 export const AnimatedDiv = styled.div`
 position: absolute;
 top : 2.9em;
-left: ${props => props.active ? 'calc(100% - 80.15em - 2em)' : '1.8em'};
+left: ${props => props.active ? 'calc(100% - 94.3em - 2em)' : '1.8em'};
 width : 5em;
 height : 0.01em;
 Background: ${COLORS.special};
