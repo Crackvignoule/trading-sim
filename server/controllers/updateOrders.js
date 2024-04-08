@@ -1,8 +1,8 @@
-const {wss2, broadcastOrders} = require('../services/serverWebSocket');
+const {broadcastOrders} = require('../services/serverWebSocket');
 
 const postOrders = async (order) => {
 
-    broadcastOrders(order,wss2);
+    broadcastOrders(order);
 };
 
 module.exports = { postOrders };

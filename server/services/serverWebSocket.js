@@ -21,22 +21,50 @@ function broadcastDataPair(pair, data, wss) {
   });
 }
 
-
+// Serveur WebSocket pour la diffusion à tous les clients
 const wss2 = new WebSocket.Server({ port: 8585 });
+const clients = {}; // Stocke les paires token: ws pour wss3
 
 wss2.on('connection', function connection(ws) {
-  console.log('Un client s\'est connecté');
+  console.log('Un client s\'est connecté à wss2 pour les diffusions');
+
+  // Vous pouvez ajouter ici des logiques spécifiques à wss2 si nécessaire
 });
 
-// Fonction pour diffuser les données à tous les clients
-function broadcastOrders(data, wss2) {
+// Fonction pour diffuser les données à tous les clients connectés à wss2
+function broadcastOrders(data) {
   wss2.clients.forEach(function each(client) {
     if (client.readyState === WebSocket.OPEN) {
-
-      // Envoyer ce nouvel objet comme une chaîne JSON
       client.send(JSON.stringify(data));
     }
   });
 }
-module.exports = { wss, broadcastDataPair,wss2, broadcastOrders };
+
+// Serveur WebSocket pour envoyer des données à un utilisateur spécifique
+const wss3 = new WebSocket.Server({ port: 8686 });
+
+wss3.on('connection', function connection(ws) {
+  console.log('Un client s\'est connecté à wss3 pour la communication individuelle');
+
+  ws.on('message', function incoming(message) {
+    try {
+      const data = JSON.parse(message);
+      // Si le message contient un token, associez ce WebSocket à ce token.
+      if (data.type === 'registration' && data.token) {
+        clients[data.token] = ws;
+        console.log(`Utilisateur ${data.token} enregistré sur wss3.`);
+      }
+    } catch (error) {
+      console.error('Erreur de traitement du message sur wss3', error);
+    }
+  });
+});
+
+// Fonction pour envoyer des données à un utilisateur spécifique connecté à wss3
+function sendToUser(userToken, data) {
+  if (clients[userToken] && clients[userToken].readyState === WebSocket.OPEN) {
+    clients[userToken].send(JSON.stringify(data));
+  }
+}
+module.exports = { wss, broadcastDataPair, broadcastOrders, sendToUser };
 

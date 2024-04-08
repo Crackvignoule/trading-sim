@@ -32,8 +32,6 @@ function AllOrders() {
         });
     };
     
-    
-    
 
     useEffect(() => {
         const ws = new WebSocket('ws://localhost:8080');
@@ -60,9 +58,7 @@ function AllOrders() {
                 }
         };
 
-
         const ws2 = new WebSocket('ws://localhost:8585');
-
         ws2.onopen = () => {
             console.log('Connexion WebSocket2 établie');
         };
@@ -70,26 +66,30 @@ function AllOrders() {
         // Écouter les messages entrants
         ws2.onmessage = (event) => {
             const data = JSON.parse(event.data);
-            if(!Array.isArray(data)){
-                console.log("data 1 : ",data);
-                if(tradedPair === data.tradedPair){
-                    if(data.direction === "buy"){
-                        addBuyOrdersRows(data);
-                    }else if(data.direction === "sell"){
-                        addSellOrdersRows(data);
-                    }
-                }
-            }else{
-                data.forEach(order => {
-                    if (tradedPair === order.pair) {
-                        if(order.direction === "buy"){
-                            addBuyOrdersRows(order);
-                        }else if(order.direction === "sell"){
-                            addSellOrdersRows(order);
+                //Si envoi à tout les utiliseurs + 1 seul ordre
+                if(!Array.isArray(data)){
+                    console.log("data 1 : ",data);
+                    if(tradedPair === data.tradedPair){
+                        if(data.direction === "buy"){
+                            addBuyOrdersRows(data);
+                        }else if(data.direction === "sell"){
+                            addSellOrdersRows(data);
                         }
                     }
-                        });
-                    }
+                }
+                // Si envoi à tout les utilisateurs + plusieurs ordre sous forme de tableau
+                else{
+                    data.forEach(order => {
+                        if (tradedPair === order.pair) {
+                            if(order.direction === "buy"){
+                                addBuyOrdersRows(order);
+                            }else if(order.direction === "sell"){
+                                addSellOrdersRows(order);
+                            }
+                        }
+                            });
+                        }
+            
                 };
 
             // Nettoyer en fermant la connexion WebSocket quand le composant se démonte
@@ -159,6 +159,7 @@ function AllOrders() {
     useEffect(() => {
         setSellOrdersRows([]);
         setBuyOrdersRows([]);
+        
     }, [tradedPair]);
 
 return (

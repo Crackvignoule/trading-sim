@@ -28,7 +28,7 @@ function NavBar() {
       const token = localStorage.getItem('token');
       const storedPseudo = localStorage.getItem('pseudo');
         
-      if(token) {
+      if(token !== "") {
           setPseudo(storedPseudo);
           setLogout("Logout");
       } else {

@@ -81,6 +81,53 @@ function UserOrders() {
 
     }, []);
 
+
+    useEffect(() => {
+        const ws3 = new WebSocket('ws://localhost:8686');
+        const userToken = localStorage.getItem('token');
+        ws3.onopen = () => {
+            console.log('Connexion WebSocket2 établie');
+            // Envoyer le token de l'utilisateur juste après l'établissement de la connexion
+            ws3.send(JSON.stringify({ type: 'registration', token: userToken }));
+        };
+
+        // Écouter les messages entrants
+        ws3.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            console.log(data);
+            console.log(!Array.isArray(data) && (data.userToken === userToken));
+            if(!Array.isArray(data) && (data.userToken === userToken)){
+                // Trouver l'ordre à déplacer
+                const orderToMove = orders.find(order => order.idTrans === data.idTrans);
+                console.log("orderToMove : ",orderToMove);
+                if (orderToMove) {
+                    const updatedOrder = { ...orderToMove, statut: "Cancelled" };
+
+                    // Ajouter l'ordre dans "Orders History"
+                    const updatedOrdersHistory = [...ordersHistory, updatedOrder];
+
+                    // Trier le nouveau tableau des ordres par date de manière décroissante
+                    updatedOrdersHistory.sort((a, b) => new Date(b.dateTrans) - new Date(a.dateTrans));
+
+                    // Mettre à jour l'état avec le tableau trié
+                    setOrdersHistory(updatedOrdersHistory);
+
+                    // Supprimer l'ordre de "Opened Orders"
+                    const newOrders = orders.filter(order => order.idTrans !== data.idTrans);
+
+                    setOrders(newOrders);
+                }
+
+            }
+            
+                };
+
+            // Nettoyer en fermant la connexion WebSocket quand le composant se démonte
+            return () => {
+                ws3.close();
+            };
+        }, []);
+
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };

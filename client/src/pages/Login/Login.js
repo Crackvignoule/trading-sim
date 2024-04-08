@@ -28,13 +28,11 @@ function Login() {
         body: JSON.stringify({ username, password }),
       });
   
-      const data = await response.json();
+      const result = await response.json();
       if (response.status === 200) {
-        // Stockez le token reçu pour les requêtes futures, par exemple dans localStorage
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('pseudo',username);
-
-        console.log('Connexion réussie');
+        localStorage.setItem('token', result.data.user.token);
+        localStorage.setItem('pseudo', result.data.user.pseudo);
+        console.log("localStorage.getItem('token') : ",localStorage.getItem('token'));
         navigate('/dashboard');
       } else if (response.status === 401){
         console.log('Identifiants incorrect');

@@ -61,8 +61,7 @@ router.get('/chartBTCUSDT', async (req, res) => {
     
     if (result.success) {
 
-      const token = generateToken(result.user);
-      res.status(200).json({ message: result.message, token: token });
+      res.status(200).json({ message: result.message, data: result });
     } else {
       res.status(401).json({ message: result.message });
     }

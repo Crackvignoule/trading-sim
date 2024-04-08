@@ -224,7 +224,8 @@ async function ExecuteOpenedOrderByPair(tradedPair, tokenPrice) {
   const upperBound = tokenPrice + (ecartType * facteur);
   
   const selectQuery = `
-    SELECT idTrans, idUser, dateTrans, pair, direction, price, amount, total FROM Transactions T
+    SELECT T.idTrans, T.idUser, U.userToken, T.dateTrans, T.pair, T.direction, T.price, T.amount, T.total FROM Transactions T
+    INNER JOIN Users U ON U.idUser = T.idUser
     WHERE T.statut = 'Opened'
     AND T.pair = ?
     AND T.price BETWEEN ? AND ?
