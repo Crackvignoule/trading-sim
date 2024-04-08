@@ -98,7 +98,7 @@ function AllOrders() {
                 ws.close();
                 ws2.close();
             };
-        }, []);
+        }, [tradedPair]);
         
 
 
@@ -151,16 +151,11 @@ function AllOrders() {
         }
     };
     useEffect(() => {
+        setSellOrdersRows([]);
+        setBuyOrdersRows([]);
         getAllBuyOrders();
         getAllSellOrders();
 
-    }, [tradedPair]);
-
-
-    useEffect(() => {
-        setSellOrdersRows([]);
-        setBuyOrdersRows([]);
-        
     }, [tradedPair]);
 
 return (

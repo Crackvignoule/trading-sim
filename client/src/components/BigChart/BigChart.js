@@ -45,6 +45,7 @@ function BigChart() {
           const token1 = currentSymbol.description.split("/")[0];
           const token2 = currentSymbol.description.split("/")[1];
           const pair = token1.trim() + "/" + token2.trim();
+          console.log(pair);
           dispatch({ type: 'SET_TRADED_PAIR', value: pair });
         });
     });
