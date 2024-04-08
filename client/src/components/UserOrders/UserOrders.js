@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {UserOrdersDiv, OrderContainer, MyTable, MyTableBody, MyTableCell, MyTableContainer, MyTableHead, MyTablePagination, MyTableRow, Label, HeaderDiv, IconTrash, AnimatedDiv } from './UserOrders.styles';
-import { useOrders, useOrdersHistory } from '../../context/Context';
+import { useSelector, useDispatch } from 'react-redux';
 
 const ordersColumns = [
     { id: 'dateTrans', label: 'Date', minWidth: 150 },
@@ -29,16 +29,22 @@ function UserOrders() {
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const { orders, setOrders } = useOrders();
-    const { ordersHistory, setOrdersHistory } = useOrdersHistory();
-    const [activeMenu, setActiveMenu] = useState('open-orders');
+
+    // const { orders, setOrders } = useOrders();
+    // const { ordersHistory, setOrdersHistory } = useOrdersHistory();
+
+    const orders = useSelector(state => state.orders.value);
+    const ordersHistory = useSelector(state => state.ordersHistory.value);
+    const dispatch = useDispatch();
+
+    const [activeMenu, setActiveMenu] = useState('opened-orders');
 
 
     useEffect(() => {
-        const getUserOpenOrders = async () => {
+        const getUserOpenedOrders = async () => {
             try{
                 const userPseudo = localStorage.getItem('pseudo');
-                const response = await fetch('http://localhost:5000/api/get-user-open-orders', {
+                const response = await fetch('http://localhost:5000/api/get-user-opened-orders', {
                     method: 'POST',
                     headers: {
                     'Content-Type': 'application/json',
@@ -47,15 +53,15 @@ function UserOrders() {
                 });
                 const results = await response.json();
                 if (response.status === 200) {
-                    setOrders(results.data);
+                    dispatch({ type: 'SET_ORDERS', value: results.data });
                 } else{
                     console.log("Échec récupération des ordres de l'utilisateur");
                 }
             } catch (error) {
-                    console.error('Erreur lors de la requête /get-user-open-orders', error);
+                    console.error('Erreur lors de la requête /get-user-opened-orders', error);
             }
         };
-        getUserOpenOrders();
+        getUserOpenedOrders();
 
         const getUserOrdersHistory = async () => {
             try{
@@ -69,7 +75,7 @@ function UserOrders() {
                 });
                 const results = await response.json();
                 if (response.status === 200) {
-                    setOrdersHistory(results.data);
+                    dispatch({ type: 'SET_ORDERS_HISTORY', value: results.data });
                 } else{
                     console.log("Échec récupération des ordres de l'utilisateur");
                 }
@@ -81,6 +87,54 @@ function UserOrders() {
 
     }, []);
 
+
+    useEffect(() => {
+        const ws3 = new WebSocket('ws://localhost:8686');
+        const userToken = localStorage.getItem('token');
+        ws3.onopen = () => {
+            console.log('Connexion WebSocket2 établie');
+            // Envoyer le token de l'utilisateur juste après l'établissement de la connexion
+            ws3.send(JSON.stringify({ type: 'registration', token: userToken }));
+        };
+
+        // Écouter les messages entrants
+        ws3.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            console.log(data);
+            console.log(!Array.isArray(data) && (data.userToken === userToken));
+            if(!Array.isArray(data) && (data.userToken === userToken)){
+                // Trouver l'ordre à déplacer
+                console.log("orders : ",orders);
+                const orderToMove = orders.find(order => order.idTrans === data.idTrans);
+                console.log("orderToMove : ",orderToMove);
+                if (orderToMove) {
+                    const updatedOrder = { ...orderToMove, statut: "Executed" };
+
+                    // Ajouter l'ordre dans "Orders History"
+                    const updatedOrdersHistory = [...ordersHistory, updatedOrder];
+
+                    // Trier le nouveau tableau des ordres par date de manière décroissante
+                    updatedOrdersHistory.sort((a, b) => new Date(b.dateTrans) - new Date(a.dateTrans));
+
+                    // Mettre à jour l'état avec le tableau trié
+                    dispatch({ type: 'SET_ORDERS_HISTORY', value: updatedOrdersHistory });
+
+                    // Supprimer l'ordre de "Opened Orders"
+                    const newOrders = orders.filter(order => order.idTrans !== data.idTrans);
+
+                    dispatch({ type: 'SET_ORDERS', value: newOrders });
+                }
+
+            }
+            
+                };
+
+            // Nettoyer en fermant la connexion WebSocket quand le composant se démonte
+            return () => {
+                ws3.close();
+            };
+        }, [orders, ordersHistory]);
+
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -90,9 +144,6 @@ function UserOrders() {
         setPage(0);
     };
 
-    const addOrder = (newOrder) => {
-        setOrders([...orders, newOrder]);
-      };
 
     const deleteTransaction = async (idTrans) => {
         try{
@@ -118,11 +169,11 @@ function UserOrders() {
                     updatedOrdersHistory.sort((a, b) => new Date(b.dateTrans) - new Date(a.dateTrans));
     
                     // Mettre à jour l'état avec le tableau trié
-                    setOrdersHistory(updatedOrdersHistory);
+                    dispatch({ type: 'SET_ORDERS_HISTORY', value: updatedOrdersHistory });
     
-                    // Supprimer l'ordre de "Open Orders"
+                    // Supprimer l'ordre de "Opened Orders"
                     const newOrders = orders.filter(order => order.idTrans !== idTrans);
-                    setOrders(newOrders);
+                    dispatch({ type: 'SET_ORDERS', value: newOrders });
                 }
             } else{
                 console.log("Échec de la suppresion");
@@ -155,10 +206,10 @@ function UserOrders() {
                 updatedOrdersHistory.sort((a, b) => new Date(b.dateTrans) - new Date(a.dateTrans));
 
                 // Mettre à jour l'état avec le tableau trié
-                setOrdersHistory(updatedOrdersHistory);
+                dispatch({ type: 'SET_ORDERS_HISTORY', value: updatedOrdersHistory });
 
-                // Supprimer visuellement tous les ordres dans "Open Orders"
-                setOrders([]);
+                // Supprimer visuellement tous les ordres dans "Opened Orders"
+                dispatch({ type: 'SET_ORDERS', value: [] });
 
             } else{
                 console.log("Échec de la suppresion");
@@ -167,17 +218,12 @@ function UserOrders() {
                 console.error('Erreur lors de la requête /del-transaction', error);
         }
     };
-    
-
-    const addOrderHistory = (newOrder) => {
-        setOrdersHistory([newOrder, ...ordersHistory]);
-        };
 
 
     return (
         <UserOrdersDiv>
             <HeaderDiv>
-                <Label active={activeMenu === 'open-orders'} className='title' id='open-orders' onClick={() => setActiveMenu('open-orders')}>Open Orders</Label>
+                <Label active={activeMenu === 'opened-orders'} className='title' id='opened-orders' onClick={() => setActiveMenu('opened-orders')}>Opened Orders</Label>
                 <Label active={activeMenu === 'orders-history'} className='title' id='orders-history' onClick={() => setActiveMenu('orders-history')}>Orders History</Label>
                 <AnimatedDiv active={activeMenu === 'orders-history'}></AnimatedDiv>
             </HeaderDiv>
@@ -187,7 +233,7 @@ function UserOrders() {
                 <MyTable stickyHeader aria-label="sticky table">
                 <MyTableHead>
                     <MyTableRow>
-                    {activeMenu === 'open-orders' ? 
+                    {activeMenu === 'opened-orders' ? 
                     ordersColumns.map((column) => (
                         <MyTableCell
                         key={column.id}
@@ -213,7 +259,7 @@ function UserOrders() {
                     </MyTableRow>
                 </MyTableHead>
                 <MyTableBody>
-                    {activeMenu === 'open-orders' ? 
+                    {activeMenu === 'opened-orders' ? 
                     orders
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
@@ -266,7 +312,7 @@ function UserOrders() {
             <MyTablePagination
                 rowsPerPageOptions={[5, 10, 15]}
                 component="div"
-                count={activeMenu === 'open-orders' ? orders.length : ordersHistory.length}
+                count={activeMenu === 'opened-orders' ? orders.length : ordersHistory.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

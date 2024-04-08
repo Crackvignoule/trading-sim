@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { TradeMenuDiv, Header, TitleLabel, ButtonDiv, Button, MidDiv, SubTitleLabel, Label, HeaderMidDiv, InputText, InputDiv1, InputDiv2, GaugeBarDiv, InputBox, SliderBar, GaugeBarLabelDiv, SliderDiv, AnimatedDiv } from "./TradeMenu.styles";
 import InputAdornment from '@mui/material/InputAdornment';
-import { useTradedPair, useOrders, useOrdersHistory } from '../../context/Context';
+import { useSelector, useDispatch } from 'react-redux';
 
 function TradeMenu() {
 
@@ -15,9 +15,15 @@ function TradeMenu() {
     const [tokenPrice, setTokenPrice] = useState(0); //faire la requête qui récupère le prix
     const [amountBuyToken, setAmountBuyToken] = useState('');
     const [isTotalFocused, setIsTotalFocused] = useState(false);
-    const { orders, setOrders } = useOrders();
-    const { ordersHistory, setOrdersHistory } = useOrdersHistory();
-    const { tradedPair } = useTradedPair(); // Récupéré de TradedPairContext
+
+    const tradedPair = useSelector(state => state.tradedPair.value);
+    const orders = useSelector(state => state.orders.value);
+    const ordersHistory = useSelector(state => state.ordersHistory.value);
+    const dispatch = useDispatch();
+
+    // const { orders, setOrders } = useOrders();
+    // const { ordersHistory, setOrdersHistory } = useOrdersHistory();
+    // const { tradedPair } = useTradedPair(); // Récupéré de TradedPairContext
 
     useEffect(() => {
         const getPriceData = async () => {
@@ -366,8 +372,8 @@ function TradeMenu() {
                 const result = await response.json();
                 if (response.status === 200) {
                     
-                    if(result.data.statut === "Open"){
-                        const newOpenOrder = {
+                    if(result.data.statut === "Opened"){
+                        const newOpenedOrder = {
                             dateTrans: result.data.date, 
                             pair: result.data.pair, 
                             type: result.data.type, 
@@ -377,7 +383,7 @@ function TradeMenu() {
                             total: result.data.total,
                             idTrans: result.data.idTrans};
                             
-                        addOrder(newOpenOrder);
+                        addOrder(newOpenedOrder);
                     }else if (result.data.statut === "Executed"){
 
                         const newOrderHistory = {
@@ -416,11 +422,11 @@ function TradeMenu() {
     }
 
     const addOrder = (newOrder) => {
-        setOrders([newOrder, ...orders]);
+        dispatch({ type: 'SET_ORDERS', value: [newOrder, ...orders] });
       };
 
     const addOrderHistory = (newOrder) => {
-    setOrdersHistory([newOrder, ...ordersHistory]);
+        dispatch({ type: 'SET_ORDERS_HISTORY', value: [newOrder, ...ordersHistory] });
     };
 
     return (
@@ -450,7 +456,7 @@ function TradeMenu() {
                         value={activeAction === "buy" ? amountBuyToken : amountSellToken}
                         onChange={activeAction === "buy" ? handleInputBuyTokenAmountChange : handleInputSellTokenAmountChange}
                         inputProps={{
-                            endAdornment: <InputAdornment position="end"><Label>BTC</Label></InputAdornment>,
+                            endAdornment: <InputAdornment position="end"><Label>{tradedPair.split("/")[0]}</Label></InputAdornment>,
                           }}/></InputBox>
                 </InputDiv1>
                 <GaugeBarDiv>

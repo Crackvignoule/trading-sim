@@ -1,12 +1,12 @@
 import React, { useEffect, useRef } from "react";
 import { widget } from "../../charting_library";
 import { ChartContainer } from "./BigChart.styles";
-import { useTradedPair } from "../../context/Context";
+import { useSelector, useDispatch } from 'react-redux';
 
 function BigChart() {
   const chartContainerRef = useRef();
-  const { tradedPair, setTradedPair } = useTradedPair();
-  setTradedPair("BTC/USDT");
+  const tradedPair = useSelector(state => state.tradedPair.value);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const widgetOptions = {
@@ -45,17 +45,17 @@ function BigChart() {
           const token1 = currentSymbol.description.split("/")[0];
           const token2 = currentSymbol.description.split("/")[1];
           const pair = token1.trim() + "/" + token2.trim();
-          setTradedPair(pair);
-          // console.log("pair: ", pair);
-          // console.log("tradedPair: ", tradedPair);
+          dispatch({ type: 'SET_TRADED_PAIR', value: pair });
         });
     });
 
     return () => {
       tvWidget.remove();
     };
-  });
+    
 
+  });
+  
   return (
     <ChartContainer ref={chartContainerRef} className={"TVChartContainer"} />
   );

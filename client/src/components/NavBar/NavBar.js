@@ -33,15 +33,15 @@ function NavBar() {
   }, []);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const storedPseudo = localStorage.getItem("pseudo");
-
-    if (token) {
-      setPseudo(storedPseudo);
-      setLogout("Logout");
-    } else {
-      setLogout("Login");
-    }
+      const token = localStorage.getItem('token');
+      const storedPseudo = localStorage.getItem('pseudo');
+        
+      if(token !== "") {
+          setPseudo(storedPseudo);
+          setLogout("Logout");
+      } else {
+          setLogout("Login");
+      }
   }, []);
 
   const handleLogout = () => {
