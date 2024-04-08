@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { AllOrdersDiv, OrderHeader, TitleLabel, SellDiv, MidDiv, BuyDiv, Row, Label, OrderMain, MidLabel } from './AllOrders.styles';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 function AllOrders() {
     const [tokenPrice, setTokenPrice] = useState(0);
-    // const { tradedPair, setTradedPair } = useTradedPair(); // Récupéré de TradedPairContext
     const tradedPair = useSelector(state => state.tradedPair.value);
     const [activeTokenAction, setActiveTokenAction] = useState("neutral");
     const [sellOrdersRows, setSellOrdersRows] = useState([]);

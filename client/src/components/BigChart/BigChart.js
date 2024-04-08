@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from 'react-redux';
 
 function BigChart() {
   const chartContainerRef = useRef();
-  const tradedPair = useSelector(state => state.tradedPair.value);
   const dispatch = useDispatch();
 
   useEffect(() => {

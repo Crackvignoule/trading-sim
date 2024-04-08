@@ -29,10 +29,6 @@ function UserOrders() {
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-
-    // const { orders, setOrders } = useOrders();
-    // const { ordersHistory, setOrdersHistory } = useOrdersHistory();
-
     const orders = useSelector(state => state.orders.value);
     const ordersHistory = useSelector(state => state.ordersHistory.value);
     const dispatch = useDispatch();
@@ -85,7 +81,7 @@ function UserOrders() {
         };
         getUserOrdersHistory();
 
-    }, []);
+    }, [dispatch]);
 
 
     useEffect(() => {
@@ -129,7 +125,7 @@ function UserOrders() {
             return () => {
                 ws3.close();
             };
-        }, [orders, ordersHistory]);
+        }, [orders, ordersHistory, dispatch]);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -150,7 +146,7 @@ function UserOrders() {
                 },
                 body: JSON.stringify({ idTrans: idTrans}),
             });
-            const results = await response.json();
+            await response.json();
             if (response.status === 200) {
 
                 // Trouver l'ordre à déplacer
@@ -189,7 +185,7 @@ function UserOrders() {
                 },
                 body: JSON.stringify({ userPseudo: userPseudo}),
             });
-            const results = await response.json();
+            await response.json();
             if (response.status === 200) {
 
                 // Préparer les ordres actuels pour l'historique avec un statut "Cancelled"
@@ -236,7 +232,7 @@ function UserOrders() {
                         align={column.align}
                         style={{ minWidth: column.minWidth }}
                         >
-                        <Label id={column.id == 'icon' ? 'trash': ''} onClick={column.id == 'icon' ?  () =>deleteAllUsersTransaction() : ''}>
+                        <Label id={column.id === 'icon' ? 'trash': ''} onClick={column.id === 'icon' ?  () =>deleteAllUsersTransaction() : ''}>
                             {column.label}
                         </Label>
                         </MyTableCell>
@@ -265,7 +261,7 @@ function UserOrders() {
                             const value = row[column.id];
                             return (
                                 <MyTableCell key={column.id} align={column.align}>
-                                    {column.id == 'icon' ? <IconTrash onClick={ ()=> deleteTransaction(row["idTrans"])}/>: 
+                                    {column.id === 'icon' ? <IconTrash onClick={ ()=> deleteTransaction(row["idTrans"])}/>: 
                                     
                                     <Label className={value === 'buy' ? 'buy' : value === 'sell' ? 'sell' : ''}>
                                         {column.format && typeof value === 'number'

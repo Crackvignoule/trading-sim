@@ -21,10 +21,6 @@ function TradeMenu() {
     const ordersHistory = useSelector(state => state.ordersHistory.value);
     const dispatch = useDispatch();
 
-    // const { orders, setOrders } = useOrders();
-    // const { ordersHistory, setOrdersHistory } = useOrdersHistory();
-    // const { tradedPair } = useTradedPair(); // Récupéré de TradedPairContext
-
     useEffect(() => {
         const getPriceData = async () => {
             await getLastTokenPrice();
