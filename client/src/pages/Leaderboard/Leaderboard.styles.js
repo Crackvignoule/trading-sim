@@ -33,6 +33,19 @@ export const StyledTable = styled.table`
   }
 `;
 
+export const Td = styled.td`
+    display: flex;
+    align-items: center;
+    
+    &.positive {
+        color: green;
+    }
+
+    &.negative {
+        color: red;
+    }
+`;
+
 export const Tr = styled.tr`
     display: flex;
     justify-content: space-between;

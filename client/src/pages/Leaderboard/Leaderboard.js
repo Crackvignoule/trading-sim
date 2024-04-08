@@ -1,29 +1,31 @@
 import React from "react";
 import { LeaderboardData } from "../../constants/constants";
-import { Tr, StyledTable } from "./Leaderboard.styles"
+import { Tr, Td, StyledTable } from "./Leaderboard.styles"
+import { BsFillHexagonFill } from "react-icons/bs";
+
 function Leaderboard() {
     return (
       <div>
         <StyledTable>
           <thead>
             <Tr>
-              <h>Rank</h>
-              <h>Username</h>
-              <h>Total Value</h>
-              <h>24h Evolution</h>
-              <h>Time Played</h>
+              <th>Rank</th>
+              <th>Username</th>
+              <th>Total Value</th>
+              <th>24h Evolution</th>
+              <th>Time Played</th>
             </Tr>
           </thead>
           <tbody>
-            {LeaderboardData.map((data) => (
-              <Tr key={data.rank}>
-                <td>{data.rank}</td>
-                <td>{data.username}</td>
-                <td>{data.totalValue}</td>
-                <td>{data.evolution}</td>
-                <td>{data.timePlayed}</td>
-              </Tr>
-            ))}
+          {LeaderboardData.map((data) => (
+            <Tr key={data.rank}>
+              <td><BsFillHexagonFill color={data.rank <= 3 ? 'gold' : 'white'} />{data.rank}</td>
+              <td>{data.username}</td>
+              <td>{data.totalValue}</td>
+              <Td className={data.evolution.startsWith('+') ? 'positive' : 'negative'}>{data.evolution}</Td>
+              <td>{data.timePlayed}</td>
+            </Tr>
+          ))}
           </tbody>
         </StyledTable>
       </div>

@@ -54,7 +54,7 @@ export const LeaderboardData = [
       rank: 5,
       username: "John Doe",
       totalValue: 600000,
-      evolution: "+6%",
+      evolution: "-6%",
       timePlayed: "2d",
     },
   ];
