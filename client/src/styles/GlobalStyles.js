@@ -14,11 +14,15 @@ export const COLORS = {
   btnSellBkg: "linear-gradient(45deg,#E71340 45%, #ABEDD5);",
 };
 
+export const FONT = {
+  family: "EuclidCircularSemiBold, sans-serif",
+};
+
 const GlobalStyles = createGlobalStyle`
   body {
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
+    font-family: ${FONT.family};
     background: ${COLORS.background};
   }
 

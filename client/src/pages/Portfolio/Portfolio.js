@@ -1,12 +1,16 @@
 import { SmallChart, DistributionInfo } from "../../components";
-import { Div } from "./Portfolio.styles";
+import { Div, Main } from "./Portfolio.styles";
+import { OwnedCryptos } from "../../components";
 
 function Portfolio() {
     return (
-      <Div>
-        <SmallChart />
-        <DistributionInfo />
-      </Div>
+      <Main>
+        <Div>
+          <SmallChart />
+          <DistributionInfo />
+        </Div>
+        <OwnedCryptos />
+      </Main>
     );
   }
   
