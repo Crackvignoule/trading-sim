@@ -69,7 +69,6 @@ function AllOrders() {
             const data = JSON.parse(event.data);
                 //Si envoi à tout les utiliseurs + 1 seul ordre
                 if(!Array.isArray(data)){
-                    console.log("data 1 : ",data);
                     if(tradedPair === data.tradedPair){
                         if(data.direction === "buy"){
                             addBuyOrdersRows(data);

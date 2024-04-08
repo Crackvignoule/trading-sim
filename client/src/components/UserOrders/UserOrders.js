@@ -100,13 +100,9 @@ function UserOrders() {
         // Écouter les messages entrants
         ws3.onmessage = (event) => {
             const data = JSON.parse(event.data);
-            console.log(data);
-            console.log(!Array.isArray(data) && (data.userToken === userToken));
             if(!Array.isArray(data) && (data.userToken === userToken)){
                 // Trouver l'ordre à déplacer
-                console.log("orders : ",orders);
                 const orderToMove = orders.find(order => order.idTrans === data.idTrans);
-                console.log("orderToMove : ",orderToMove);
                 if (orderToMove) {
                     const updatedOrder = { ...orderToMove, statut: "Executed" };
 
