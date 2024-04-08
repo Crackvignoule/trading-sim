@@ -38,11 +38,11 @@ export const Td = styled.td`
     align-items: center;
     
     &.positive {
-        color: green;
+        color: ${COLORS.green};
     }
 
     &.negative {
-        color: red;
+        color: ${COLORS.red};
     }
 `;
 
@@ -55,7 +55,9 @@ export const Tr = styled.tr`
     color: ${COLORS.text};
     margin-bottom: 10px;
     border-radius: 10px;
-    padding: 1em;
+    padding: 0.2em;
+    padding-left: 1em;
+    padding-right: 1em;
 
     & > td:nth-child(1) {
         flex-basis: 7%;
@@ -63,7 +65,7 @@ export const Tr = styled.tr`
     }
 
     & > td:nth-child(2) {
-        flex-basis: 12%;
+        flex-basis: 13%;
         text-align: left;
     }
 
