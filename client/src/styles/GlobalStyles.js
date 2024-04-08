@@ -11,11 +11,15 @@ export const COLORS = {
   green: "#44998f", // 31C75A
 };
 
+export const FONT = {
+  family: "EuclidCircularSemiBold, sans-serif",
+};
+
 const GlobalStyles = createGlobalStyle`
   body {
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
+    font-family: ${FONT.family};
     background: ${COLORS.background};
   }
 
