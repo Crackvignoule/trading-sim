@@ -9,7 +9,7 @@ export const COLORS = {
   navbar: "#202333",
   special: "#f5c631",
   red: "#f23645", // DA274D
-  green: "#44998f", // 31C75A
+  green: "#31C75A", // 44998F
   btnBuyBkg: "linear-gradient(45deg,#31C75A 45%, #459AE9);",
   btnSellBkg: "linear-gradient(45deg,#E71340 45%, #ABEDD5);",
 };
