@@ -1,11 +1,14 @@
 import React, { useEffect, useRef } from "react";
 import { widget } from "../../charting_library";
 import { ChartContainer } from "./BigChart.styles";
-import { useTradedPair} from '../../context/Context';
+import { useSelector, useDispatch } from 'react-redux';
 
 function BigChart() {
   const chartContainerRef = useRef();
-  const { tradedPair, setTradedPair } = useTradedPair();
+  const tradedPair = useSelector(state => state.tradedPair.value);
+  const dispatch = useDispatch();
+
+
   useEffect(() => {
     const widgetOptions = {
       symbol: "AAPL",

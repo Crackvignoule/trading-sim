@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { TradeMenuDiv, Header, TitleLabel, ButtonDiv, Button, MidDiv, SubTitleLabel, Label, HeaderMidDiv, InputText, InputDiv1, InputDiv2, GaugeBarDiv, InputBox, SliderBar, GaugeBarLabelDiv, SliderDiv, AnimatedDiv } from "./TradeMenu.styles";
 import InputAdornment from '@mui/material/InputAdornment';
-import { useTradedPair, useOrders, useOrdersHistory } from '../../context/Context';
+import { useSelector, useDispatch } from 'react-redux';
 
 function TradeMenu() {
 
@@ -15,9 +15,15 @@ function TradeMenu() {
     const [tokenPrice, setTokenPrice] = useState(0); //faire la requête qui récupère le prix
     const [amountBuyToken, setAmountBuyToken] = useState('');
     const [isTotalFocused, setIsTotalFocused] = useState(false);
-    const { orders, setOrders } = useOrders();
-    const { ordersHistory, setOrdersHistory } = useOrdersHistory();
-    const { tradedPair } = useTradedPair(); // Récupéré de TradedPairContext
+
+    const tradedPair = useSelector(state => state.tradedPair.value);
+    const orders = useSelector(state => state.orders.value);
+    const ordersHistory = useSelector(state => state.ordersHistory.value);
+    const dispatch = useDispatch();
+
+    // const { orders, setOrders } = useOrders();
+    // const { ordersHistory, setOrdersHistory } = useOrdersHistory();
+    // const { tradedPair } = useTradedPair(); // Récupéré de TradedPairContext
 
     useEffect(() => {
         const getPriceData = async () => {
@@ -416,11 +422,11 @@ function TradeMenu() {
     }
 
     const addOrder = (newOrder) => {
-        setOrders([newOrder, ...orders]);
+        dispatch({ type: 'SET_ORDERS', value: [newOrder, ...orders] });
       };
 
     const addOrderHistory = (newOrder) => {
-    setOrdersHistory([newOrder, ...ordersHistory]);
+        dispatch({ type: 'SET_ORDERS_HISTORY', value: [newOrder, ...ordersHistory] });
     };
 
     return (

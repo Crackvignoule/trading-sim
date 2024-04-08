@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {UserOrdersDiv, OrderContainer, MyTable, MyTableBody, MyTableCell, MyTableContainer, MyTableHead, MyTablePagination, MyTableRow, Label, HeaderDiv, IconTrash, AnimatedDiv } from './UserOrders.styles';
-import { useOrders, useOrdersHistory } from '../../context/Context';
+import { useSelector, useDispatch } from 'react-redux';
 
 const ordersColumns = [
     { id: 'dateTrans', label: 'Date', minWidth: 150 },
@@ -29,8 +29,14 @@ function UserOrders() {
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const { orders, setOrders } = useOrders();
-    const { ordersHistory, setOrdersHistory } = useOrdersHistory();
+
+    // const { orders, setOrders } = useOrders();
+    // const { ordersHistory, setOrdersHistory } = useOrdersHistory();
+
+    const orders = useSelector(state => state.orders.value);
+    const ordersHistory = useSelector(state => state.ordersHistory.value);
+    const dispatch = useDispatch();
+
     const [activeMenu, setActiveMenu] = useState('opened-orders');
 
 
@@ -47,7 +53,7 @@ function UserOrders() {
                 });
                 const results = await response.json();
                 if (response.status === 200) {
-                    setOrders(results.data);
+                    dispatch({ type: 'SET_ORDERS', value: results.data });
                 } else{
                     console.log("Échec récupération des ordres de l'utilisateur");
                 }
@@ -69,7 +75,7 @@ function UserOrders() {
                 });
                 const results = await response.json();
                 if (response.status === 200) {
-                    setOrdersHistory(results.data);
+                    dispatch({ type: 'SET_ORDERS_HISTORY', value: results.data });
                 } else{
                     console.log("Échec récupération des ordres de l'utilisateur");
                 }
@@ -98,10 +104,11 @@ function UserOrders() {
             console.log(!Array.isArray(data) && (data.userToken === userToken));
             if(!Array.isArray(data) && (data.userToken === userToken)){
                 // Trouver l'ordre à déplacer
+                console.log("orders : ",orders);
                 const orderToMove = orders.find(order => order.idTrans === data.idTrans);
                 console.log("orderToMove : ",orderToMove);
                 if (orderToMove) {
-                    const updatedOrder = { ...orderToMove, statut: "Cancelled" };
+                    const updatedOrder = { ...orderToMove, statut: "Executed" };
 
                     // Ajouter l'ordre dans "Orders History"
                     const updatedOrdersHistory = [...ordersHistory, updatedOrder];
@@ -110,12 +117,12 @@ function UserOrders() {
                     updatedOrdersHistory.sort((a, b) => new Date(b.dateTrans) - new Date(a.dateTrans));
 
                     // Mettre à jour l'état avec le tableau trié
-                    setOrdersHistory(updatedOrdersHistory);
+                    dispatch({ type: 'SET_ORDERS_HISTORY', value: updatedOrdersHistory });
 
                     // Supprimer l'ordre de "Opened Orders"
                     const newOrders = orders.filter(order => order.idTrans !== data.idTrans);
 
-                    setOrders(newOrders);
+                    dispatch({ type: 'SET_ORDERS', value: newOrders });
                 }
 
             }
@@ -126,7 +133,7 @@ function UserOrders() {
             return () => {
                 ws3.close();
             };
-        }, []);
+        }, [orders, ordersHistory]);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -137,9 +144,6 @@ function UserOrders() {
         setPage(0);
     };
 
-    const addOrder = (newOrder) => {
-        setOrders([...orders, newOrder]);
-      };
 
     const deleteTransaction = async (idTrans) => {
         try{
@@ -165,11 +169,11 @@ function UserOrders() {
                     updatedOrdersHistory.sort((a, b) => new Date(b.dateTrans) - new Date(a.dateTrans));
     
                     // Mettre à jour l'état avec le tableau trié
-                    setOrdersHistory(updatedOrdersHistory);
+                    dispatch({ type: 'SET_ORDERS_HISTORY', value: updatedOrdersHistory });
     
                     // Supprimer l'ordre de "Opened Orders"
                     const newOrders = orders.filter(order => order.idTrans !== idTrans);
-                    setOrders(newOrders);
+                    dispatch({ type: 'SET_ORDERS', value: newOrders });
                 }
             } else{
                 console.log("Échec de la suppresion");
@@ -202,10 +206,10 @@ function UserOrders() {
                 updatedOrdersHistory.sort((a, b) => new Date(b.dateTrans) - new Date(a.dateTrans));
 
                 // Mettre à jour l'état avec le tableau trié
-                setOrdersHistory(updatedOrdersHistory);
+                dispatch({ type: 'SET_ORDERS_HISTORY', value: updatedOrdersHistory });
 
                 // Supprimer visuellement tous les ordres dans "Opened Orders"
-                setOrders([]);
+                dispatch({ type: 'SET_ORDERS', value: [] });
 
             } else{
                 console.log("Échec de la suppresion");
@@ -214,11 +218,6 @@ function UserOrders() {
                 console.error('Erreur lors de la requête /del-transaction', error);
         }
     };
-    
-
-    const addOrderHistory = (newOrder) => {
-        setOrdersHistory([newOrder, ...ordersHistory]);
-        };
 
 
     return (
