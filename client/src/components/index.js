@@ -7,5 +7,6 @@ import TradeMenu from "./TradeMenu/TradeMenu";
 import UserOrders from "./UserOrders/UserOrders";
 import OwnedCryptos from "./OwnedCryptos/OwnedCryptos";
 import Ranking from "./Ranking/Ranking";
+import AllOrders from "./AllOrders/AllOrders";
 
-export { SmallChart, BigChart, DistributionInfo, NavBar, ProtectedRoute, TradeMenu, UserOrders, OwnedCryptos, Ranking };
+export { SmallChart, BigChart, DistributionInfo, NavBar, ProtectedRoute, TradeMenu, UserOrders, OwnedCryptos, Ranking, AllOrders };
