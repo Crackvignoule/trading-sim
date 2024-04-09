@@ -1,62 +1,53 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { Snackbar, Alert } from '@mui/material';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from './NotifyToast.styles';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Button } from '@mui/material';
+import { useTransition, animated } from 'react-spring';
+import { MyAlert, MyLinearProgress } from './NotifyToast.styles';
+import { closeNotification, updateNotificationProgress } from '../../store/reducers/action';
 
 function NotifyToast() {
-    const [open, setOpen] = React.useState(false);
+    const dispatch = useDispatch();
+    const notifications = useSelector(state => state.notifyToast.notifications);
 
-    const handleClick = () => {
-        setOpen(true);
+    const transitions = useTransition(notifications, {
+        from: { transform: 'translate3d(0,40px,0)', opacity: 1 },
+        enter: { transform: 'translate3d(0,0px,0)', opacity: 1 },
+        leave: { transform: 'translate3d(100%,0px,0)', opacity: 0 },
+        keys: notification => notification.id,
+    });
+
+    const handleClose = (id) => {
+        dispatch(closeNotification(id));
     };
 
-    const handleClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setOpen(false);
-    };
-
-    // Définition de la variante pour l'animation avec framer-motion
-    const snackbarVariants = {
-        hidden: { opacity: 0, y: 50 },
-        visible: { opacity: 1, y: 0 },
-    };
+    useEffect(() => {
+        const interval = setInterval(() => {
+            dispatch(updateNotificationProgress());
+        }, 50);
+    
+        return () => clearInterval(interval);
+    }, [dispatch]);
 
     return (
         <>
-            <Button onClick={handleClick}>Open Snackbar</Button>
-            <AnimatePresence>
-                {open && (
-                    <Snackbar
-                        open={open}
-                        autoHideDuration={5000}
-                        onClose={handleClose}
-                        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                        TransitionComponent={({ children }) => (
-                            <motion.div
-                                initial="hidden"
-                                animate="visible"
-                                exit="hidden"
-                                variants={snackbarVariants}
-                                transition={{ duration: 0.5 }}
-                            >
-                                {children}
-                            </motion.div>
-                        )}
+            <div style={{ position: 'fixed', top: 20, right: 20 }}>
+            {transitions((style, item) => (
+                <animated.div
+                    key={item.id}
+                    style={style}
+                    className="my-notification-enter-active"
+                >
+                    <MyAlert
+                        severity="success"
+                        variant="filled"
+                        onClose={() => handleClose(item.id)}
                     >
-                        <Alert
-                            onClose={handleClose}
-                            severity="success"
-                            variant="filled"
-                            sx={{ width: '100%' }}
-                        >
-                            Ordre enregistré avec succès !
-                        </Alert>
-                    </Snackbar>
-                )}
-            </AnimatePresence>
+                        {item.text}
+                    </MyAlert>
+                    <MyLinearProgress variant="determinate" value={item.progress} />
+                </animated.div>
+            ))}
+            </div>
         </>
     );
 }

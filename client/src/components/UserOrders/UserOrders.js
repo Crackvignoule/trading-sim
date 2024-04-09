@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import {UserOrdersDiv, OrderContainer, MyTable, MyTableBody, MyTableCell, MyTableContainer, MyTableHead, MyTablePagination, MyTableRow, Label, HeaderDiv, IconTrash, AnimatedDiv } from './UserOrders.styles';
 import { useSelector, useDispatch } from 'react-redux';
+import { v4 as uuidv4 } from 'uuid';
+import { addNotification } from '../../store/reducers/action';
+
 
 const ordersColumns = [
     { id: 'dateTrans', label: 'Date', minWidth: 150 },
@@ -31,10 +34,9 @@ function UserOrders() {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const orders = useSelector(state => state.orders.value);
     const ordersHistory = useSelector(state => state.ordersHistory.value);
-    const dispatch = useDispatch();
 
     const [activeMenu, setActiveMenu] = useState('opened-orders');
-
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const getUserOpenedOrders = async () => {
@@ -99,6 +101,7 @@ function UserOrders() {
             if(!Array.isArray(data) && (data.userToken === userToken)){
                 // Trouver l'ordre à déplacer
                 const orderToMove = orders.find(order => order.idTrans === data.idTrans);
+                dispatch(addNotification({ id: uuidv4(), progress: 0, open: true, text: 'order successfully executed !' }));
                 if (orderToMove) {
                     const updatedOrder = { ...orderToMove, statut: "Executed" };
 

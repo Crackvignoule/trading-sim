@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { TradeMenuDiv, Header, TitleLabel, ButtonDiv, Button, MidDiv, SubTitleLabel, Label, HeaderMidDiv, InputText, InputDiv1, InputDiv2, GaugeBarDiv, InputBox, SliderBar, GaugeBarLabelDiv, SliderDiv, AnimatedDiv } from "./TradeMenu.styles";
 import InputAdornment from '@mui/material/InputAdornment';
 import { useSelector, useDispatch } from 'react-redux';
+import { v4 as uuidv4 } from 'uuid';
+import { addNotification } from '../../store/reducers/action';
+
 
 function TradeMenu() {
 
@@ -380,6 +383,7 @@ function TradeMenu() {
                             idTrans: result.data.idTrans};
                             
                         addOrder(newOpenedOrder);
+                        dispatch(addNotification({ id: uuidv4(), progress: 0, open: true, text: 'Successful open order !' }));
                     }else if (result.data.statut === "Executed"){
 
                         const newOrderHistory = {
@@ -393,6 +397,7 @@ function TradeMenu() {
                             statut: result.data.statut};
                             
                         addOrderHistory(newOrderHistory);
+                        dispatch(addNotification({ id: uuidv4(), progress: 0, open: true, text: 'order successfully executed !' }));
                     }
                     console.log("Transaction Réussi");
                 } else{

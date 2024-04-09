@@ -7,7 +7,7 @@ function Home() {
 
     return (
           <HomeDiv>
-            <NotifyToast />
+            <NotifyToast/>
             <MainDiv>
                 <TopDiv>
                   <AllOrders/>
