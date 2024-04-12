@@ -398,6 +398,8 @@ function TradeMenu() {
                             
                         addOrderHistory(newOrderHistory);
                         dispatch(addNotification({ id: uuidv4(), progress: 0, open: true, text: 'order successfully executed !' }));
+                        const newAvailableAmountValue = availableAmountValue - amountSellToken;
+                        setAvailableAmountValue(newAvailableAmountValue);
                     }
                     console.log("Transaction Réussi");
                 } else{
