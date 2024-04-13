@@ -34,7 +34,7 @@ function AllOrders() {
     
 
     useEffect(() => {
-        const ws = new WebSocket('ws://localhost:8080');
+        const ws = new WebSocket(`ws://${process.env.REACT_APP_SERVER_URL}:8080`);
 
         ws.onopen = () => {
             console.log('Connexion WebSocket établie');
@@ -58,7 +58,7 @@ function AllOrders() {
                 }
         };
 
-        const ws2 = new WebSocket('ws://localhost:8585');
+        const ws2 = new WebSocket(`ws://${process.env.REACT_APP_SERVER_URL}:8585`);
         ws2.onopen = () => {
             console.log('Connexion WebSocket2 établie');
         };
@@ -103,7 +103,7 @@ function AllOrders() {
 
     const getAllSellOrders = async () => {
         try{
-            const response = await fetch('http://localhost:5000/api/get-all-sell-orders', {
+            const response = await fetch(`http://${process.env.REACT_APP_SERVER_URL}:5000/api/get-all-sell-orders`, {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',
@@ -126,7 +126,7 @@ function AllOrders() {
 
     const getAllBuyOrders = async () => {
         try{
-            const response = await fetch('http://localhost:5000/api/get-all-buy-orders', {
+            const response = await fetch(`http://${process.env.REACT_APP_SERVER_URL}:5000/api/get-all-buy-orders`, {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',

@@ -87,7 +87,7 @@ function TradeMenu() {
     const getUserSolde = async (tradedToken) => {
         const userPseudo = localStorage.getItem('pseudo');
         try{
-            const response = await fetch('http://localhost:5000/api/get-token-amount', {
+            const response = await fetch(`http://${process.env.REACT_APP_SERVER_URL}:5000/api/get-token-amount`, {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',
@@ -110,7 +110,7 @@ function TradeMenu() {
 
     const getLastTokenPrice = async () => {
         try{
-            const response = await fetch('http://localhost:5000/api/get-last-price', {
+            const response = await fetch(`http://${process.env.REACT_APP_SERVER_URL}:5000/api/get-last-price`, {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',
@@ -351,7 +351,7 @@ function TradeMenu() {
         if(amountSellToken <= availableAmountValue){
             try{
                 const userPseudo = localStorage.getItem('pseudo');
-                const response = await fetch('http://localhost:5000/api/buyAndSell', {
+                const response = await fetch(`http://${process.env.REACT_APP_SERVER_URL}:5000/api/buyAndSell`, {
                     method: 'POST',
                     headers: {
                     'Content-Type': 'application/json',

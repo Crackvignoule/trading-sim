@@ -80,26 +80,6 @@ function SmallChart() {
         chartRef.current = AreaChart(chartContainerRef.current, data);
     }
 }, []);
-  // useEffect(() => {
-  //   console.log("Création du graphique");
-  //   chartContainerRef.current.innerHTML = "";
-
-  //   fetch("http://localhost:5000/api/chartBTCUSDT")
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       const { chart, series } = AreaChart(
-  //         chartContainerRef.current,
-  //         data
-  //       );
-  //       setSeries(series);
-  //     })
-  //     .catch((error) =>
-  //       console.error(
-  //         "Erreur lors de la récupération des données historiques:",
-  //         error
-  //       )
-  //     );
-  // }, []);
 
   return (
     <SmallChartContainer>

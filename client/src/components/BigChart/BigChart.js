@@ -12,7 +12,7 @@ function BigChart() {
       symbol: "BTCUSDT",
       // BEWARE: no trailing slash is expected in feed URL
       datafeed: new window.Datafeeds.UDFCompatibleDatafeed(
-        "http://localhost:9090"
+        `http://${process.env.REACT_APP_SERVER_URL}:9090`
       ),
       interval: "D",
       container: chartContainerRef.current,

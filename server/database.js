@@ -1,8 +1,11 @@
 const mysql = require('mysql2/promise');
+const dotenv = require('dotenv');
+dotenv.config();
 
 // Création d'un pool de connexions
+console.log("DB_HOST", process.env.DB_HOST);
 const db = mysql.createPool({
-  host: 'localhost',
+  host: process.env.DB_HOST,
   user: 'server',
   database: 'TradingSimBdd',
   password: 'password',
