@@ -60,4 +60,4 @@ function BigChart() {
   );
 }
 
-export default BigChart;
+export default React.memo(BigChart);
