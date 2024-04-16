@@ -15,7 +15,7 @@ if (process.env.NODE_ENV === 'PROD') {
 
 app.use(express.json());
 app.use(cors({
-  origin: `${serverUrl}:3000`,
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));

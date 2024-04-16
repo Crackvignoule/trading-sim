@@ -9,7 +9,7 @@ const db = mysql.createPool({
   user: 'server',
   database: 'TradingSimBdd',
   password: 'password',
-  port: 3307,
+  port: 3306,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
