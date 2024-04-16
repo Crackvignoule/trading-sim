@@ -1,10 +1,14 @@
-# Dev
-1. `git clone https://github.com/Crackvignoule/tradingview-udf-binance-node`
-2. `docker rm -f udf; docker image rm udf:latest; docker build . -t udf;  docker run --name udf -d -p 9090:80 udf`
-3. `git clone https://github.com/Crackvignoule/trading-sim`
-4. `cd trading-sim/db; docker compose up -d; cd ..`
-5. `npm i;cd client;npm i;cd ../server;npm i`
-6. `cd .. ; npm run dev`
+First clone and go into the repo  :
+1. `git clone https://github.com/Crackvignoule/trading-sim`
+2. `cd trading-sim/`
+   
+# Prod
+1. `docker compose up -d` This will create UDF Datafeed service, MySQL DB, Nginx Client & Node Server
+   
+# Dev 
+1. `cd trading-sim/; docker compose up -d db udf`
+2. `npm i;cd client;npm i;cd ../server;npm i; cd ..`
+3. `npm run dev`
 
 Run both the server and the client with `npm run dev` from the root directory.
 
