@@ -1,6 +1,6 @@
 // store/reducers/tradedPairReducer.js
 const initialState = {
-    value: "SOL/USDT",
+    value: "BTC/USDT",
   };
   
   function tradedPairReducer(state = initialState, action) {
