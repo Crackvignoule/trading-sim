@@ -1,6 +1,24 @@
 import styled from "styled-components";
 import MuiButton from "@mui/material/Button";
 import { COLORS } from "../../styles/GlobalStyles";
+import { createTheme } from '@mui/material/styles';
+
+export const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#FFFFFF',
+    },
+    secondary: {
+      main: '#F5C326',
+    },
+    error: {
+      main: '#f44336',
+    },
+    background: {
+      default: '#F5C326',
+    },
+  },
+});
 
 export const Header = styled.div`
   display: flex;
