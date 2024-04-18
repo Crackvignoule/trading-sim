@@ -34,7 +34,7 @@ function NavBar() {
   }, []);
 
   useEffect(() => {
-    const ws4 = new WebSocket('ws://localhost:8787');
+    const ws4 = new WebSocket(`ws://${process.env.REACT_APP_SERVER_URL}:8787`);
     const userToken = localStorage.getItem('token');
     ws4.onopen = () => {
         console.log('Connexion WebSocket4 établie');
@@ -60,7 +60,7 @@ function NavBar() {
     // get user soldes
     const userToken = localStorage.getItem('token');
     try {
-      const response = await fetch('http://localhost:5000/api/get-user-solde', {
+      const response = await fetch(`http://${process.env.REACT_APP_SERVER_URL}:5000/api/get-user-solde`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
