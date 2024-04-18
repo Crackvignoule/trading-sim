@@ -1,24 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import AreaChart from "./AreaChart/AreaChart";
-import { Header, SmallChartContainer, Button, Div } from "./SmallChart.styles";
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#FFFFFF',
-    },
-    secondary: {
-      main: '#F5C326',
-    },
-    error: {
-      main: '#f44336',
-    },
-    background: {
-      default: '#F5C326',
-    },
-  },
-});
+import { theme, Header, SmallChartContainer, Button, Div } from "./SmallChart.styles";
+import { ThemeProvider } from '@mui/material/styles';
 
 function SmallChart() {
   const chartContainerRef = useRef();
