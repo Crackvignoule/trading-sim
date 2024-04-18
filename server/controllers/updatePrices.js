@@ -2,9 +2,11 @@ const { updateTokenPrices } = require('../models/updatePrices');
 const { ExecuteOpenedOrderByPair } = require('../models/transaction');
 const { wss, broadcastDataPair } = require('../services/serverWebSocket');
 const { wss2, broadcastOrders } = require('../services/serverWebSocket');
-const { sendToUser } = require('../services/serverWebSocket');
+const { sendToUser, sendToUserSolde, clientsSoldeToken } = require('../services/serverWebSocket');
+const { getAllUserSolde } = require('../models/userWallets');
 
 const postDataBTCUSDT = async (ticker) => {
+
     data = {
         time : Math.floor(new Date(ticker.E).getTime() / 1000),
         value : parseFloat(ticker.c) //ticker.c est le prix 'current' de la pair
@@ -23,6 +25,21 @@ const postDataBTCUSDT = async (ticker) => {
         // Envoie les ordres à tout le monde sans le userToken
         broadcastOrders(ordersToBroadcast, wss2);
     }
+
+    //récupère les soldes de tout les utilisateurs
+    getAllUserSolde(clientsSoldeToken).then(response => {
+        if (response.success) {
+            
+            response.data.forEach(user => {
+                sendToUserSolde(user.userToken, user.userSolde); // Envoi le solde à chaque utilisateur
+            });
+        } else {
+            console.error(response.message);
+        }
+    }).catch(error => {
+        console.error("Erreur lors de la récupération des soldes des utilisateurs :", error);
+    });
+    
     
 };
 const postDataETHUSDT = async (ticker) => {
@@ -48,6 +65,19 @@ const postDataETHUSDT = async (ticker) => {
         broadcastOrders(ordersToBroadcast, wss2);
     }
 
+    //récupère les soldes de tout les utilisateurs
+    getAllUserSolde(clientsSoldeToken).then(response => {
+        if (response.success) {
+            
+            response.data.forEach(user => {
+                sendToUserSolde(user.userToken, user.userSolde); // Envoi le solde à chaque utilisateur
+            });
+        } else {
+            console.error(response.message);
+        }
+    }).catch(error => {
+        console.error("Erreur lors de la récupération des soldes des utilisateurs :", error);
+    });
 };
 const postDataSOLUSDT = async (ticker) => {
 
@@ -69,6 +99,20 @@ const postDataSOLUSDT = async (ticker) => {
         // Envoie les ordres à tout le monde sans le userToken
         broadcastOrders(ordersToBroadcast, wss2);
     }
+
+    //récupère les soldes de tout les utilisateurs
+    getAllUserSolde(clientsSoldeToken).then(response => {
+        if (response.success) {
+            
+            response.data.forEach(user => {
+                sendToUserSolde(user.userToken, user.userSolde); // Envoi le solde à chaque utilisateur
+            });
+        } else {
+            console.error(response.message);
+        }
+    }).catch(error => {
+        console.error("Erreur lors de la récupération des soldes des utilisateurs :", error);
+    });
 };
 
 module.exports = { postDataBTCUSDT, postDataETHUSDT, postDataSOLUSDT };

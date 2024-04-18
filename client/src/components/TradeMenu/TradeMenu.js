@@ -31,6 +31,14 @@ function TradeMenu() {
         getPriceData();
     }, []);
 
+    useEffect(() => {
+    const fetchData = async () => {
+        await resetData();
+    };
+
+    fetchData();
+}, [tradedPair]);
+
 
     useEffect(() => {
         const fetchData = async () => {
