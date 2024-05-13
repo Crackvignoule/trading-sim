@@ -3,8 +3,8 @@ First clone and go into the repo  :
 2. `cd trading-sim/`
    
 # Prod
-1. `docker compose up -d` This will create UDF Datafeed service, MySQL DB, Nginx Client & Node Server
-   
+1. `docker compose up -d` This will create UDF Datafeed service, MySQL DB, Nginx Client & Node Server<br><br>
+restart with `docker-compose up -d --force-recreate --build server client udf` or `docker compose down server client udf; docker compose up -d server client udf` to keep BDD data.
 # Dev 
 1. `cd trading-sim/; docker compose up -d db udf`
 2. `npm i;cd client;npm i;cd ../server;npm i; cd ..`
