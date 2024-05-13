@@ -154,10 +154,11 @@ async function getTokenAmountByUser(pseudo, tokenName) {
                 }
 
                 if (token.tokenName === "USDT") {
-                    userSoldes[token.userToken] += token.amount;
+                  userSoldes[token.userToken] += token.amount;
                 } else {
                     const namePair = token.tokenName + "/USDT";
-                    userSoldes[token.userToken] += pricesObj[namePair] * token.amount; 
+                    // Subtract the value in USDT of the new cryptocurrency from the user's balance
+                    userSoldes[token.userToken] += (pricesObj[namePair] * token.amount) - token.amount; 
                 }
             });
 
