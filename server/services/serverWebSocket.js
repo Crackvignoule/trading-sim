@@ -17,15 +17,6 @@ wss2.on('connection', function connection(ws) {
   // Vous pouvez ajouter ici des logiques spécifiques à wss2 si nécessaire
 });
 
-// Fonction pour diffuser les données à tous les clients connectés à wss2
-function broadcastOrders(data) {
-  wss2.clients.forEach(function each(client) {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify(data));
-    }
-  });
-}
-
 // Serveur WebSocket pour envoyer des données à un utilisateur spécifique
 const wss3 = new WebSocket.Server({ port: 8686 });
 
@@ -74,6 +65,15 @@ wss4.on('connection', function connection(ws) {
     }
   });
 });
+
+// Fonction pour diffuser les données à tous les clients connectés à wss2
+function broadcastOrders(data) {
+  wss2.clients.forEach(function each(client) {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(JSON.stringify(data));
+    }
+  });
+}
 
 // Fonction pour diffuser les données à tous les clients
 function broadcastDataPair(pair, data, wss) {
