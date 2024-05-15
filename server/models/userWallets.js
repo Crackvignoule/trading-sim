@@ -169,7 +169,7 @@ async function getAllUserSolde(clientsSoldeToken) {
     }
   }
   else {
-    return { success: false, message: "Aucun utilisateur enregistré sur wss4." };
+    return { success: false };
   }
 }
 
@@ -190,30 +190,99 @@ async function setUserWalletHistory(userToken, userSolde, dateWallet) {
 }
 
 async function getRanking() {
-  return new Promise((resolve, reject) => {
-    const query = `
-      SELECT 
-        @rank := @rank + 1 AS rank,
-        Users.username,
-        Wallets.total,
-        ((Wallets.total - Wallets.total24h) / Wallets.total24h) * 100 AS evolution24h,
-        TIMESTAMPDIFF(DAY, Users.creationDate, NOW()) AS timePlayed
-      FROM
-        Users
-        INNER JOIN Wallets ON Users.id = Wallets.userId,
-        (SELECT @rank := 0) r
-      ORDER BY
-        Wallets.total DESC
-    `;
+  const query = `
+  SELECT 
+    u.idUser,
+    u.pseudo,
+    wh_latest.total AS latest_total,
+    (wh_latest.total - wh_24h_prior.total) AS evolution_24h,
+    COALESCE(TIMESTAMPDIFF(SECOND, wh_first.dateWallet, wh_latest.dateWallet), 
+             TIMESTAMPDIFF(SECOND, u.dateCrea, wh_latest.dateWallet)) AS time_played_seconds
+FROM 
+    Users u
+JOIN 
+    (
+        SELECT 
+            idUser, 
+            total,
+            dateWallet
+        FROM 
+            WalletsHistory
+        WHERE 
+            (idUser, dateWallet) IN (
+                SELECT 
+                    idUser, 
+                    MAX(dateWallet)
+                FROM 
+                    WalletsHistory
+                GROUP BY 
+                    idUser
+            )
+    ) wh_latest 
+    ON u.idUser = wh_latest.idUser
+LEFT JOIN 
+    (
+        SELECT 
+            wh1.idUser,
+            wh1.total,
+            wh1.dateWallet
+        FROM 
+            WalletsHistory wh1
+        JOIN 
+            (
+                SELECT 
+                    idUser, 
+                    MAX(dateWallet) AS dateWallet
+                FROM 
+                    WalletsHistory
+                WHERE 
+                    dateWallet <= (SELECT MAX(dateWallet) FROM WalletsHistory) - INTERVAL 24 HOUR
+                GROUP BY 
+                    idUser
+            ) wh2 
+            ON wh1.idUser = wh2.idUser 
+            AND wh1.dateWallet = wh2.dateWallet
+    ) wh_24h_prior 
+    ON u.idUser = wh_24h_prior.idUser
+JOIN 
+    (
+        SELECT 
+            idUser, 
+            total,
+            dateWallet
+        FROM 
+            WalletsHistory
+        WHERE 
+            (idUser, dateWallet) IN (
+                SELECT 
+                    idUser, 
+                    MIN(dateWallet)
+                FROM 
+                    WalletsHistory
+                GROUP BY 
+                    idUser
+            )
+    ) wh_first 
+    ON u.idUser = wh_first.idUser
+GROUP BY
+    u.idUser,
+    u.pseudo,
+    wh_latest.total,
+    wh_24h_prior.total,
+    wh_latest.dateWallet,
+    wh_first.dateWallet,
+    u.dateCrea
+ORDER BY 
+    latest_total DESC;
+  `;
 
-    db.query(query, (error, results) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(results);
-      }
-    });
-  });
-} 
+  try {
+    const [results] = await db.query(query);
+    return results;
+  } catch (error) {
+    console.error('Error executing query:', error);
+    throw error;
+  }
+}
 
 module.exports = { getTokenAmountByUser, setUserWallet, getUserSolde, getAllUserSolde, setUserWalletHistory, getRanking };

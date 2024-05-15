@@ -1,27 +1,56 @@
-import React, { useEffect } from "react";
-import { LeaderboardData } from "../../constants/constants";
+import React, { useEffect, useState } from 'react';
 import { Tr, Td, StyledTable } from "./Ranking.styles";
 import Rank from "./Rank/Rank";
 
 function Ranking() {
+  const [leaderboard, setLeaderboard] = useState([]);
+
   useEffect(() => {
-    const ws5 = new WebSocket(`ws://${process.env.REACT_APP_SERVER_URL}:8888`); // replace <wss5-port> with the actual port number
+    const ws5 = new WebSocket(`ws://${process.env.REACT_APP_SERVER_URL}:8888`);
     ws5.onopen = () => {
-      console.log('Connexion WebSocket5 établie');
+      console.log('WebSocket connection established');
     };
 
-    // Listen for incoming messages
     ws5.onmessage = (event) => {
-      const leaderboardData = JSON.parse(event.data);
-      console.log('Received leaderboard data:', leaderboardData);
-      // Update your state or props with the received leaderboard data
+      const newEntries = JSON.parse(event.data);
+      console.log('Received leaderboard data:', newEntries);
+
+      // Flatten the nested array
+      const flattenedEntries = newEntries.flat();
+
+      setLeaderboard(prevLeaderboard => {
+        const updatedLeaderboard = flattenedEntries.map(newEntry => {
+          const index = prevLeaderboard.findIndex(entry => entry.idUser === newEntry.idUser);
+          if (index !== -1) {
+            // Replace the existing entry with the new entry
+            return { ...prevLeaderboard[index], ...newEntry };
+          } else {
+            // Add the new entry if it doesn't exist
+            return newEntry;
+          }
+        });
+
+        // Filter out duplicates and ensure uniqueness
+        const uniqueLeaderboard = [
+          ...updatedLeaderboard.reduce((map, entry) => map.set(entry.idUser, entry), new Map()).values()
+        ];
+
+        return uniqueLeaderboard;
+      });
     };
 
-    // Clean up by closing the WebSocket connection when the component unmounts
     return () => {
       ws5.close();
     };
   }, []);
+
+  // Format time played from seconds to a more readable format (HH:MM:SS)
+  const formatTimePlayed = (seconds) => {
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    return `${hrs}h ${mins}m ${secs}s`;
+  };
 
   return (
     <StyledTable>
@@ -35,15 +64,18 @@ function Ranking() {
         </Tr>
       </thead>
       <tbody>
-        {LeaderboardData.map((data) => (
-          <Tr key={data.rank}>
-            <Rank rank={data.rank} />
-            <td>{data.username}</td>
-            <td>{data.totalValue}</td>
-            <Td className={data.evolution.startsWith('+') ? 'positive' : 'negative'}>{data.evolution}</Td>
-            <td>{data.timePlayed}</td>
+      {leaderboard.map((entry, index) => {
+        console.log(`Rendering entry:`, entry); // Debugging log
+        return (
+          <Tr key={entry.idUser}>
+            <Td><Rank rank={index + 1} /></Td>
+            <Td>{entry.pseudo}</Td>
+            <Td>{typeof entry.latest_total === 'number' ? entry.latest_total.toFixed(2) : 'N/A'}</Td>
+            <Td>{typeof entry.evolution_24h === 'number' ? entry.evolution_24h.toFixed(2) : 'N/A'}</Td>
+            <Td>{formatTimePlayed(entry.time_played_seconds)}</Td>
           </Tr>
-        ))}
+        );
+      })}
       </tbody>
     </StyledTable>
   );
