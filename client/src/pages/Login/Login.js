@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Home from '../Home/Home';
 import { useNavigate } from 'react-router-dom';
+import {useDispatch } from 'react-redux';
 
 
 
@@ -16,7 +17,7 @@ function Login() {
   const [repeatPassword, setRepeatPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const[errorMessageState,setErrorMessageState] = useState(false);
-
+  const dispatch = useDispatch();
 
   const handleLogin = async () => {
     try {
@@ -32,7 +33,7 @@ function Login() {
       if (response.status === 200) {
         localStorage.setItem('token', result.data.user.token);
         localStorage.setItem('pseudo', result.data.user.pseudo);
-        console.log("localStorage.getItem('token') : ",localStorage.getItem('token'));
+        dispatch({ type: "SET_ISLOGGEDIN", value: true });
         navigate('/dashboard');
       } else if (response.status === 401){
         console.log('Identifiants incorrect');
@@ -49,7 +50,6 @@ function Login() {
   };
 
   const handleRegister = async () => {
-
     if (password !== repeatPassword) {
       setErrorMessage('Les mots de passe ne correspondent pas.');
       setErrorMessageState(true);
@@ -85,13 +85,17 @@ function Login() {
     }
   };
 
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      activeState === "sign-in" ? handleLogin(event) : handleRegister(event);
+    }
+  };
     return (
       <>
       <Home>
       </Home>
       <BkgDiv>
         <FormDiv>
-
           <HeaderDiv>
           <SwitchDiv>
               <Label onClick={() => {setActiveLabel("sign-in"); setErrorMessageState(false);}} active={activeState === "sign-in"}>Sign in</Label>
@@ -103,15 +107,18 @@ function Login() {
             <Errordiv style={{ color: 'red' }} active={errorMessageState}>{errorMessage}</Errordiv>
             <InputDiv><InputText id="outlined-basic" label="Username" variant="outlined" value={username} 
               onChange={(e) => setUsername(e.target.value)} 
-              onSelect={() => setErrorMessageState(false)}/></InputDiv>
-            <InputDiv><InputText id="outlined-basic" label="Password" variant="outlined" value={password} 
+              onSelect={() => setErrorMessageState(false)}
+              onKeyDown={handleKeyDown}/></InputDiv>
+            <InputDiv><InputText id="outlined-basic" label="Password" variant="outlined" value={password} type="password"
               onChange={(e) => setPassword(e.target.value)} 
-              onSelect={() => setErrorMessageState(false)}/></InputDiv>
+              onSelect={() => setErrorMessageState(false)}
+              onKeyDown={handleKeyDown}/></InputDiv>
             <InputDiv active={activeState === "sign-up"} 
             className="sign-up-mode">
-              <InputText id="outlined-basic" label="Repeat Password" variant="outlined" 
+              <InputText id="outlined-basic" label="Repeat Password" variant="outlined" type="password"
               value={repeatPassword} onChange={(e) => setRepeatPassword(e.target.value)} 
-              onSelect={() => setErrorMessageState(false)} /></InputDiv>
+              onSelect={() => setErrorMessageState(false)} 
+              onKeyDown={handleKeyDown}/></InputDiv>
           </MidDiv>
           <ButtonDiv>
             <Button onClick={() => handleLogin()} active={activeState === "sign-in"} className="sign-in-mode">Login</Button>

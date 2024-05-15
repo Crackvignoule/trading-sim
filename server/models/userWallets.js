@@ -99,7 +99,7 @@ async function getTokenAmountByUser(pseudo, tokenName) {
 
         await Promise.all(promises);
 
-        userSolde = userSolde.toFixed(4);
+        userSolde = userSolde.toFixed(2);
         return { success: true, data: userSolde }; // Retourne le premier résultat trouvé
       } else {
         return { success: false, message: "Aucune donnée trouvée pour cet utilisateur et ce token." };

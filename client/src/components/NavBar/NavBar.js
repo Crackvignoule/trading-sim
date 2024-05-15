@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect} from "react";
 import {
   Nav,
   NavBarContainer,
@@ -12,6 +12,7 @@ import {
   Underline,
 } from "./NavBar.styles";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch} from 'react-redux';
 
 function NavBar() {
   const [underlineStyle, setUnderlineStyle] = useState({});
@@ -19,6 +20,8 @@ function NavBar() {
   const [pseudo, setPseudo] = useState("");
   const [logout, setLogout] = useState("Login");
   const [balance, setBalance] = useState(0);
+  const isLoggedIn = useSelector(state => state.isLoggedIn.value);
+  const dispatch = useDispatch();
 
   const handleClick = (event) => {
     const { offsetWidth, offsetLeft } = event.target;
@@ -34,65 +37,70 @@ function NavBar() {
   }, []);
 
   useEffect(() => {
-    const ws4 = new WebSocket(`ws://${process.env.REACT_APP_SERVER_URL}:8787`);
     const userToken = localStorage.getItem('token');
-    ws4.onopen = () => {
-        console.log('Connexion WebSocket4 établie');
-        // Envoyer le token de l'utilisateur juste après l'établissement de la connexion
-        ws4.send(JSON.stringify({ type: 'registration', token: userToken }));
-    };
+    if (isLoggedIn || userToken) {
+        const ws4 = new WebSocket(`ws://${process.env.REACT_APP_SERVER_URL}:8787`);
+        
+        ws4.onopen = () => {
+            console.log('Connexion WebSocket4 établie');
+            ws4.send(JSON.stringify({ type: 'registration', token: userToken }));
+        };
 
-    // Écouter les messages entrants
-    ws4.onmessage = (event) => {
-      setBalance(JSON.parse(event.data).userSolde);
-    
+        ws4.onmessage = (event) => {
+            setBalance(JSON.parse(event.data).userSolde);
+        };
+        return () => {
+          if (ws4) {
+              ws4.close();
+          }
       };
-
-      // Nettoyer en fermant la connexion WebSocket quand le composant se démonte
-      return () => {
-          ws4.close();
-      };
-    }, []);
+    }
+  }, [isLoggedIn]);
 
 
   useEffect(() => {
-  const getUserSolde = async () => {
-    // get user soldes
     const userToken = localStorage.getItem('token');
-    try {
-      const response = await fetch(`http://${process.env.REACT_APP_SERVER_URL}:5000/api/get-user-solde`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userToken: userToken }),
-      });
-      const data = await response.json();
-      if (response.status === 200) {
-        return { result: true, value: data.amount };
-      } else {
-        console.log('Échec de la connexion');
-        return { result: false };
-      }
-    } catch (error) {
-      console.error('Erreur lors de la connexion', error);
+    if (isLoggedIn || userToken) {
+      getUserSolde().then((result) => {
+        if (result.result) {
+          setBalance(result.value);
+        } else {
+          console.log('error');
+        }
+    });
+  }
+  }, []);
+
+
+const getUserSolde = async () => {
+  // get user soldes
+  const userToken = localStorage.getItem('token');
+  try {
+    const response = await fetch(`http://${process.env.REACT_APP_SERVER_URL}:5000/api/get-user-solde`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userToken: userToken }),
+    });
+    const data = await response.json();
+    if (response.status === 200) {
+      return { result: true, value: data.amount };
+    } else {
+      console.log('Échec de la connexion');
       return { result: false };
     }
-  };
-
-  getUserSolde().then((result) => {
-    if (result.result) {
-      setBalance(result.value);
-    } else {
-      console.log('error');
-    }
-  });
-}, []);
-
+  } catch (error) {
+    console.error('Erreur lors de la connexion', error);
+    return { result: false };
+  }
+};
 
 
   useEffect(() => {
-      const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token');
+    if(isLoggedIn || token) {
+      
       const storedPseudo = localStorage.getItem('pseudo');
         
       if(token !== "") {
@@ -101,11 +109,15 @@ function NavBar() {
       } else {
           setLogout("Login");
       }
-  }, []);
+    }
+  }, [isLoggedIn]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("pseudo");
+    setPseudo("");
+    setLogout("Login");
+    dispatch({ type: "SET_ISLOGGEDIN", value: false });
     navigate("/login");
   };
 

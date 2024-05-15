@@ -2,11 +2,11 @@ import GlobalStyles from './styles/GlobalStyles';
 import { BrowserRouter as Router, Routes, Route, Navigate  } from 'react-router-dom';
 import { Home, Login, Portfolio, Leaderboard } from './pages';
 import { NavBar, ProtectedRoute } from './components';
-
+import { useSelector } from 'react-redux';
 
 function App() {
-
-  const isAuthenticated = localStorage.getItem('token'); // Vérifie si le token existe
+  const isAuthenticated = useSelector(state => state.isLoggedIn.value);
+  
 
   return (
     <>

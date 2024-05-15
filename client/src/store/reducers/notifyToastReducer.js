@@ -4,7 +4,6 @@ import { ADD_NOTIFICATION, CLOSE_NOTIFICATION, UPDATE_NOTIFICATION_PROGRESS } fr
 
 const initialState = {
     notifications: [],
-    // autres états...
 };
 
 const notifyToastReducer = (state = initialState, action) => {
@@ -24,10 +23,9 @@ const notifyToastReducer = (state = initialState, action) => {
                 ...state,
                 notifications: state.notifications.map(notification => ({
                     ...notification,
-                    progress: notification.progress + 1, // Mettez à jour la progression comme vous le souhaitez
+                    progress: notification.progress + 1,
                 })),
             };
-        // autres cas...
         default:
             return state;
     }
