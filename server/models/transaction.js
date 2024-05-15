@@ -181,7 +181,6 @@ async function calcStandardDeviation(tradedPair) {
 
     // Extraire les prix dans un tableau
     const prix = historiquePrix.map(row => row.currentPrice);
-
     if (prix.length < 2) {
       // Pas assez de données pour calculer une variance ou un écart type significatif
       throw new Error("Pas assez de données pour calculer l'écart type.");
@@ -196,7 +195,7 @@ async function calcStandardDeviation(tradedPair) {
 
     return ecartType;
   } catch (error) {
-    console.error("Erreur lors du calcul de l'écart type pour la paire :", error);
+    //console.error("Erreur lors du calcul de l'écart type pour la paire :", error);
     // Gérer l'erreur de manière appropriée
     return 0; // Ou une autre valeur par défaut qui indique une erreur ou une absence de variance
   }

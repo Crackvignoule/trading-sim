@@ -149,22 +149,21 @@ async function getTokenAmountByUser(pseudo, tokenName) {
 
         if (results.length > 0) {
             results.forEach(token => {
-                if (!userSoldes[token.userToken]) {
-                    userSoldes[token.userToken] = 0;
-                }
-
-                if (token.tokenName === "USDT") {
+              if (!userSoldes[token.userToken]) {
+                  userSoldes[token.userToken] = 0;
+              }
+          
+              if (token.tokenName === "USDT") {
                   userSoldes[token.userToken] += token.amount;
-                } else {
-                    const namePair = token.tokenName + "/USDT";
-                    // Subtract the value in USDT of the new cryptocurrency from the user's balance
-                    userSoldes[token.userToken] += (pricesObj[namePair] * token.amount) - token.amount; 
-                }
+              } else {
+                  const namePair = token.tokenName + "/USDT";
+                  userSoldes[token.userToken] += pricesObj[namePair] * token.amount; 
+              }
             });
 
             // Convert each userSolde to a fixed decimal number
             for (let userToken in userSoldes) {
-                userSoldes[userToken] = userSoldes[userToken].toFixed(4);
+                userSoldes[userToken] = userSoldes[userToken].toFixed(2);
             }
 
             // Convert the userSoldes object to an array of objects
