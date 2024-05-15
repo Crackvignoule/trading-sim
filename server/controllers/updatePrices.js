@@ -3,7 +3,7 @@ const { ExecuteOpenedOrderByPair } = require('../models/transaction');
 const { wss, broadcastDataPair } = require('../services/serverWebSocket');
 const { wss2, broadcastOrders } = require('../services/serverWebSocket');
 const { sendToUser, sendToUserSolde, clientsSoldeToken } = require('../services/serverWebSocket');
-const { getAllUserSolde } = require('../models/userWallets');
+const { getAllUserSolde, setUserWalletHistory } = require('../models/userWallets');
 
 const postData = async (ticker, pair) => {
 
@@ -32,6 +32,12 @@ const postData = async (ticker, pair) => {
             
             response.data.forEach(user => {
                 sendToUserSolde(user.userToken, user.userSolde); // Envoi le solde à chaque utilisateur
+
+            // Update the WalletsHistory table
+            setUserWalletHistory(user.userToken, user.userSolde, new Date()).catch(error => {
+                console.error("Error updating WalletsHistory:", error);
+            });
+
             });
         } else {
             console.error(response.message);

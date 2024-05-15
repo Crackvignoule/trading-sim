@@ -6,21 +6,6 @@ wss.on('connection', function connection(ws) {
   console.log('Un client s\'est connecté');
 });
 
-// Fonction pour diffuser les données à tous les clients
-function broadcastDataPair(pair, data, wss) {
-  wss.clients.forEach(function each(client) {
-    if (client.readyState === WebSocket.OPEN) {
-      // Créer un nouvel objet contenant à la fois `data` et `pair`
-      const message = {
-        pair: pair,
-        data: data,
-      };
-      // Envoyer ce nouvel objet comme une chaîne JSON
-      client.send(JSON.stringify(message));
-    }
-  });
-}
-
 // Serveur WebSocket pour la diffusion à tous les clients
 const wss2 = new WebSocket.Server({ port: 8585 });
 const clients = {}; // Stocke les paires token: ws pour wss3
@@ -89,6 +74,21 @@ wss4.on('connection', function connection(ws) {
     }
   });
 });
+
+// Fonction pour diffuser les données à tous les clients
+function broadcastDataPair(pair, data, wss) {
+  wss.clients.forEach(function each(client) {
+    if (client.readyState === WebSocket.OPEN) {
+      // Créer un nouvel objet contenant à la fois `data` et `pair`
+      const message = {
+        pair: pair,
+        data: data,
+      };
+      // Envoyer ce nouvel objet comme une chaîne JSON
+      client.send(JSON.stringify(message));
+    }
+  });
+}
 
 // Fonction pour envoyer des données à un utilisateur spécifique connecté à wss3
 function sendToUserSolde(userToken, data) {
