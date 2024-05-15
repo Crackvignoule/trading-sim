@@ -1,5 +1,5 @@
 const WebSocket = require('ws');
-const { postDataBTCUSDT, postDataETHUSDT, postDataSOLUSDT } = require('../controllers/updatePrices');
+const { postData } = require('../controllers/updatePrices');
 
 const initializeBinanceWebSocket = () => {
   const binanceWsUrl = 'wss://stream.binance.com/stream?streams=btcusdt@ticker/ethusdt@ticker/solusdt@ticker';
@@ -16,18 +16,18 @@ const initializeBinanceWebSocket = () => {
     // Dispatch en fonction du stream
     switch (stream) {
       case 'btcusdt@ticker':
-        postDataBTCUSDT(ticker).catch(err => {
+        postData(ticker, 'BTC/USDT').catch(err => {
           console.error('Erreur lors de la mise à jour BTC:', err);
         });
         break;
       case 'ethusdt@ticker':
         
-        postDataETHUSDT(ticker).catch(err => {
+        postData(ticker, 'ETH/USDT').catch(err => {
           console.error('Erreur lors de la mise à jour ETH:', err);
         });
         break;
       case 'solusdt@ticker':
-        postDataSOLUSDT(ticker).catch(err => {
+        postData(ticker, 'SOL/USDT').catch(err => {
           console.error('Erreur lors de la mise à jour SOL:', err);
         });
         break;
