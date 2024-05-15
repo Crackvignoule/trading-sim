@@ -189,4 +189,31 @@ async function setUserWalletHistory(userToken, userSolde, dateWallet) {
   }
 }
 
-module.exports = { getTokenAmountByUser, setUserWallet, getUserSolde, getAllUserSolde, setUserWalletHistory };
+async function getRanking() {
+  return new Promise((resolve, reject) => {
+    const query = `
+      SELECT 
+        @rank := @rank + 1 AS rank,
+        Users.username,
+        Wallets.total,
+        ((Wallets.total - Wallets.total24h) / Wallets.total24h) * 100 AS evolution24h,
+        TIMESTAMPDIFF(DAY, Users.creationDate, NOW()) AS timePlayed
+      FROM
+        Users
+        INNER JOIN Wallets ON Users.id = Wallets.userId,
+        (SELECT @rank := 0) r
+      ORDER BY
+        Wallets.total DESC
+    `;
+
+    db.query(query, (error, results) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(results);
+      }
+    });
+  });
+} 
+
+module.exports = { getTokenAmountByUser, setUserWallet, getUserSolde, getAllUserSolde, setUserWalletHistory, getRanking };
