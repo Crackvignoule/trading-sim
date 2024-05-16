@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 
 function App() {
   const isAuthenticated = useSelector(state => state.isLoggedIn.value);
+  const userToken = localStorage.getItem('token');
   
 
   return (
@@ -35,7 +36,7 @@ function App() {
               </ProtectedRoute>
             } />
             <Route path="/login" element={<Login />}/>
-            <Route path="/" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />
+            <Route path="/" element={isAuthenticated || userToken ? <Home /> : <Navigate to="/login" />} />
           </Routes>
       </Router>
     </>
