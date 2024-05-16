@@ -79,27 +79,15 @@ async function getUserSolde(userToken) {
         if (token.tokenName === "USDT") {
           userSolde += token.amount;
         }
-<<<<<<< HEAD
-  
-        });
-
-        await Promise.all(promises);
-
-        userSolde = userSolde.toFixed(2);
-        return { success: true, data: userSolde }; // Retourne le premier résultat trouvé
-      } else {
-        return { success: false, message: "Aucune donnée trouvée pour cet utilisateur et ce token." };
-=======
         else{
-        const namePair = token.tokenName + "/USDT";
-        const queryPrice = `
-        SELECT currentPrice FROM PricesHistory ph
-        INNER JOIN Pairs p ON p.idPair = ph.idPair
-        WHERE p.namePair = ? ORDER BY ph.datePrice DESC LIMIT 1;`;
-        
-        const [resultPrice] = await db.query(queryPrice, [namePair]);
-        userSolde += resultPrice[0].currentPrice * token.amount; 
->>>>>>> 62d86e33a77c31cdb5e5cc987e9cc6ae522591b1
+          const namePair = token.tokenName + "/USDT";
+          const queryPrice = `
+          SELECT currentPrice FROM PricesHistory ph
+          INNER JOIN Pairs p ON p.idPair = ph.idPair
+          WHERE p.namePair = ? ORDER BY ph.datePrice DESC LIMIT 1;`;
+          
+          const [resultPrice] = await db.query(queryPrice, [namePair]);
+          userSolde += resultPrice[0].currentPrice * token.amount; 
       }
 
       });
