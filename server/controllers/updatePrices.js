@@ -1,7 +1,7 @@
 const { updateTokenPrices } = require('../models/updatePrices');
 const { ExecuteOpenedOrderByPair } = require('../models/transaction');
-const { wss, broadcastDataPair } = require('../services/serverWebSocket');
-const { wss2, broadcastOrders } = require('../services/serverWebSocket');
+const { ws, broadcastDataPair } = require('../services/serverWebSocket');
+const { ws2, broadcastOrders } = require('../services/serverWebSocket');
 const { sendToUser, sendToUserSolde, clientsSoldeToken } = require('../services/serverWebSocket');
 const { getAllUserSolde, setUserWalletHistory } = require('../models/userWallets');
 
@@ -11,7 +11,7 @@ const postData = async (ticker, pair) => {
         time : Math.floor(new Date(ticker.E).getTime() / 1000),
         value : parseFloat(ticker.c) //ticker.c est le prix 'current' de la pair
     };
-    broadcastDataPair(pair,data,wss); //Partager le prix à tout les clients connectés
+    broadcastDataPair(pair,data,ws); //Partager le prix à tout les clients connectés
     await updateTokenPrices(ticker,pair);
     const ExecuteOrders = await ExecuteOpenedOrderByPair(pair,parseFloat(ticker.c)); //récupérer tout les ordres ouverts au prix actuel
     if (ExecuteOrders.data.length > 0){
@@ -23,7 +23,7 @@ const postData = async (ticker, pair) => {
         const ordersToBroadcast = ExecuteOrders.data.map(({ userToken, ...orderWithoutToken }) => orderWithoutToken);
         
         // Envoie les ordres à tout le monde sans le userToken
-        broadcastOrders(ordersToBroadcast, wss2);
+        broadcastOrders(ordersToBroadcast, ws2);
     }
 
     //récupère les soldes de tout les utilisateurs

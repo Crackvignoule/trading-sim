@@ -13,7 +13,6 @@ function Ranking() {
 
     ws5.onmessage = (event) => {
       const newEntries = JSON.parse(event.data);
-      console.log('Received leaderboard data:', newEntries);
 
       // Flatten the nested array
       const flattenedEntries = newEntries.flat();
@@ -65,7 +64,6 @@ function Ranking() {
       </thead>
       <tbody>
       {leaderboard.map((entry, index) => {
-        console.log(`Rendering entry:`, entry); // Debugging log
         return (
           <Tr key={entry.idUser}>
             <Td><Rank rank={index + 1} /></Td>

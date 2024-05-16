@@ -1,29 +1,29 @@
 const { getRanking } = require('../models/userWallets');
 const WebSocket = require('ws');
 
-const wss = new WebSocket.Server({ port: 8080 });
-const wss2 = new WebSocket.Server({ port: 8585 });
-const wss3 = new WebSocket.Server({ port: 8686 });
-const wss4 = new WebSocket.Server({ port: 8787 });
-const wss5 = new WebSocket.Server({ port: 8888 });
+const ws = new WebSocket.Server({ port: 8080 });
+const ws2 = new WebSocket.Server({ port: 8585 });
+const ws3 = new WebSocket.Server({ port: 8686 });
+const ws4 = new WebSocket.Server({ port: 8787 });
+const ws5 = new WebSocket.Server({ port: 8888 });
 
-wss.on('connection', function connection(ws) {
+ws.on('connection', function connection(ws) {
   console.log('Un client s\'est connecté');
 });
 
 // Serveur WebSocket pour la diffusion à tous les clients
-const clients = {}; // Stocke les paires token: ws pour wss3
-const clientsSoldeToken = {}; // Stocke les paires token: ws pour wss4
+const clients = {}; // Stocke les paires token: ws pour ws3
+const clientsSoldeToken = {}; // Stocke les paires token: ws pour ws4
 
-wss2.on('connection', function connection(ws) {
-  console.log('Un client s\'est connecté à wss2 pour les diffusions');
+ws2.on('connection', function connection(ws) {
+  console.log('Un client s\'est connecté à ws2 pour les diffusions');
 
-  // Vous pouvez ajouter ici des logiques spécifiques à wss2 si nécessaire
+  // Vous pouvez ajouter ici des logiques spécifiques à ws2 si nécessaire
 });
 
 // Serveur WebSocket pour envoyer des données à un utilisateur spécifique
-wss3.on('connection', function connection(ws) {
-  console.log('Un client s\'est connecté à wss3 pour la communication individuelle');
+ws3.on('connection', function connection(ws) {
+  console.log('Un client s\'est connecté à ws3 pour la communication individuelle');
 
   ws.on('message', function incoming(message) {
     try {
@@ -31,17 +31,17 @@ wss3.on('connection', function connection(ws) {
       // Si le message contient un token, associez ce WebSocket à ce token.
       if (data.type === 'registration' && data.token) {
         clients[data.token] = ws;
-        console.log(`Utilisateur ${data.token} enregistré sur wss3.`);
+        console.log(`Utilisateur ${data.token} enregistré sur ws3.`);
       }
     } catch (error) {
-      console.error('Erreur de traitement du message sur wss3', error);
+      console.error('Erreur de traitement du message sur ws3', error);
     }
   });
 });
 
 // Serveur WebSocket pour envoyer la valeur du solde à un utilisateur spécifique
-wss4.on('connection', function connection(ws) {
-  console.log('Un client s\'est connecté à wss4 pour la communication individuelle');
+ws4.on('connection', function connection(ws) {
+  console.log('Un client s\'est connecté à ws4 pour la communication individuelle');
 
   ws.on('message', function incoming(message) {
     try {
@@ -49,16 +49,16 @@ wss4.on('connection', function connection(ws) {
       // Si le message contient un token, associez ce WebSocket à ce token.
       if (data.type === 'registration' && data.token) {
         clientsSoldeToken[data.token] = ws;
-        console.log(`Utilisateur ${data.token} enregistré sur wss4.`);
+        console.log(`Utilisateur ${data.token} enregistré sur ws4.`);
       }
     } catch (error) {
-      console.error('Erreur de traitement du message sur wss4', error);
+      console.error('Erreur de traitement du message sur ws4', error);
     }
   });
 });
 
-wss5.on('connection', function connection(ws) {
-  console.log('A client has connected to wss5 for individual communication');
+ws5.on('connection', function connection(ws) {
+  console.log('A client has connected to ws5 for individual communication');
 
   // Fetch ranking data when a client connects
   const sendRankingData = () => {
@@ -84,16 +84,16 @@ wss5.on('connection', function connection(ws) {
   });
 });
 
-// Fonction pour diffuser les données à tous les clients connectés à wss2
+// Fonction pour diffuser les données à tous les clients connectés à ws2
 function broadcastOrders(data) {
-  wss2.clients.forEach(function each(client) {
+  ws2.clients.forEach(function each(client) {
     if (client.readyState === WebSocket.OPEN) {
       client.send(JSON.stringify(data));
     }
   });
 }
 
-// Fonction pour envoyer des données à un utilisateur spécifique connecté à wss3
+// Fonction pour envoyer des données à un utilisateur spécifique connecté à ws3
 function sendToUser(userToken, data) {
   
   if (clients[userToken] && clients[userToken].readyState === WebSocket.OPEN) {
@@ -102,8 +102,8 @@ function sendToUser(userToken, data) {
 }
 
 // Fonction pour diffuser les données à tous les clients
-function broadcastDataPair(pair, data, wss) {
-  wss.clients.forEach(function each(client) {
+function broadcastDataPair(pair, data, ws) {
+  ws.clients.forEach(function each(client) {
     if (client.readyState === WebSocket.OPEN) {
       // Créer un nouvel objet contenant à la fois `data` et `pair`
       const message = {
@@ -116,7 +116,7 @@ function broadcastDataPair(pair, data, wss) {
   });
 }
 
-// Fonction pour envoyer des données à un utilisateur spécifique connecté à wss3
+// Fonction pour envoyer des données à un utilisateur spécifique connecté à ws3
 function sendToUserSolde(userToken, data) {
   if (clientsSoldeToken[userToken] && clientsSoldeToken[userToken].readyState === WebSocket.OPEN) {
     const payload = {
@@ -126,5 +126,5 @@ function sendToUserSolde(userToken, data) {
   }
 }
 
-module.exports = { wss, broadcastDataPair, broadcastOrders, sendToUser, sendToUserSolde, clientsSoldeToken };
+module.exports = { ws, broadcastDataPair, broadcastOrders, sendToUser, sendToUserSolde, clientsSoldeToken };
 
