@@ -1,28 +1,17 @@
+const { getRanking } = require('../models/userWallets');
 const WebSocket = require('ws');
 
 const wss = new WebSocket.Server({ port: 8080 });
+const wss2 = new WebSocket.Server({ port: 8585 });
+const wss3 = new WebSocket.Server({ port: 8686 });
+const wss4 = new WebSocket.Server({ port: 8787 });
+const wss5 = new WebSocket.Server({ port: 8888 });
 
 wss.on('connection', function connection(ws) {
   console.log('Un client s\'est connecté');
 });
 
-// Fonction pour diffuser les données à tous les clients
-function broadcastDataPair(pair, data, wss) {
-  wss.clients.forEach(function each(client) {
-    if (client.readyState === WebSocket.OPEN) {
-      // Créer un nouvel objet contenant à la fois `data` et `pair`
-      const message = {
-        pair: pair,
-        data: data,
-      };
-      // Envoyer ce nouvel objet comme une chaîne JSON
-      client.send(JSON.stringify(message));
-    }
-  });
-}
-
 // Serveur WebSocket pour la diffusion à tous les clients
-const wss2 = new WebSocket.Server({ port: 8585 });
 const clients = {}; // Stocke les paires token: ws pour wss3
 const clientsSoldeToken = {}; // Stocke les paires token: ws pour wss4
 
@@ -32,18 +21,7 @@ wss2.on('connection', function connection(ws) {
   // Vous pouvez ajouter ici des logiques spécifiques à wss2 si nécessaire
 });
 
-// Fonction pour diffuser les données à tous les clients connectés à wss2
-function broadcastOrders(data) {
-  wss2.clients.forEach(function each(client) {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify(data));
-    }
-  });
-}
-
 // Serveur WebSocket pour envoyer des données à un utilisateur spécifique
-const wss3 = new WebSocket.Server({ port: 8686 });
-
 wss3.on('connection', function connection(ws) {
   console.log('Un client s\'est connecté à wss3 pour la communication individuelle');
 
@@ -61,18 +39,7 @@ wss3.on('connection', function connection(ws) {
   });
 });
 
-// Fonction pour envoyer des données à un utilisateur spécifique connecté à wss3
-function sendToUser(userToken, data) {
-  
-  if (clients[userToken] && clients[userToken].readyState === WebSocket.OPEN) {
-    clients[userToken].send(JSON.stringify(data));
-  }
-}
-
-
 // Serveur WebSocket pour envoyer la valeur du solde à un utilisateur spécifique
-const wss4 = new WebSocket.Server({ port: 8787 });
-
 wss4.on('connection', function connection(ws) {
   console.log('Un client s\'est connecté à wss4 pour la communication individuelle');
 
@@ -89,6 +56,52 @@ wss4.on('connection', function connection(ws) {
     }
   });
 });
+
+wss5.on('connection', function connection(ws) {
+  console.log('Un client s\'est connecté à wss5 pour la communication individuelle');
+
+  // Fetch ranking data when a client connects
+  getRanking()
+    .then((data) => {
+      console.log('Ranking data:', data);
+      ws.send(JSON.stringify(data));
+    })
+    .catch((error) => {
+      console.error('Error fetching ranking data:', error);
+    });
+});
+
+// Fonction pour diffuser les données à tous les clients connectés à wss2
+function broadcastOrders(data) {
+  wss2.clients.forEach(function each(client) {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(JSON.stringify(data));
+    }
+  });
+}
+
+// Fonction pour envoyer des données à un utilisateur spécifique connecté à wss3
+function sendToUser(userToken, data) {
+  
+  if (clients[userToken] && clients[userToken].readyState === WebSocket.OPEN) {
+    clients[userToken].send(JSON.stringify(data));
+  }
+}
+
+// Fonction pour diffuser les données à tous les clients
+function broadcastDataPair(pair, data, wss) {
+  wss.clients.forEach(function each(client) {
+    if (client.readyState === WebSocket.OPEN) {
+      // Créer un nouvel objet contenant à la fois `data` et `pair`
+      const message = {
+        pair: pair,
+        data: data,
+      };
+      // Envoyer ce nouvel objet comme une chaîne JSON
+      client.send(JSON.stringify(message));
+    }
+  });
+}
 
 // Fonction pour envoyer des données à un utilisateur spécifique connecté à wss3
 function sendToUserSolde(userToken, data) {
