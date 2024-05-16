@@ -168,7 +168,6 @@ async function getAllUserSolde(clientsSoldeToken) {
       return { success: false, message: "Erreur lors de la récupération des données." };
     }
   }
-<<<<<<< HEAD
   
   async function getAllUserSolde(clientsSoldeToken) {
     if(Object.keys(clientsSoldeToken).length !== 0) {
