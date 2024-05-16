@@ -58,17 +58,30 @@ wss4.on('connection', function connection(ws) {
 });
 
 wss5.on('connection', function connection(ws) {
-  console.log('Un client s\'est connecté à wss5 pour la communication individuelle');
+  console.log('A client has connected to wss5 for individual communication');
 
   // Fetch ranking data when a client connects
-  getRanking()
-    .then((data) => {
-      console.log('Ranking data:', data);
-      ws.send(JSON.stringify(data));
-    })
-    .catch((error) => {
-      console.error('Error fetching ranking data:', error);
-    });
+  const sendRankingData = () => {
+    getRanking()
+      .then((data) => {
+        console.log('Ranking data:', data);
+        ws.send(JSON.stringify(data));
+      })
+      .catch((error) => {
+        console.error('Error fetching ranking data:', error);
+      });
+  };
+
+  // Send ranking data immediately
+  sendRankingData();
+
+  // Then send ranking data every second
+  const intervalId = setInterval(sendRankingData, 1000);
+
+  // Clear the interval when the client disconnects
+  ws.on('close', () => {
+    clearInterval(intervalId);
+  });
 });
 
 // Fonction pour diffuser les données à tous les clients connectés à wss2
