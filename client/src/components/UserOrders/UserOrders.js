@@ -235,7 +235,7 @@ function UserOrders() {
                         align={column.align}
                         style={{ minWidth: column.minWidth }}
                         >
-                        <Label id={column.id === 'icon' ? 'trash': ''} onClick={column.id === 'icon' ?  () =>deleteAllUsersTransaction() : ''}>
+                        <Label id={column.id === 'icon' ? 'trash': ''} {...(column.id === 'icon' ? { onClick: () => deleteAllUsersTransaction() } : {})}>
                             {column.label}
                         </Label>
                         </MyTableCell>
