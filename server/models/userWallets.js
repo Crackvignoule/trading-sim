@@ -112,7 +112,6 @@ async function getTokenAmountByUser(pseudo, tokenName) {
   }
   
   async function getAllUserSolde(clientsSoldeToken) {
-    
     if(Object.keys(clientsSoldeToken).length !== 0) {
       try {
         const query = `
@@ -124,7 +123,6 @@ async function getTokenAmountByUser(pseudo, tokenName) {
       
         // Exécutez la requête avec les paramètres fournis
         const [results] = await db.query(query,[Object.keys(clientsSoldeToken)]);
-
         let userSoldes = {};
 
         // Get the latest prices for all pairs
@@ -140,42 +138,46 @@ async function getTokenAmountByUser(pseudo, tokenName) {
             ) subq ON p.namePair = subq.namePair AND ph.datePrice = subq.maxDate;
         `;
         const [prices] = await db.query(queryPrice);
-
         // Convert the prices array to an object for easier lookup
         let pricesObj = {};
         prices.forEach(price => {
             pricesObj[price.namePair] = price.currentPrice;
         });
-
         if (results.length > 0) {
-            results.forEach(token => {
-              if (!userSoldes[token.userToken]) {
-                  userSoldes[token.userToken] = 0;
+          let groupedResults = {};
+      
+          // Group results by userToken
+          results.forEach(token => {
+              if (!groupedResults[token.userToken]) {
+                  groupedResults[token.userToken] = [];
               }
-          
-              if (token.tokenName === "USDT") {
-                  userSoldes[token.userToken] += token.amount;
-              } else {
-                  const namePair = token.tokenName + "/USDT";
-                  userSoldes[token.userToken] += pricesObj[namePair] * token.amount; 
-              }
-            });
-
-            // Convert each userSolde to a fixed decimal number
-            for (let userToken in userSoldes) {
-                userSoldes[userToken] = userSoldes[userToken].toFixed(2);
-            }
-
-            // Convert the userSoldes object to an array of objects
-            const userSoldesArray = Object.keys(userSoldes).map(userToken => ({
-                userToken: userToken,
-                userSolde: userSoldes[userToken]
-            }));
-
-            return { success: true, data: userSoldesArray }; // Return the userSoldes array
-        } else {
-            return { success: false, message: "Aucune donnée trouvée pour ces utilisateurs et ces tokens." };
-        }
+              groupedResults[token.userToken].push(token);
+          });
+      
+          // Calculate the balance for each user
+          for (let userToken in groupedResults) {
+              userSoldes[userToken] = 0;
+              groupedResults[userToken].forEach(token => {
+                  if (token.tokenName === "USDT") {
+                      userSoldes[userToken] += token.amount;
+                  } else {
+                      const namePair = token.tokenName + "/USDT";
+                      userSoldes[userToken] += pricesObj[namePair] * token.amount; 
+                  }
+              });
+              userSoldes[userToken] = userSoldes[userToken].toFixed(2);
+          }
+      
+          // Convert the userSoldes object to an array of objects
+          const userSoldesArray = Object.keys(userSoldes).map(userToken => ({
+              userToken: userToken,
+              userSolde: userSoldes[userToken]
+          }));
+      
+          return { success: true, data: userSoldesArray };
+      } else {
+          return { success: false, message: "Aucune donnée trouvée pour ces utilisateurs et ces tokens." };
+      }
       
       } catch (error) {
         console.error("Erreur lors de la récupération des données :", error);

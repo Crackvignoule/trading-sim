@@ -29,7 +29,7 @@ function TradeMenu() {
             await getLastTokenPrice();
         };
         getPriceData();
-    }, []);
+    }, [tradedPair]);
 
     useEffect(() => {
     const fetchData = async () => {
@@ -84,7 +84,7 @@ function TradeMenu() {
         }
         
         majData();
-    }, [activeAction]);
+    }, [activeAction,tradedPair]);
 
     const resetData = async () =>{
         setAmountBuyToken(0);
