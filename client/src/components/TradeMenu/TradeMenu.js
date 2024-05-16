@@ -378,7 +378,7 @@ function TradeMenu() {
                 });
                 const result = await response.json();
                 if (response.status === 200) {
-                    
+                    await resetData();
                     if(result.data.statut === "Opened"){
                         const newOpenedOrder = {
                             dateTrans: result.data.date, 
