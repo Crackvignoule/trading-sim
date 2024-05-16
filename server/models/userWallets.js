@@ -168,6 +168,7 @@ async function getAllUserSolde(clientsSoldeToken) {
       return { success: false, message: "Erreur lors de la récupération des données." };
     }
   }
+}
   
   async function getAllUserSolde(clientsSoldeToken) {
     if(Object.keys(clientsSoldeToken).length !== 0) {
@@ -359,4 +360,4 @@ ORDER BY
   }
 }
 
-module.exports = { getTokenAmountByUser, setUserWallet, getUserSolde, getAllUserSolde, setUserWalletHistory, getRanking };
+module.exports = { getTokenAmountByUser, setUserWallet, getUserSolde, getAllUserSolde, setUserWalletHistory, getRanking } ;
