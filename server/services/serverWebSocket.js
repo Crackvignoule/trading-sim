@@ -64,7 +64,6 @@ ws5.on('connection', function connection(ws) {
   const sendRankingData = () => {
     getRanking()
       .then((data) => {
-        console.log('Ranking data:', data);
         ws.send(JSON.stringify(data));
       })
       .catch((error) => {
