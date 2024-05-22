@@ -76,7 +76,7 @@ ws5.on('connection', function connection(ws) {
   sendRankingData();
 
   // Then send ranking data every second
-  const intervalId = setInterval(sendRankingData, 1000);
+  const intervalId = setInterval(sendRankingData, 10);
 
   // Clear the interval when the client disconnects
   ws.on('close', () => {
