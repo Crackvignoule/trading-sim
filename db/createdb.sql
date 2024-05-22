@@ -15,7 +15,10 @@ CREATE TABLE Users (
   
 CREATE TABLE Pairs (
   idPair INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  namePair VARCHAR(25)
+  namePair VARCHAR(25),
+  nameToken VARCHAR(50),
+  symbol VARCHAR(10),
+  logo VARCHAR(255),
   );
   
 CREATE TABLE PricesHistory (

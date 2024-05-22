@@ -7,7 +7,7 @@ function OwnedCryptos() {
     <Container>
         <Header>
             Owned Cryptos
-        </Header>
+        </Header> 
         <StyledTable>
             <tr>
                 <th>Crypto</th>
