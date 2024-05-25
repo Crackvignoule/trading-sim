@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AllOrdersDiv, OrderHeader, TitleLabel, SellDiv, MidDiv, BuyDiv, Row, Label, OrderMain, MidLabel } from './AllOrders.styles';
 import { useSelector } from 'react-redux';
+import io from 'socket.io-client';
 
 function AllOrders() {
     const [tokenPrice, setTokenPrice] = useState(0);
@@ -34,69 +35,59 @@ function AllOrders() {
     
 
     useEffect(() => {
-        const ws = new WebSocket(`ws://${process.env.REACT_APP_SERVER_URL}:8080`);
-
-        ws.onopen = () => {
-            console.log('Connexion WebSocket établie');
-        };
-
-        // Écouter les messages entrants
-        ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-                if (tradedPair === data.pair) {
-                    const newTokenPrice = parseFloat(data.data.value);
-            
-                    // Utilisation de la mise à jour conditionnelle
-                    setTokenPrice((prevTokenPrice) => {
-                        if (newTokenPrice < prevTokenPrice) {
-                            setActiveTokenAction("decreasing");
-                        } else if (newTokenPrice > prevTokenPrice) {
-                            setActiveTokenAction("increasing");
-                        }
-                        return newTokenPrice; // Mettre à jour le prix du token après la comparaison
-                    });
+        const socket = io(`ws://${process.env.REACT_APP_SERVER_URL}:8888`);
+        const userToken = localStorage.getItem('token');
+        socket.on('connect', () => {
+          console.log('Connexion établie');
+          socket.emit('join', 'prices',userToken);
+          socket.emit('join', 'orders',userToken);
+        });
+      
+        socket.on('dataPrices', (data) => {
+          if (tradedPair === data.pair) {
+            const newTokenPrice = parseFloat(data.data.value);
+      
+            // Utilisation de la mise à jour conditionnelle
+            setTokenPrice((prevTokenPrice) => {
+              if (newTokenPrice < prevTokenPrice) {
+                setActiveTokenAction("decreasing");
+              } else if (newTokenPrice > prevTokenPrice) {
+                setActiveTokenAction("increasing");
+              }
+              return newTokenPrice; // Mettre à jour le prix du token après la comparaison
+            });
+          }
+        });
+      
+        socket.on('dataAllOrders', (data) => {
+          //Si envoi à tout les utiliseurs + 1 seul ordre
+          if(!Array.isArray(data)){
+            if(tradedPair === data.tradedPair){
+              if(data.direction === "buy"){
+                addBuyOrdersRows(data);
+              }else if(data.direction === "sell"){
+                addSellOrdersRows(data);
+              }
+            }
+          }
+          // Si envoi à tout les utilisateurs + plusieurs ordre sous forme de tableau
+          else{
+            data.forEach(order => {
+              if (tradedPair === order.pair) {
+                if(order.direction === "buy"){
+                  addBuyOrdersRows(order);
+                }else if(order.direction === "sell"){
+                  addSellOrdersRows(order);
                 }
+              }
+            });
+          }
+        });
+      
+        return () => {
+          socket.close();
         };
-
-        const ws2 = new WebSocket(`ws://${process.env.REACT_APP_SERVER_URL}:8585`);
-        ws2.onopen = () => {
-            console.log('Connexion WebSocket2 établie');
-        };
-
-        // Écouter les messages entrants
-        ws2.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-                //Si envoi à tout les utiliseurs + 1 seul ordre
-                if(!Array.isArray(data)){
-                    if(tradedPair === data.tradedPair){
-                        if(data.direction === "buy"){
-                            addBuyOrdersRows(data);
-                        }else if(data.direction === "sell"){
-                            addSellOrdersRows(data);
-                        }
-                    }
-                }
-                // Si envoi à tout les utilisateurs + plusieurs ordre sous forme de tableau
-                else{
-                    data.forEach(order => {
-                        if (tradedPair === order.pair) {
-                            if(order.direction === "buy"){
-                                addBuyOrdersRows(order);
-                            }else if(order.direction === "sell"){
-                                addSellOrdersRows(order);
-                            }
-                        }
-                            });
-                        }
-            
-                };
-
-            // Nettoyer en fermant la connexion WebSocket quand le composant se démonte
-            return () => {
-                ws.close();
-                ws2.close();
-            };
-        }, [tradedPair]);
+      }, [tradedPair]);
         
 
 

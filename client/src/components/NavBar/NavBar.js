@@ -1,4 +1,5 @@
 import React, { useState, useEffect} from "react";
+import io from 'socket.io-client';
 import {
   Nav,
   NavBarContainer,
@@ -39,21 +40,27 @@ function NavBar() {
   useEffect(() => {
     const userToken = localStorage.getItem('token');
     if (isLoggedIn || userToken) {
-        const ws4 = new WebSocket(`ws://${process.env.REACT_APP_SERVER_URL}:8787`);
+        const socket = io(`ws://${process.env.REACT_APP_SERVER_URL}:8888`);
         
-        ws4.onopen = () => {
-            console.log('Connexion WebSocket4 établie');
-            ws4.send(JSON.stringify({ type: 'registration', token: userToken }));
-        };
+        socket.on('connect', () => {
+        console.log('Connexion établie');
+        socket.emit('join', 'userSolde', userToken);
+        });
 
-        ws4.onmessage = (event) => {
-            setBalance(JSON.parse(event.data).userSolde);
-        };
-        return () => {
-          if (ws4) {
-              ws4.close();
+        socket.on('dataSolde', (data) => {
+          console.log('Données reçues:', data.userSolde);
+          try {
+            
+            setBalance(data.userSolde);
+          } catch (error) {
+            console.error('Erreur de parsing des données reçues:', error);
           }
-      };
+        });
+
+        // Nettoyer en fermant la connexion WebSocket quand le composant se démonte
+        return () => {
+            socket.close();
+        };
     }
   }, [isLoggedIn]);
 

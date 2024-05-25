@@ -3,6 +3,7 @@ import {UserOrdersDiv, OrderContainer, MyTable, MyTableBody, MyTableCell, MyTabl
 import { useSelector, useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import { addNotification } from '../../store/reducers/action';
+import io from 'socket.io-client';
 
 
 const ordersColumns = [
@@ -86,49 +87,45 @@ function UserOrders() {
     }, [dispatch]);
 
 
-    useEffect(() => {
-        const ws3 = new WebSocket(`ws://${process.env.REACT_APP_SERVER_URL}:8686`);
-        const userToken = localStorage.getItem('token');
-        ws3.onopen = () => {
-            console.log('Connexion WebSocket2 établie');
-            // Envoyer le token de l'utilisateur juste après l'établissement de la connexion
-            ws3.send(JSON.stringify({ type: 'registration', token: userToken }));
-        };
+   useEffect(() => {
+    const socket = io(`ws://${process.env.REACT_APP_SERVER_URL}:8888`);
+    const userToken = localStorage.getItem('token');
 
-        // Écouter les messages entrants
-        ws3.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            if(!Array.isArray(data) && (data.userToken === userToken)){
-                // Trouver l'ordre à déplacer
-                const orderToMove = orders.find(order => order.idTrans === data.idTrans);
-                dispatch(addNotification({ id: uuidv4(), progress: 0, open: true, text: 'order successfully executed !' }));
-                if (orderToMove) {
-                    const updatedOrder = { ...orderToMove, statut: "Executed" };
+    socket.on('connect', () => {
+        console.log('Connexion établie');
+        socket.emit('join', 'userOrders', userToken);
+    });
 
-                    // Ajouter l'ordre dans "Orders History"
-                    const updatedOrdersHistory = [...ordersHistory, updatedOrder];
+    socket.on('dataOrders', (data) => {
+        if(!Array.isArray(data) && (data.userToken === userToken)){
+            // Trouver l'ordre à déplacer
+            const orderToMove = orders.find(order => order.idTrans === data.idTrans);
+            dispatch(addNotification({ id: uuidv4(), progress: 0, open: true, text: 'order successfully executed !' }));
+            if (orderToMove) {
+                const updatedOrder = { ...orderToMove, statut: "Executed" };
 
-                    // Trier le nouveau tableau des ordres par date de manière décroissante
-                    updatedOrdersHistory.sort((a, b) => new Date(b.dateTrans) - new Date(a.dateTrans));
+                // Ajouter l'ordre dans "Orders History"
+                const updatedOrdersHistory = [...ordersHistory, updatedOrder];
 
-                    // Mettre à jour l'état avec le tableau trié
-                    dispatch({ type: 'SET_ORDERS_HISTORY', value: updatedOrdersHistory });
+                // Trier le nouveau tableau des ordres par date de manière décroissante
+                updatedOrdersHistory.sort((a, b) => new Date(b.dateTrans) - new Date(a.dateTrans));
 
-                    // Supprimer l'ordre de "Opened Orders"
-                    const newOrders = orders.filter(order => order.idTrans !== data.idTrans);
+                // Mettre à jour l'état avec le tableau trié
+                dispatch({ type: 'SET_ORDERS_HISTORY', value: updatedOrdersHistory });
 
-                    dispatch({ type: 'SET_ORDERS', value: newOrders });
-                }
+                // Supprimer l'ordre de "Opened Orders"
+                const newOrders = orders.filter(order => order.idTrans !== data.idTrans);
 
+                dispatch({ type: 'SET_ORDERS', value: newOrders });
             }
-            
-                };
+        }
+    });
 
-            // Nettoyer en fermant la connexion WebSocket quand le composant se démonte
-            return () => {
-                ws3.close();
-            };
-        }, [orders, ordersHistory, dispatch]);
+    // Nettoyer en fermant la connexion WebSocket quand le composant se démonte
+    return () => {
+        socket.close();
+    };
+    }, [orders, ordersHistory, dispatch]);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);

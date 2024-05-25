@@ -115,7 +115,7 @@ async function getUserSolde(userToken) {
         `;
       
         // Exécutez la requête avec les paramètres fournis
-        const [results] = await db.query(query,[Object.keys(clientsSoldeToken)]);
+        const [results] = await db.query(query,[clientsSoldeToken]);
         let userSoldes = {};
 
         // Get the latest prices for all pairs

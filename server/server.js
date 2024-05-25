@@ -6,12 +6,14 @@ const { initializeBinanceWebSocket } = require('./services/binanceWebSocket');
 const {updateOldPrices} =  require('./models/updateOldPrices');
 require('./services/serverWebSocket');
 
+
 let serverUrl;
 if (process.env.NODE_ENV === 'PROD') {
   serverUrl = process.env.PROD_SERVER_URL;
 } else {
   serverUrl = process.env.DEV_SERVER_URL;
 }
+
 
 app.use(express.json());
 app.use(cors({
@@ -30,3 +32,5 @@ initializeBinanceWebSocket();
 app.listen(port, () => {
   console.log(`Server running at ${serverUrl}:${port}`);
 });
+
+module.exports = serverUrl;

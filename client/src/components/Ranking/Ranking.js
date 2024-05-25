@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { Tr, Td, StyledTable } from "./Ranking.styles";
 import Rank from "./Rank/Rank";
+import io from 'socket.io-client';
 
 function Ranking() {
   const [leaderboard, setLeaderboard] = useState([]);
 
   useEffect(() => {
-    const ws5 = new WebSocket(`ws://${process.env.REACT_APP_SERVER_URL}:8888`);
-    ws5.onopen = () => {
-      console.log('WebSocket connection established');
-    };
+      const socket = io(`ws://${process.env.REACT_APP_SERVER_URL}:8888`);
+      const userToken = localStorage.getItem('token');
+      socket.on('connect', () => {
+        console.log('Connexion établie');
+        socket.emit('join', 'ranking', userToken);
+      });
 
-    ws5.onmessage = (event) => {
-      const newEntries = JSON.parse(event.data);
+      socket.on('dataRank', (data) => {
+      const newEntries = data;
 
       // Flatten the nested array
       const flattenedEntries = newEntries.flat();
@@ -36,10 +39,11 @@ function Ranking() {
 
         return uniqueLeaderboard;
       });
-    };
+    });
 
+    // Nettoyer en fermant la connexion WebSocket quand le composant se démonte
     return () => {
-      ws5.close();
+        socket.close();
     };
   }, []);
 

@@ -17,7 +17,6 @@ async function getLastPriceByPair(tradedPair) {
       
       // Vérifiez si nous avons un résultat
       if (rows.length > 0) {
-        console.log("rows[0] : ",rows[0])
         return { success: true, data: rows[0] };
       } else {
         return { success: false, message: "Aucune donnée trouvée" };

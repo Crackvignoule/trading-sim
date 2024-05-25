@@ -2,7 +2,7 @@ const { updateTokenPrices } = require('../models/updatePrices');
 const { ExecuteOpenedOrderByPair } = require('../models/transaction');
 const { ws, broadcastDataPair } = require('../services/serverWebSocket');
 const { ws2, broadcastOrders } = require('../services/serverWebSocket');
-const { sendToUser, sendToUserSolde, clientsSoldeToken } = require('../services/serverWebSocket');
+const { sendToUser, sendToUserSolde, getClientTokens } = require('../services/serverWebSocket');
 const { getAllUserSolde, setUserWalletHistory } = require('../models/userWallets');
 
 const postData = async (ticker, pair) => {
@@ -17,6 +17,7 @@ const postData = async (ticker, pair) => {
     if (ExecuteOrders.data.length > 0){
         ExecuteOrders.data.forEach(order => {
             sendToUser(order.userToken,order); // Envoi les données à l'utilisateur concerné
+            
         });
 
        // Crée une nouvelle version de chaque ordre sans l'attribut userToken
@@ -27,7 +28,8 @@ const postData = async (ticker, pair) => {
     }
 
     //récupère les soldes de tout les utilisateurs
-    getAllUserSolde(clientsSoldeToken).then(response => {
+    const clientTokens = getClientTokens();
+    getAllUserSolde(clientTokens).then(response => {
         if (response.success) {
             
             response.data.forEach(user => {
