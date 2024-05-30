@@ -34,7 +34,6 @@ const postData = async (ticker, pair) => {
             
             response.data.forEach(user => {
                 sendToUserSolde(user.userToken, user.userSolde); // Envoi le solde à chaque utilisateur
-
             });
         } else {
             console.error(response.message);

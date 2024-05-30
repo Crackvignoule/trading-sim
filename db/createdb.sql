@@ -15,7 +15,10 @@ CREATE TABLE Users (
   
 CREATE TABLE Pairs (
   idPair INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  namePair VARCHAR(25)
+  namePair VARCHAR(25),
+  nameToken VARCHAR(50),
+  symbol VARCHAR(10),
+  logo VARCHAR(255)
   );
   
 CREATE TABLE PricesHistory (
@@ -57,6 +60,7 @@ CREATE TABLE Transactions (
   FOREIGN KEY (idUser) REFERENCES Users(idUser) ON DELETE CASCADE
 );
 
-INSERT INTO Pairs (namePair) VALUES ('BTC/USDT');
-INSERT INTO Pairs (namePair) VALUES ('ETH/USDT');
-INSERT INTO Pairs (namePair) VALUES ('SOL/USDT');
+INSERT INTO Pairs (namePair,nameToken,symbol,logo) VALUES ('USDT/USDT','Tether','USDT','https://cryptologos.cc/logos/tether-usdt-logo.png');
+INSERT INTO Pairs (namePair,nameToken,symbol,logo) VALUES ('BTC/USDT','Bitcoin','BTC','https://cryptologos.cc/logos/bitcoin-btc-logo.png');
+INSERT INTO Pairs (namePair,nameToken,symbol,logo) VALUES ('ETH/USDT','Ethereum','ETH','https://cryptologos.cc/logos/ethereum-eth-logo.png');
+INSERT INTO Pairs (namePair,nameToken,symbol,logo) VALUES ('SOL/USDT','Solana','SOL','https://cryptologos.cc/logos/solana-sol-logo.png');

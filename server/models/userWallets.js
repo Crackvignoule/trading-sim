@@ -169,7 +169,7 @@ async function getUserSolde(userToken) {
       
           return { success: true, data: userSoldesArray };
       } else {
-          return { success: false, message: "Aucune donnée trouvée pour ces utilisateurs et ces tokens." };
+          return { success: false};
       }
       
       } catch (error) {
@@ -182,7 +182,8 @@ async function getUserSolde(userToken) {
     }
 }
 
-async function setUserWalletHistory(userToken, userSolde, dateWallet) {
+async function setUserWalletHistory(userToken, userSolde) {
+  const dateWallet = new Date();
   try {
     const query = `
       INSERT INTO WalletsHistory (idUser, total, dateWallet)
@@ -345,4 +346,88 @@ async function getAllClientTokens() {
   }
 }
 
-module.exports = { getTokenAmountByUser, setUserWallet, getUserSolde, getAllUserSolde, setUserWalletHistory, getRanking, getUserWalletHistory, getAllClientTokens } ;
+async function getAllCryptoOwned(userToken) {
+  try {
+    // Première requête pour récupérer les cryptos possédées par l'utilisateur
+    const query = `
+      SELECT P.logo, P.symbol, W.amount, P.idPair, P.nameToken
+      FROM Wallets W
+      JOIN Users U ON W.idUser = U.idUser
+      JOIN Pairs P ON W.tokenName = P.symbol
+      WHERE U.userToken = ? AND W.amount > 0
+    `;
+    const [results] = await db.query(query, [userToken]);
+
+    // Si aucun résultat, retourner directement
+    if (results.length === 0) {
+      return { success: true, data: [] };
+    }
+
+    // Requêtes pour récupérer les prix historiques
+    const idPairs = results.map(result => result.idPair);
+    
+    const pricesHistoryQueries = idPairs.map(idPair => `
+      SELECT 
+        (SELECT currentPrice FROM PricesHistory WHERE idPair = ? ORDER BY datePrice DESC LIMIT 1) AS currentPrice,
+        (SELECT currentPrice FROM PricesHistory WHERE idPair = ? AND datePrice <= DATE_SUB(NOW(), INTERVAL 1 DAY) ORDER BY datePrice DESC LIMIT 1) AS price24h,
+        (SELECT currentPrice FROM PricesHistory WHERE idPair = ? AND datePrice <= DATE_SUB(NOW(), INTERVAL 7 DAY) ORDER BY datePrice DESC LIMIT 1) AS price7d,
+        (SELECT currentPrice FROM PricesHistory WHERE idPair = ? AND datePrice <= DATE_SUB(NOW(), INTERVAL 1 MONTH) ORDER BY datePrice DESC LIMIT 1) AS price1m,
+        (SELECT currentPrice FROM PricesHistory WHERE idPair = ? AND datePrice <= DATE_SUB(NOW(), INTERVAL 1 YEAR) ORDER BY datePrice DESC LIMIT 1) AS price1y
+    `);
+
+    const pricesHistoryResults = await Promise.all(
+      pricesHistoryQueries.map((query, index) => db.query(query, [idPairs[index], idPairs[index], idPairs[index], idPairs[index], idPairs[index]]))
+    );
+
+    // Combiner les résultats avec les prix historiques
+    const data = results.map((result, index) => {
+      if (result.symbol !== "USDT") {
+      const prices = pricesHistoryResults[index][0][0]; // Récupérer les prix historiques de la requête correspondante
+      const currentPrice = prices.currentPrice;
+      const value = (currentPrice * result.amount).toFixed(2);
+      let variation24H = (((currentPrice - prices.price24h) / prices.price24h) * 100).toFixed(3);
+      variation24H = (variation24H > -0.1 && variation24H < 0.1) ? 0 : variation24H;
+
+      let variation7J = (((currentPrice - prices.price7d) / prices.price7d) * 100).toFixed(3);
+      variation7J = (variation7J > -0.1 && variation7J < 0.1) ? 0 : variation7J;
+
+      let variation1M = (((currentPrice - prices.price1m) / prices.price1m) * 100).toFixed(3);
+      variation1M = (variation1M > -0.1 && variation1M < 0.1) ? 0 : variation1M;
+
+      let variation1Y = (((currentPrice - prices.price1y) / prices.price1y) * 100).toFixed(3);
+      variation1Y = (variation1Y > -0.1 && variation1Y < 0.1) ? 0 : variation1Y;
+      return {
+        logo: result.logo,
+        symbol: result.symbol,
+        nameToken: result.nameToken,
+        amount: result.amount,
+        value: value,
+        variation24H: variation24H,
+        variation7J: variation7J,
+        variation1M: variation1M,
+        variation1Y: variation1Y
+      };
+    }else{
+      return {
+        logo: result.logo,
+        symbol: result.symbol,
+        nameToken: result.nameToken,
+        amount: result.amount,
+        value: result.amount,
+        variation24H: "",
+        variation7J: "",
+        variation1M: "",
+        variation1Y: ""
+      };
+    }
+    });
+    return { success: true, data:data };
+  } catch (error) {
+    console.error('Error executing query:', error);
+    return { success: false, message: "Erreur lors de la récupération des données." };
+  }
+}
+
+
+
+module.exports = { getTokenAmountByUser, setUserWallet, getUserSolde, getAllUserSolde, setUserWalletHistory,getUserWalletHistory, getRanking,getAllClientTokens,  getAllCryptoOwned } ;
