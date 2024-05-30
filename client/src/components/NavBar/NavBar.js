@@ -48,7 +48,6 @@ function NavBar() {
         });
 
         socket.on('dataSolde', (data) => {
-          console.log('Données reçues:', data.userSolde);
           try {
             
             setBalance(data.userSolde);
