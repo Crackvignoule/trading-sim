@@ -37,8 +37,6 @@ function SmallChart() {
       if (result && Array.isArray(result)) {
         const chartData = result.map(item => {
           const time = Date.parse(item.dateWalletHour) / 1000;
-          // console.log('item:', item);  // Log the item value
-          // console.log('time:', time);  // Log the time value
           return {
             time,
             value: item.total,

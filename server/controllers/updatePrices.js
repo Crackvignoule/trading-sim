@@ -3,7 +3,7 @@ const { ExecuteOpenedOrderByPair } = require('../models/transaction');
 const { ws, broadcastDataPair } = require('../services/serverWebSocket');
 const { ws2, broadcastOrders } = require('../services/serverWebSocket');
 const { sendToUser, sendToUserSolde, getClientTokens } = require('../services/serverWebSocket');
-const { getAllUserSolde, setUserWalletHistory } = require('../models/userWallets');
+const { getAllUserSolde, setUserWalletHistory, getAllClientTokens } = require('../models/userWallets');
 
 const postData = async (ticker, pair) => {
 
@@ -35,11 +35,22 @@ const postData = async (ticker, pair) => {
             response.data.forEach(user => {
                 sendToUserSolde(user.userToken, user.userSolde); // Envoi le solde à chaque utilisateur
 
-            // Update the WalletsHistory table
-            setUserWalletHistory(user.userToken, user.userSolde, new Date()).catch(error => {
-                console.error("Error updating WalletsHistory:", error);
             });
+        } else {
+            console.error(response.message);
+        }
+    }).catch(error => {
+        console.error("Erreur lors de la récupération des soldes des utilisateurs :", error);
+    });
 
+    const allClientTokens = await getAllClientTokens();
+    console.log("allClientTokens : ", allClientTokens);
+    getAllUserSolde(allClientTokens).then(response => {
+        if (response.success) {
+            
+            response.data.forEach(user => {
+                console.log("user : ", user);
+                setUserWalletHistory(user.userToken, user.userSolde, new Date());
             });
         } else {
             console.error(response.message);

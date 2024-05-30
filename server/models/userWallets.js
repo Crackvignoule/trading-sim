@@ -318,4 +318,17 @@ async function getUserWalletHistory(userToken) {
   }
 }
 
-module.exports = { getTokenAmountByUser, setUserWallet, getUserSolde, getAllUserSolde, setUserWalletHistory, getRanking, getUserWalletHistory } ;
+async function getAllClientTokens() {
+  try {
+    const query = `
+      SELECT userToken FROM Users;
+    `;
+    const [results] = await db.query(query);
+    return results.map(result => result.userToken);
+  } catch (error) {
+    console.error("Error getting all client tokens:", error);
+    return [];
+  }
+}
+
+module.exports = { getTokenAmountByUser, setUserWallet, getUserSolde, getAllUserSolde, setUserWalletHistory, getRanking, getUserWalletHistory, getAllClientTokens } ;
