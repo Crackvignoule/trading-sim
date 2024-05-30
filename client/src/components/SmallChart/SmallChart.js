@@ -3,66 +3,58 @@ import AreaChart from "./AreaChart/AreaChart";
 import { theme, Header, SmallChartContainer, Button, Div } from "./SmallChart.styles";
 import { ThemeProvider } from '@mui/material/styles';
 
+const getUserHistory = async () => {
+  const userToken = localStorage.getItem('token');
+  try {
+    const response = await fetch(`http://${process.env.REACT_APP_SERVER_URL}:5000/api/get-user-history`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ token: userToken }),
+    });
+    
+    if (!response.ok) {
+      console.error(`HTTP error! status: ${response.status}`);
+      return;
+    }
+
+    const data = await response.json();
+    console.log("data : ", data);
+    return data.data;
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};
+
 function SmallChart() {
   const chartContainerRef = useRef();
   const chartRef = useRef();
   const [series, setSeries] = useState(null);
 
-    useEffect(() => {
-    if (!chartRef.current) {
-        const data = [
-          { time: Date.parse('2018-10-22 00:00')/1000, value: 35.75 },
-          { time: Date.parse('2018-10-22 01:00')/1000, value: 35.77 },
-          { time: Date.parse('2018-10-22 02:00')/1000, value: 35.81 },
-          { time: Date.parse('2018-10-22 03:00')/1000, value: 35.72 },
-          { time: Date.parse('2018-10-22 04:00')/1000, value: 35.79 },
-          { time: Date.parse('2018-10-22 05:00')/1000, value: 35.84 },
-          { time: Date.parse('2018-10-22 06:00')/1000, value: 35.76 },
-          { time: Date.parse('2018-10-22 07:00')/1000, value: 35.83 },
-          { time: Date.parse('2018-10-22 08:00')/1000, value: 35.79 },
-          { time: Date.parse('2018-10-22 09:00')/1000, value: 35.85 },
-          { time: Date.parse('2018-10-22 10:00')/1000, value: 35.88 },
-          { time: Date.parse('2018-10-22 11:00')/1000, value: 35.77 },
-          { time: Date.parse('2018-10-22 12:00')/1000, value: 35.81 },
-          { time: Date.parse('2018-10-22 13:00')/1000, value: 35.74 },
-          { time: Date.parse('2018-10-22 14:00')/1000, value: 35.79 },
-          { time: Date.parse('2018-10-22 15:00')/1000, value: 35.82 },
-          { time: Date.parse('2018-10-22 16:00')/1000, value: 35.76 },
-          { time: Date.parse('2018-10-22 17:00')/1000, value: 35.8 },
-          { time: Date.parse('2018-10-22 18:00')/1000, value: 35.81 },
-          { time: Date.parse('2018-10-22 19:00')/1000, value: 35.79 },
-          { time: Date.parse('2018-10-22 20:00')/1000, value: 35.83 },
-          { time: Date.parse('2018-10-22 21:00')/1000, value: 35.78 },
-          { time: Date.parse('2018-10-22 22:00')/1000, value: 35.8 },
-          { time: Date.parse('2018-10-22 23:00')/1000, value: 35.82 },
-          { time: Date.parse('2018-10-23 00:00')/1000, value: 35.76 },
-          { time: Date.parse('2018-10-23 01:00')/1000, value: 35.79 },
-          { time: Date.parse('2018-10-23 02:00')/1000, value: 35.83 },
-          { time: Date.parse('2018-10-23 03:00')/1000, value: 35.81 },
-          { time: Date.parse('2018-10-23 04:00')/1000, value: 35.75 },
-          { time: Date.parse('2018-10-23 05:00')/1000, value: 35.78 },
-          { time: Date.parse('2018-10-23 06:00')/1000, value: 35.84 },
-          { time: Date.parse('2018-10-23 07:00')/1000, value: 35.8 },
-          { time: Date.parse('2018-10-23 08:00')/1000, value: 35.77 },
-          { time: Date.parse('2018-10-23 09:00')/1000, value: 35.83 },
-          { time: Date.parse('2018-10-23 10:00')/1000, value: 35.76 },
-          { time: Date.parse('2018-10-23 11:00')/1000, value: 35.79 },
-          { time: Date.parse('2018-10-23 12:00')/1000, value: 35.85 },
-          { time: Date.parse('2018-10-23 13:00')/1000, value: 35.81 },
-          { time: Date.parse('2018-10-23 14:00')/1000, value: 35.77 },
-          { time: Date.parse('2018-10-23 15:00')/1000, value: 35.82 },
-          { time: Date.parse('2018-10-23 16:00')/1000, value: 35.79 },
-          { time: Date.parse('2018-10-23 17:00')/1000, value: 35.84 },
-          { time: Date.parse('2018-10-23 18:00')/1000, value: 35.78 },
-          { time: Date.parse('2018-10-23 19:00')/1000, value: 35.81 },
-          { time: Date.parse('2018-10-23 20:00')/1000, value: 35.79 },
-          { time: Date.parse('2018-10-23 21:00')/1000, value: 35.83 },
-          { time: Date.parse('2018-10-23 22:00')/1000, value: 35.77 },
-          { time: Date.parse('2018-10-23 23:00')/1000, value: 35.82 },
-        ];
-        chartRef.current = AreaChart(chartContainerRef.current, data);
-    }
-}, []);
+  useEffect(() => {
+    getUserHistory().then(result => {
+      if (result && Array.isArray(result)) {
+        const chartData = result.map(item => {
+          const time = Date.parse(item.dateWalletHour) / 1000;
+          // console.log('item:', item);  // Log the item value
+          // console.log('time:', time);  // Log the time value
+          return {
+            time,
+            value: item.total,
+          };
+        });
+        console.log("chartData : ", chartData);
+        setSeries(chartData);
+      }
+    });
+  }, []);
+
+useEffect(() => {
+  if (!chartRef.current && series) {
+    chartRef.current = AreaChart(chartContainerRef.current, series);
+  }
+}, [series]);
 
   return (
     <SmallChartContainer>

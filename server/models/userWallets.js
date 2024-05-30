@@ -294,4 +294,28 @@ ORDER BY
   }
 }
 
-module.exports = { getTokenAmountByUser, setUserWallet, getUserSolde, getAllUserSolde, setUserWalletHistory, getRanking } ;
+async function getUserWalletHistory(userToken) {
+  try {
+    const query = `
+  SELECT 
+    AVG(total) as total, 
+    DATE_FORMAT(dateWallet, '%Y-%m-%d %H:00:00') as dateWalletHour
+  FROM WalletsHistory
+  WHERE idUser IN (SELECT idUser FROM Users WHERE userToken = ?)
+  GROUP BY dateWalletHour
+  ORDER BY dateWalletHour DESC;
+`;
+    const [results] = await db.query(query, [userToken]);
+
+    if (results.length > 0) {
+      return { success: true, data: results };
+    } else {
+      return { success: false, message: 'No history found for this user' };
+    }
+  } catch (error) {
+    console.error("Error getting WalletsHistory:", error);
+    return { success: false, message: 'Database query failed' };
+  }
+}
+
+module.exports = { getTokenAmountByUser, setUserWallet, getUserSolde, getAllUserSolde, setUserWalletHistory, getRanking, getUserWalletHistory } ;

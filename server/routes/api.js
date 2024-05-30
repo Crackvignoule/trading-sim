@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const router = express.Router();
 const { getDataBTCUSDT } = require('../controllers/charts');
 const { loginUser, registerUser } = require('../models/login');
-const { getTokenAmountByUser, setUserWallet, getUserSolde } = require('../models/userWallets');
+const { getTokenAmountByUser, setUserWallet, getUserSolde, getUserWalletHistory } = require('../models/userWallets');
 const { getLastPriceByPair } = require('../models/price');
 const { addNewTransaction, getUserOpenedOrder, getUserOrderHistory, deleteTransation, deleteAllUserTransation, getAllOrdersBuy, getAllOrdersSell  } = require('../models/transaction');
 const { postOrders } = require('../controllers/updateOrders');
@@ -211,4 +211,23 @@ router.post('/get-user-solde', async (req, res) => {
 });
 
 
-  module.exports = router;
+router.post('/get-user-history', async (req, res) => {
+  const { token } = req.body;
+  console.log('Received request with token:', token);
+  
+  try {
+    const results = await getUserWalletHistory(token);
+
+    if (results.success) {
+      res.status(200).json({ data: results.data, message: results.message });
+    } else {
+      console.error('Error: ', results.message);
+      res.status(404).json({ message: results.message });
+    }
+  } catch (error) {
+    console.error('Server error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+module.exports = router;
