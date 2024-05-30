@@ -111,9 +111,9 @@ const deleteDuplicateEntries = async () => {
     const deleteQuery = `
       DELETE ph1 FROM PricesHistory ph1
         INNER JOIN (
-          SELECT MIN(idPrice) as keepId, datePrice
+          SELECT MIN(idPrice) as keepId, datePrice, idPair
           FROM PricesHistory
-          GROUP BY datePrice
+          GROUP BY datePrice, idPair
           HAVING COUNT(*) > 1
         ) ph2 ON ph1.datePrice = ph2.datePrice
         WHERE ph1.idPrice != ph2.keepId AND ph1.idPair != ph2.idPair;

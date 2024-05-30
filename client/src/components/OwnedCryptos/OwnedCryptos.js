@@ -1,5 +1,5 @@
 import React from "react";
-import { Header, Container, StyledTable, LogoColumn, Column, ColumnHeader, Row, LogoColumnHeader,ColumnLabel } from "./OwnedCryptos.styles";
+import { Header, Container, StyledTable, LogoColumn, Column, ColumnHeader, Row, LogoColumnHeader,ColumnLabel, ColumnDiv } from "./OwnedCryptos.styles";
 import { useState, useEffect } from "react";
 
 function OwnedCryptos() {
@@ -35,15 +35,23 @@ useEffect(() => {
 }
 , []);
 
-  const buildVarationText = (value) => { 
+  const getSymbolVariation = (value) => { 
     if (value === "") {
       return "/";
     } else if (value > 0) {
-        return "▲ " + value + "%";
+        return "▲ ";
     } else if (value < 0) {
-        return "▼ " + value + "%";
+        return "▼ ";
     } else {
-        return "─ " + value + "%";
+        return "─ ";
+    }
+  }
+
+  const getTextVariation = (value) => { 
+    if (value === "") {
+      return "";
+    } else{
+      return value + " %";
     }
   }
 
@@ -70,10 +78,30 @@ useEffect(() => {
                 </LogoColumn>
                 <Column><ColumnLabel activeValue={false}>{crypto.amount}</ColumnLabel></Column>
                 <Column><ColumnLabel  activeValue={false}>{crypto.value === "" ? "" : crypto.value + " USDT"}</ColumnLabel></Column>
-                <Column><ColumnLabel activeValue={crypto.variation24H}>{buildVarationText(crypto.variation24H)}</ColumnLabel></Column>
-                <Column><ColumnLabel activeValue={crypto.variation7J}>{buildVarationText(crypto.variation7J)}</ColumnLabel></Column>
-                <Column><ColumnLabel activeValue={crypto.variation1M}>{buildVarationText(crypto.variation1M)}</ColumnLabel></Column>
-                <Column><ColumnLabel  activeValue={crypto.variation1Y}>{buildVarationText(crypto.variation1Y)}</ColumnLabel></Column>
+                <Column>
+                  <ColumnDiv activeValueBkg={crypto.variation24H}>
+                    <ColumnLabel className="symbolLabel" activeValue={crypto.variation24H}>{getSymbolVariation(crypto.variation24H)}</ColumnLabel>
+                    <ColumnLabel activeValue={crypto.variation24H}>{getTextVariation(crypto.variation24H)}</ColumnLabel>
+                  </ColumnDiv>
+                </Column>
+                <Column>
+                  <ColumnDiv activeValueBkg={crypto.variation7J}>
+                    <ColumnLabel className="symbolLabel" activeValue={crypto.variation7J}>{getSymbolVariation(crypto.variation7J)}</ColumnLabel>
+                    <ColumnLabel activeValue={crypto.variation7J}>{getTextVariation(crypto.variation7J)}</ColumnLabel>
+                  </ColumnDiv>
+                </Column>
+                <Column>
+                  <ColumnDiv activeValueBkg={crypto.variation1M}>
+                    <ColumnLabel className="symbolLabel" activeValue={crypto.variation1M}>{getSymbolVariation(crypto.variation1M)}</ColumnLabel>
+                    <ColumnLabel activeValue={crypto.variation1M}>{getTextVariation(crypto.variation1M)}</ColumnLabel>
+                  </ColumnDiv>
+                </Column>
+                <Column>
+                  <ColumnDiv activeValueBkg={crypto.variation1Y}>
+                    <ColumnLabel className="symbolLabel" activeValue={crypto.variation1Y}>{getSymbolVariation(crypto.variation1Y)}</ColumnLabel>
+                    <ColumnLabel activeValue={crypto.variation1Y}>{getTextVariation(crypto.variation1Y)}</ColumnLabel>
+                  </ColumnDiv>
+                </Column>
               </Row>
             ))}
         </StyledTable>

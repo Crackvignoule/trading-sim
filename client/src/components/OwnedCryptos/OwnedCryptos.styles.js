@@ -17,16 +17,16 @@ const setLabelColor = (props) => {
 };
 
 const setBkgColor = (props) => {
-  if(props.activeValue !== false){
-  if (props.activeValue > 0) {
-     return COLORS.green + "20";
-  } else if (props.activeValue < 0) {
-      return COLORS.red + "20";
-  } else if (props.activeValue === 0) {
-     return 'rgba(177,177,177,0.2)';
-  }else {
-    return COLORS.glassBkg;
-  }
+  if(props.activeValueBkg !== false){
+    if (props.activeValueBkg > 0) {
+      return COLORS.green + "20";
+    } else if (props.activeValueBkg < 0) {
+        return COLORS.red + "20";
+    } else if (props.activeValueBkg === 0) {
+      return 'rgba(177,177,177,0.2)';
+    }else {
+      return COLORS.glassBkg;
+    }
 }
 };
 
@@ -61,10 +61,20 @@ width: 10em;
 `;
 export const ColumnLabel = styled.label`
 color: ${props => setLabelColor(props)};
+text-align: center;
+&.symbolLabel{
+  text-align: center;
+  font-size: 0.7em;
+}
+`;
+export const ColumnDiv = styled.div`
 background-color: ${props => setBkgColor(props)};
 background-opacity: 0.2;
 border-radius: 0.5em;
 padding: 0.3em;
+display: flex;
+justify-content: center;
+align-items: center;
 `;
 
 export const LogoColumn = styled.td`
