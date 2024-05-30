@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const router = express.Router();
 const { getDataBTCUSDT } = require('../controllers/charts');
 const { loginUser, registerUser } = require('../models/login');
-const { getTokenAmountByUser, setUserWallet, getUserSolde } = require('../models/userWallets');
+const { getTokenAmountByUser, setUserWallet, getUserSolde, getAllCryptoOwned } = require('../models/userWallets');
 const { getLastPriceByPair } = require('../models/price');
 const { addNewTransaction, getUserOpenedOrder, getUserOrderHistory, deleteTransation, deleteAllUserTransation, getAllOrdersBuy, getAllOrdersSell  } = require('../models/transaction');
 const { postOrders } = require('../controllers/updateOrders');
@@ -210,5 +210,17 @@ router.post('/get-user-solde', async (req, res) => {
   }
 });
 
+
+router.post('/get-all-crypto-owned', async (req, res) => {
+  const { userToken } = req.body;
+  
+  const result = await getAllCryptoOwned(userToken);
+  
+  if (result.success) {
+    res.status(200).json({ data: result.data });
+  } else {
+    res.status(404).json({ message: result.message });
+  }
+});
 
   module.exports = router;

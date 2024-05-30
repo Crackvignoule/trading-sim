@@ -36,7 +36,8 @@ const postData = async (ticker, pair) => {
                 sendToUserSolde(user.userToken, user.userSolde); // Envoi le solde à chaque utilisateur
 
             // Update the WalletsHistory table
-            setUserWalletHistory(user.userToken, user.userSolde, new Date()).catch(error => {
+            
+            setUserWalletHistory(user.userToken, user.userSolde).catch(error => {
                 console.error("Error updating WalletsHistory:", error);
             });
 

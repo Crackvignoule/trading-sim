@@ -26,7 +26,7 @@ app.use('/api', apiRouter);
 
 const port = 5000;
 
-//updateOldPrices(); récupère les anciennes valeurs des pairs via api binance
+updateOldPrices(); //récupère les anciennes valeurs des pairs via api binance
 initializeBinanceWebSocket();
 
 app.listen(port, () => {
