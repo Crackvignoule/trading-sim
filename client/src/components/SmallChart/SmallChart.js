@@ -20,7 +20,6 @@ const getUserHistory = async () => {
     }
 
     const data = await response.json();
-    console.log("data : ", data);
     return data.data;
   } catch (error) {
     console.error('Error:', error);
@@ -36,13 +35,12 @@ function SmallChart() {
     getUserHistory().then(result => {
       if (result && Array.isArray(result)) {
         const chartData = result.map(item => {
-          const time = Date.parse(item.dateWalletHour) / 1000;
+          const time = Date.parse(item.dateWallet) / 1000;
           return {
             time,
             value: item.total,
           };
         });
-        console.log("chartData : ", chartData);
         setSeries(chartData);
       }
     });

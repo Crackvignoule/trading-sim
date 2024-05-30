@@ -44,12 +44,10 @@ const postData = async (ticker, pair) => {
     });
 
     const allClientTokens = await getAllClientTokens();
-    console.log("allClientTokens : ", allClientTokens);
     getAllUserSolde(allClientTokens).then(response => {
         if (response.success) {
             
             response.data.forEach(user => {
-                console.log("user : ", user);
                 setUserWalletHistory(user.userToken, user.userSolde, new Date());
             });
         } else {

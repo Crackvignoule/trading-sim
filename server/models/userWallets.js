@@ -297,14 +297,28 @@ ORDER BY
 async function getUserWalletHistory(userToken) {
   try {
     const query = `
-  SELECT 
-    AVG(total) as total, 
-    DATE_FORMAT(dateWallet, '%Y-%m-%d %H:00:00') as dateWalletHour
-  FROM WalletsHistory
-  WHERE idUser IN (SELECT idUser FROM Users WHERE userToken = ?)
-  GROUP BY dateWalletHour
-  ORDER BY dateWalletHour DESC;
-`;
+    WITH RankedWallets AS (
+      SELECT
+          wh.idUser,
+          wh.total,
+          wh.dateWallet,
+          ROW_NUMBER() OVER (PARTITION BY wh.idUser, DATE_FORMAT(wh.dateWallet, '%Y-%m-%d %H') ORDER BY wh.dateWallet) AS rn
+      FROM
+          WalletsHistory wh
+      JOIN
+          Users u ON wh.idUser = u.idUser
+      WHERE
+          u.userToken = ?
+  )
+  SELECT
+      idUser,
+      total,
+      dateWallet
+  FROM
+      RankedWallets
+  WHERE
+      rn = 1;
+    `;
     const [results] = await db.query(query, [userToken]);
 
     if (results.length > 0) {
