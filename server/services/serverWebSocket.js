@@ -10,7 +10,7 @@ if (process.env.NODE_ENV === 'PROD') {
 
 const io = new Server(8888, {
   cors: {
-    origin: `${serverUrl}:3000`,
+    origin: '*', // ${serverUrl}:3000
     methods: ['GET', 'POST'],
     credentials: true
   }
