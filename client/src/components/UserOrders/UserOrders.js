@@ -88,7 +88,7 @@ function UserOrders() {
 
 
    useEffect(() => {
-    const socket = io(`ws://${process.env.REACT_APP_SERVER_URL}:8888`);
+    const socket = io(`wss://${process.env.REACT_APP_SERVER_URL}:8888`);
     const userToken = localStorage.getItem('token');
 
     socket.on('connect', () => {

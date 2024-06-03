@@ -40,7 +40,7 @@ function NavBar() {
   useEffect(() => {
     const userToken = localStorage.getItem('token');
     if (isLoggedIn || userToken) {
-        const socket = io(`ws://${process.env.REACT_APP_SERVER_URL}:8888`);
+        const socket = io(`wss://${process.env.REACT_APP_SERVER_URL}:8888`);
         
         socket.on('connect', () => {
         console.log('Connexion établie');
