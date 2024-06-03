@@ -1,13 +1,40 @@
-import * as React from "react";
+import React, { useState, useEffect } from 'react';
 import { PieChart } from "@mui/x-charts/PieChart";
 
-const data = [
-  { id: 0, value: 10, label: "series A" },
-  { id: 1, value: 15, label: "series B" },
-  { id: 2, value: 20, label: "series C" },
-];
-
 export default function PieActiveArc() {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        let userToken = localStorage.getItem('token');
+        const response = await fetch(`http://${process.env.REACT_APP_SERVER_URL}:5000/api/get-all-crypto-owned`, {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+                userToken: userToken
+            }),
+        });
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const result = await response.json();
+        const fetchedData = result.data.map((item, index) => ({
+          id: index,
+          value: parseFloat(item.value),
+          label: item.nameToken,
+        }));
+        setData(fetchedData);
+      } catch (error) {
+        console.error('Error fetching the data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <PieChart
       series={[
