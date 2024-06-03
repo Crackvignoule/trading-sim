@@ -13,10 +13,13 @@ services:
       - ./db:/docker-entrypoint-initdb.d
 
   udf:
-    build: https://github.com/Crackvignoule/tradingview-udf-binance-node.git
+    build:
+      context: https://github.com/Crackvignoule/tradingview-udf-binance-node.git
+      args:
+        - BRANCH=https
     restart: always
     ports:
-      - "9090:80"
+      - "9090:443"
 
   server:
     image: node:latest

@@ -35,7 +35,7 @@ function AllOrders() {
     
 
     useEffect(() => {
-        const socket = io(`ws://${process.env.REACT_APP_SERVER_URL}:8888`);
+        const socket = io(`wss://${process.env.REACT_APP_SERVER_URL}:8888`);
         const userToken = localStorage.getItem('token');
         socket.on('connect', () => {
           console.log('Connexion établie');
@@ -94,7 +94,7 @@ function AllOrders() {
 
     const getAllSellOrders = async () => {
         try{
-            const response = await fetch(`http://${process.env.REACT_APP_SERVER_URL}:5000/api/get-all-sell-orders`, {
+            const response = await fetch(`https://${process.env.REACT_APP_SERVER_URL}:5000/api/get-all-sell-orders`, {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',
@@ -117,7 +117,7 @@ function AllOrders() {
 
     const getAllBuyOrders = async () => {
         try{
-            const response = await fetch(`http://${process.env.REACT_APP_SERVER_URL}:5000/api/get-all-buy-orders`, {
+            const response = await fetch(`https://${process.env.REACT_APP_SERVER_URL}:5000/api/get-all-buy-orders`, {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',

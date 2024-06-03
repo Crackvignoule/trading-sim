@@ -40,7 +40,7 @@ function NavBar() {
   useEffect(() => {
     const userToken = localStorage.getItem('token');
     if (isLoggedIn || userToken) {
-        const socket = io(`ws://${process.env.REACT_APP_SERVER_URL}:8888`);
+        const socket = io(`wss://${process.env.REACT_APP_SERVER_URL}:8888`);
         
         socket.on('connect', () => {
         console.log('Connexion établie');
@@ -82,7 +82,7 @@ const getUserSolde = async () => {
   // get user soldes
   const userToken = localStorage.getItem('token');
   try {
-    const response = await fetch(`http://${process.env.REACT_APP_SERVER_URL}:5000/api/get-user-solde`, {
+    const response = await fetch(`https://${process.env.REACT_APP_SERVER_URL}:5000/api/get-user-solde`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

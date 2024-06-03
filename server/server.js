@@ -1,11 +1,18 @@
 const express = require('express');
-const app = express();
+const https = require('https');
+const fs = require('fs');
 const cors = require('cors');
 const apiRouter = require('./routes/api');
 const { initializeBinanceWebSocket } = require('./services/binanceWebSocket');
-const {updateOldPrices} =  require('./models/updateOldPrices');
+const { updateOldPrices } = require('./models/updateOldPrices');
 require('./services/serverWebSocket');
 
+const app = express();
+
+// Load SSL certificate and key
+const privateKey = fs.readFileSync('server.key', 'utf8');
+const certificate = fs.readFileSync('server.crt', 'utf8');
+const credentials = { key: privateKey, cert: certificate };
 
 let serverUrl;
 if (process.env.NODE_ENV === 'PROD') {
@@ -13,7 +20,6 @@ if (process.env.NODE_ENV === 'PROD') {
 } else {
   serverUrl = process.env.DEV_SERVER_URL;
 }
-
 
 app.use(express.json());
 app.use(cors({
@@ -26,10 +32,14 @@ app.use('/api', apiRouter);
 
 const port = 5000;
 
-updateOldPrices(); //récupère les anciennes valeurs des pairs via api binance
+updateOldPrices(); // Retrieves old pair values via the Binance API
 initializeBinanceWebSocket();
 
-app.listen(port, () => {
+// Create HTTPS server
+const httpsServer = https.createServer(credentials, app);
+
+// Start server
+httpsServer.listen(port, () => {
   console.log(`Server running at ${serverUrl}:${port}`);
 });
 
