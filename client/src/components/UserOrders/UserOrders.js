@@ -43,7 +43,7 @@ function UserOrders() {
         const getUserOpenedOrders = async () => {
             try{
                 const userPseudo = localStorage.getItem('pseudo');
-                const response = await fetch(`http://${process.env.REACT_APP_SERVER_URL}:5000/api/get-user-opened-orders`, {
+                const response = await fetch(`https://${process.env.REACT_APP_SERVER_URL}:5000/api/get-user-opened-orders`, {
                     method: 'POST',
                     headers: {
                     'Content-Type': 'application/json',
@@ -65,7 +65,7 @@ function UserOrders() {
         const getUserOrdersHistory = async () => {
             try{
                 const userPseudo = localStorage.getItem('pseudo');
-                const response = await fetch(`http://${process.env.REACT_APP_SERVER_URL}:5000/api/get-user-orders-history`, {
+                const response = await fetch(`https://${process.env.REACT_APP_SERVER_URL}:5000/api/get-user-orders-history`, {
                     method: 'POST',
                     headers: {
                     'Content-Type': 'application/json',
@@ -139,7 +139,7 @@ function UserOrders() {
 
     const deleteTransaction = async (idTrans) => {
         try{
-            const response = await fetch(`http://${process.env.REACT_APP_SERVER_URL}:5000/api/del-transaction`, {
+            const response = await fetch(`https://${process.env.REACT_APP_SERVER_URL}:5000/api/del-transaction`, {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',
@@ -178,7 +178,7 @@ function UserOrders() {
     const deleteAllUsersTransaction = async () => {
         try{
             const userPseudo = localStorage.getItem('pseudo');
-            const response = await fetch(`http://${process.env.REACT_APP_SERVER_URL}:5000/api/del-all-user-transaction`, {
+            const response = await fetch(`https://${process.env.REACT_APP_SERVER_URL}:5000/api/del-all-user-transaction`, {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',

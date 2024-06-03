@@ -9,7 +9,7 @@ function OwnedCryptos() {
   const getAllCryptoOwned = async () => {
     try{
         let userToken = localStorage.getItem('token');
-        const response = await fetch(`http://${process.env.REACT_APP_SERVER_URL}:5000/api/get-all-crypto-owned`, {
+        const response = await fetch(`https://${process.env.REACT_APP_SERVER_URL}:5000/api/get-all-crypto-owned`, {
             method: 'POST',
             headers: {
             'Content-Type': 'application/json',

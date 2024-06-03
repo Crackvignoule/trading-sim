@@ -21,7 +21,7 @@ function Login() {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch(`http://${process.env.REACT_APP_SERVER_URL}:5000/api/login`, { // Assurez-vous de mettre à jour l'URL avec votre endpoint
+      const response = await fetch(`https://${process.env.REACT_APP_SERVER_URL}:5000/api/login`, { // Assurez-vous de mettre à jour l'URL avec votre endpoint
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ function Login() {
     }
 
     try {
-      const response = await fetch(`http://${process.env.REACT_APP_SERVER_URL}:5000/api/register`, { // Assurez-vous de mettre à jour l'URL avec votre endpoint
+      const response = await fetch(`https://${process.env.REACT_APP_SERVER_URL}:5000/api/register`, { // Assurez-vous de mettre à jour l'URL avec votre endpoint
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
