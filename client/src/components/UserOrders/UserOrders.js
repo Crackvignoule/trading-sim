@@ -37,7 +37,22 @@ function UserOrders() {
     const ordersHistory = useSelector(state => state.ordersHistory.value);
 
     const [activeMenu, setActiveMenu] = useState('opened-orders');
+    const [underlineStyle, setUnderlineStyle] = useState({});
     const dispatch = useDispatch();
+
+    const handleClick = (event, id) => {
+  setActiveMenu(id);
+  const { offsetWidth, offsetLeft } = event.target;
+  setUnderlineStyle({ width: offsetWidth - 30, left: offsetLeft + 15 }); // subtract 10 from width and add 5 to left
+};
+
+useEffect(() => {
+  const activeLink = document.querySelector(".active");
+  if (activeLink) {
+    const { offsetWidth, offsetLeft } = activeLink;
+    setUnderlineStyle({ width: offsetWidth - 30, left: 15 }); // subtract 10 from width and set left to 5
+  }
+}, []);
 
     useEffect(() => {
         const getUserOpenedOrders = async () => {
@@ -215,9 +230,21 @@ function UserOrders() {
     return (
         <UserOrdersDiv>
             <HeaderDiv>
-                <Label active={activeMenu === 'opened-orders'} className='title' id='opened-orders' onClick={() => setActiveMenu('opened-orders')}>Opened Orders</Label>
-                <Label active={activeMenu === 'orders-history'} className='title' id='orders-history' onClick={() => setActiveMenu('orders-history')}>Orders History</Label>
-                <AnimatedDiv active={activeMenu === 'orders-history'}></AnimatedDiv>
+                <Label
+                    active={activeMenu === 'opened-orders'}
+                    className='title'
+                    id='opened-orders'
+                    onClick={(event) => handleClick(event, 'opened-orders')}>
+                    Opened Orders
+                </Label>
+                <Label 
+                    active={activeMenu === 'orders-history'} 
+                    className='title' 
+                    id='orders-history' 
+                    onClick={(event) => handleClick(event, 'orders-history')}>
+                    Orders History
+                </Label>
+                <AnimatedDiv active={activeMenu === 'orders-history'} $width={underlineStyle.width} $left={underlineStyle.left}></AnimatedDiv>
             </HeaderDiv>
 
             <OrderContainer>
