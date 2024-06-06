@@ -43,20 +43,17 @@ function NavBar() {
         const socket = io(`ws://${process.env.REACT_APP_SERVER_URL}:8888`);
         
         socket.on('connect', () => {
-        console.log('Connexion établie');
         socket.emit('join', 'userSolde', userToken);
         });
 
-        socket.on('dataSolde', (data) => {
+        socket.on(`dataSolde-${userToken}`, (data) => {
           try {
-            
+            console.log('Données reçues:', data);
             setBalance(data.userSolde);
           } catch (error) {
             console.error('Erreur de parsing des données reçues:', error);
           }
         });
-
-        // Nettoyer en fermant la connexion WebSocket quand le composant se démonte
         return () => {
             socket.close();
         };

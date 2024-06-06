@@ -64,3 +64,6 @@ INSERT INTO Pairs (namePair,nameToken,symbol,logo) VALUES ('USDT/USDT','Tether',
 INSERT INTO Pairs (namePair,nameToken,symbol,logo) VALUES ('BTC/USDT','Bitcoin','BTC','https://cryptologos.cc/logos/bitcoin-btc-logo.png');
 INSERT INTO Pairs (namePair,nameToken,symbol,logo) VALUES ('ETH/USDT','Ethereum','ETH','https://cryptologos.cc/logos/ethereum-eth-logo.png');
 INSERT INTO Pairs (namePair,nameToken,symbol,logo) VALUES ('SOL/USDT','Solana','SOL','https://cryptologos.cc/logos/solana-sol-logo.png');
+
+CREATE INDEX idx_priceshistory_idpair ON PricesHistory(idPair);
+CREATE INDEX idx_walletshistory_iduser ON WalletsHistory(idUser);

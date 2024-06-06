@@ -31,7 +31,6 @@ const postData = async (ticker, pair) => {
     const clientTokens = getClientTokens();
     getAllUserSolde(clientTokens).then(response => {
         if (response.success) {
-            
             response.data.forEach(user => {
                 sendToUserSolde(user.userToken, user.userSolde); // Envoi le solde à chaque utilisateur
             });

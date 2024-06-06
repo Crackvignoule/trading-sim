@@ -59,7 +59,7 @@ function broadcastOrders(data) {
 
 function sendToUser(userToken, data) {
   if (clients[userToken]) {
-    clients[userToken].to('userOrders').emit('dataOrders', data);
+    clients[userToken].to('userOrders').emit(`dataOrders-${userToken}`, data);
   }
 }
 
@@ -77,7 +77,8 @@ function sendToUserSolde(userToken, data) {
       userSolde: data,
       userToken: userToken
     };
-    clients[userToken].to('userSolde').emit('dataSolde', solde);
+    
+    clients[userToken].to('userSolde').emit(`dataSolde-${userToken}`, solde);
   }
 }
 const getClientTokens = () => {
