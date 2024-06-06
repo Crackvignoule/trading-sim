@@ -48,7 +48,6 @@ function NavBar() {
 
         socket.on(`dataSolde-${userToken}`, (data) => {
           try {
-            console.log('Données reçues:', data);
             setBalance(data.userSolde);
           } catch (error) {
             console.error('Erreur de parsing des données reçues:', error);
