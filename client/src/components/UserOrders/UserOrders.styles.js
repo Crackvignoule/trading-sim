@@ -10,7 +10,6 @@ import TableRow from '@mui/material/TableRow';
 import DeleteForeverTwoToneIcon from '@mui/icons-material/DeleteForeverTwoTone';
 
 
-
 const setLabelColor = (props) => {
     if (props.active) {
        return COLORS.special;
@@ -74,8 +73,8 @@ export const HeaderDiv = styled.div`
 export const AnimatedDiv = styled.div`
 position: absolute;
 top : 2.9em;
-left: ${props => props.active ? 'calc(100% - 94.3em - 2em)' : '1.8em'};
-width : 5em;
+width: ${props => props.$width}px;
+left: ${props => props.$left}px;
 height : 0.01em;
 Background: ${COLORS.special};
 transition: left 0.5s ease-in-out;
