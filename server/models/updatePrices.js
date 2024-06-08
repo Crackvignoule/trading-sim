@@ -1,4 +1,4 @@
-const db = require("../database");
+const { connectToDatabase } = require('../database');
 
 const updateTokenPrices = async (ticker, pairName) => {
   let attempts = 0;
@@ -11,48 +11,49 @@ const updateTokenPrices = async (ticker, pairName) => {
   let volume = ticker.v !== undefined ? parseFloat(ticker.v) : null;
 
   let datePrice = new Date(datePriceTimeStamp);
-  let formattedDatePrice = datePrice.toISOString().slice(0, 19).replace("T", " ");
 
-  const query = `
-    INSERT INTO PricesHistory (idPair, currentPrice, lowestPrice, highestPrice, volume, datePrice)
-    SELECT p.idPair, ?, ?, ?, ?, ?
-    FROM Pairs p
-    WHERE p.namePair = ?
-    AND NOT EXISTS (
-        SELECT 1
-        FROM PricesHistory ph
-        WHERE ph.datePrice = ? AND ph.idPair = p.idPair
-    );
-  `;
+  const db = await connectToDatabase();
+  const pairsCollection = db.collection('Pairs');
+  const pricesHistoryCollection = db.collection('PricesHistory');
 
   while (attempts < maxAttempts) {
     try {
-      const [results] = await db.execute(query, [
-        currentPrice,
-        lowestPrice,
-        highestPrice,
-        volume,
-        formattedDatePrice,
-        pairName,
-        formattedDatePrice,
-      ]);
+      const pair = await pairsCollection.findOne({ namePair: pairName });
+      if (!pair) {
+        throw new Error(`Pair ${pairName} not found`);
+      }
 
-      return results; // La mise à jour a réussi, retourne le résultat
+      const existingEntry = await pricesHistoryCollection.findOne({
+        datePrice: datePrice,
+        idPair: pair._id
+      });
+
+      if (!existingEntry) {
+        await pricesHistoryCollection.insertOne({
+          idPair: pair._id,
+          currentPrice,
+          lowestPrice,
+          highestPrice,
+          volume,
+          datePrice
+        });
+      }
+
+      return { success: true }; // Return success if the update succeeded
     } catch (error) {
-      if (error.code === 'ER_LOCK_DEADLOCK') {
-        // Si l'erreur est un deadlock, réessayer après une courte pause
-        console.log(`Deadlock detected on attempt ${attempts + 1}. Retrying...`);
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Attendre 1 seconde avant de réessayer
+      if (error.code === 112) { // MongoDB's equivalent of deadlock (e.g., write conflict)
+        console.log(`Write conflict detected on attempt ${attempts + 1}. Retrying...`);
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second before retrying
         attempts++;
       } else {
-        // Pour toute autre erreur, la rejeter immédiatement
+        // For any other error, reject immediately
         throw error;
       }
     }
   }
 
-  // Si le code atteint ce point, cela signifie que toutes les tentatives ont échoué
-  throw new Error('Failed to update token prices after several attempts due to deadlocks.');
+  // If the code reaches this point, it means all attempts have failed
+  throw new Error('Failed to update token prices after several attempts due to write conflicts.');
 };
 
 module.exports = { updateTokenPrices };
