@@ -1,14 +1,12 @@
 services:
   db:
-    image: mysql:latest
+    image: mongo:latest
     restart: always
     environment:
-      MYSQL_DATABASE: TradingSimBdd
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_USER: server
-      MYSQL_PASSWORD: password
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
     ports:
-      - "3306:3306"
+      - "27017:27017"
     volumes:
       - ./db:/docker-entrypoint-initdb.d
 
