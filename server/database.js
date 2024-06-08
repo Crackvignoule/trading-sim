@@ -1,31 +1,45 @@
-const mysql = require('mysql2/promise');
+const { MongoClient } = require('mongodb');
 const dotenv = require('dotenv');
 dotenv.config();
 
-// Création d'un pool de connexions
-console.log("DB_HOST", process.env.DB_HOST);
-const db = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: 'server',
-  database: 'TradingSimBdd',
-  password: 'password',
-  port: 3306,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-  connectTimeout: 10000, // Timeout de connexion de 10 secondes
-});
+// MongoDB connection URI and options
+const uri = `mongodb://${process.env.DB_HOST}:27017`;
+const options = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+};
 
-// Tester la connexion
+// Database name
+const dbName = 'TradingSimBdd';
+
+// Function to test the connection
 async function testConnection() {
+  let client;
   try {
-    const [rows] = await db.query('SELECT 1');
-    console.log("Connexion réussie à la base de données MySQL!");
+    client = new MongoClient(uri, options);
+    await client.connect();
+    console.log("Connexion réussie à la base de données MongoDB!");
+
+    const db = client.db(dbName);
+    // Example query to test the connection
+    const collection = db.collection('Pairs');
+    const count = await collection.countDocuments();
+    console.log(`Nombre de documents dans la collection Pairs: ${count}`);
   } catch (error) {
-    console.error("Erreur lors de la connexion à la base de données MySQL:", error);
+    console.error("Erreur lors de la connexion à la base de données MongoDB:", error);
+  } finally {
+    if (client) {
+      await client.close();
+    }
   }
 }
 
 testConnection();
 
-module.exports = db;
+module.exports = {
+  connectToDatabase: async () => {
+    const client = new MongoClient(uri, options);
+    await client.connect();
+    return client.db(dbName);
+  }
+};
