@@ -34,7 +34,7 @@ testConnection();
 
 module.exports = {
   connectToDatabase: async () => {
-    const client = new MongoClient(uri, options);
+    const client = new MongoClient(uri);
     await client.connect();
     return client.db(dbName);
   }
