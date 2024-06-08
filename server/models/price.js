@@ -1,4 +1,4 @@
-const { connectToDatabase } = require('/home/ubuntu/Documents/trading-sim/server/database.js');
+const { connectToDatabase } = require('../database');
 
 async function getLastPriceByPair(tradedPair) {
     try {
