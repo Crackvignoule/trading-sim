@@ -3,11 +3,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 // MongoDB connection URI and options
-const uri = `mongodb://${process.env.DB_HOST}:27017`;
-const options = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-};
+const uri = `mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWD}@${process.env.DB_HOST}:27017/${process.env.DB_NAME}`;
 
 // Database name
 const dbName = 'TradingSimBdd';
@@ -16,7 +12,7 @@ const dbName = 'TradingSimBdd';
 async function testConnection() {
   let client;
   try {
-    client = new MongoClient(uri, options);
+    client = new MongoClient(uri);
     await client.connect();
     console.log("Connexion réussie à la base de données MongoDB!");
 
