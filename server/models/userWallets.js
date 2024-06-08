@@ -286,6 +286,20 @@ async function setUserData(userToken, data) {
     }
 }
 
+async function getAllClientTokens() {
+    try {
+      const db = await connectToDatabase();
+      const usersCollection = db.collection('Users');
+  
+      const users = await usersCollection.find({}, { projection: { userToken: 1, _id: 0 } }).toArray();
+      return users.map(user => user.userToken);
+  
+    } catch (error) {
+      console.error("Error getting all client tokens:", error);
+        return [];
+    }
+}
+
 module.exports = {
     getTokenAmountByUser,
     setUserWallet,
@@ -293,6 +307,7 @@ module.exports = {
     getAllUserSolde,
     setUserWalletHistory,
     getRanking,
+    getAllClientTokens,
     getUserWalletHistory,
     setUserData
 };
