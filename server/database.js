@@ -2,11 +2,11 @@ const { MongoClient } = require('mongodb');
 const dotenv = require('dotenv');
 dotenv.config();
 
-// MongoDB connection URI and options
+// MongoDB connection URI
 const uri = `mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWD}@${process.env.DB_HOST}:27017/${process.env.DB_NAME}`;
 
 // Database name
-const dbName = 'TradingSimBdd';
+const dbName = 'TradingSimDb';
 
 // Function to test the connection
 async function testConnection() {

@@ -1,3 +1,5 @@
+db = db.getSiblingDB('TradingSimDb');
+
 // Dropping collections if they exist
 db.Transactions.drop();
 db.Wallets.drop();
@@ -9,7 +11,7 @@ db.Pairs.drop();
 db.createUser({
   user: "server",
   pwd: "password",
-  roles: [{ role: "readWrite", db: "TradingSimBdd" }]
+  roles: [{ role: "readWrite", db: "TradingSimDb" }]
 });
 
 db.Pairs.insertMany([
